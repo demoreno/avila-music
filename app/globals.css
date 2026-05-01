@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0c0a07;
+  --color-panel: #18130e;
+  --color-raised: #241b11;
+  --color-edge: #3a2d1e;
+  --color-cream: #f2e8d9;
+  --color-sand: #b8a090;
+  --color-gold: #c8922e;
+  --color-glow: #e4b96a;
+  --color-accent: #c8922e;
+  --color-accent-hover: #e4b96a;
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-cormorant);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  background-color: #0c0a07;
+  color: #f2e8d9;
+  -webkit-font-smoothing: antialiased;
+}
+
+.heading-serif {
+  font-family: var(--font-cormorant), Georgia, serif;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.btn-primary {
+  background-color: #c8922e;
+  color: #0c0a07;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background-color: #e4b96a;
+}
+
+.btn-outline {
+  border: 1.5px solid #c8922e;
+  color: #c8922e;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background-color: #c8922e;
+  color: #0c0a07;
+}
