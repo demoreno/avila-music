@@ -33,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${dmSans.variable} ${cormorant.variable}`}>
-      <body>{children}</body>
+      <body className="transition-opacity duration-300">{children}</body>
     </html>
   )
 }

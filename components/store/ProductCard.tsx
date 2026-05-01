@@ -21,18 +21,19 @@ export default function ProductCard({ product }: ProductCardProps) {
   const waLink = whatsappProductLink(product.name, product.price_usd)
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white transition-all hover:border-primary/30 hover:shadow-lg">
-      <div className="relative h-56 w-full bg-bg-alt overflow-hidden">
+    <div className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-300 hover:border-[#1e4d6b]/30 hover:shadow-xl will-change-transform">
+      <div className="relative h-56 w-full bg-slate-50 overflow-hidden">
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-5xl text-text-light">
+          <div className="flex h-full items-center justify-center text-5xl text-slate-400">
             🎵
           </div>
         )}
@@ -66,21 +67,21 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="flex flex-1 flex-col p-4">
         {product.subcategory_name && (
-          <span className="mb-2 text-xs font-medium uppercase tracking-wide text-primary">
+          <span className="mb-2 text-xs font-medium uppercase tracking-wide text-[#1e4d6b]">
             {product.subcategory_name}
           </span>
         )}
         <h3 className="flex-1 text-sm font-semibold text-text line-clamp-2 leading-snug">
           {product.name}
         </h3>
-        <p className="mt-3 text-xl font-bold text-primary">
+        <p className="mt-3 text-xl font-bold text-[#1e4d6b]">
           USD {product.price_usd.toFixed(2)}
         </p>
 
         <div className="mt-3 flex gap-2">
           <Link
             href={`/productos/${product.slug}`}
-            className="flex-1 rounded-lg border border-primary py-2 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+            className="flex-1 rounded-lg border border-[#1e4d6b] py-2 text-center text-sm font-semibold text-[#1e4d6b] transition-colors hover:bg-[#1e4d6b] hover:text-white"
           >
             Ver producto
           </Link>

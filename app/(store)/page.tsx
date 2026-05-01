@@ -83,7 +83,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section - Full Width Editorial Banner */}
-      <section className="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden">
+      <section className="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden transition-page">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -282,18 +282,26 @@ export default async function HomePage() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-6 pt-12">
                   <div className="aspect-square rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                    <span className="text-7xl">🎸</span>
+                    <svg className="h-20 w-20 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
                   </div>
                   <div className="aspect-video rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center border border-white/10">
-                    <span className="text-6xl">🥁</span>
+                    <svg className="h-16 w-16 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 10l12-3" />
+                    </svg>
                   </div>
                 </div>
                 <div className="space-y-6">
                   <div className="aspect-video rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center border border-white/10">
-                    <span className="text-6xl">🎻</span>
+                    <svg className="h-16 w-16 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2m0 16v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
                   </div>
                   <div className="aspect-square rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                    <span className="text-7xl">🔌</span>
+                    <svg className="h-20 w-20 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                   </div>
                 </div>
               </div>

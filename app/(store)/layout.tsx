@@ -5,15 +5,16 @@ import CartButton from './CartButton'
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-sm shadow-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md shadow-sm will-change-transform">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+          <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/avila-logo.jpeg"
               alt="Ávila Music"
               width={40}
               height={40}
-              className="rounded-full object-cover ring-2 ring-[#1e4d6b]/20"
+              className="rounded-full object-cover ring-2 ring-[#1e4d6b]/20 transition-transform group-hover:scale-105"
+              priority
             />
             <div>
               <span className="heading-serif text-2xl font-bold text-[#1e4d6b]">Ávila Music</span>
@@ -21,23 +22,23 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-8 sm:flex">
-            <Link href="/" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors">
+          <nav className="hidden items-center gap-6 sm:flex">
+            <Link href="/" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors" prefetch>
               Inicio
             </Link>
-            <Link href="/productos" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors">
+            <Link href="/productos" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors" prefetch>
               Productos
             </Link>
-            <Link href="/productos?view=categorias" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors">
+            <Link href="/productos?view=categorias" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors" prefetch>
               Categorías
             </Link>
-            <Link href="/nosotros" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors">
+            <Link href="/nosotros" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors" prefetch>
               Nosotros
             </Link>
-            <Link href="/envios" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors">
+            <Link href="/envios" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors" prefetch>
               Envíos
             </Link>
-            <Link href="/contacto" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors">
+            <Link href="/contacto" className="text-sm font-medium text-text hover:text-[#1e4d6b] transition-colors" prefetch>
               Contacto
             </Link>
           </nav>
@@ -61,7 +62,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border bg-bg-alt py-12">
+      <footer className="border-t border-slate-200 bg-slate-50 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand */}
