@@ -34,8 +34,11 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     return (
       <button
         disabled
-        className="w-full rounded-lg bg-slate-200 py-3 text-sm font-semibold text-slate-500 cursor-not-allowed"
+        className="w-full rounded-xl bg-slate-100 py-4 text-sm font-semibold text-slate-400 cursor-not-allowed flex items-center justify-center gap-2"
       >
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
         Sin stock disponible
       </button>
     )
@@ -44,11 +47,27 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   return (
     <button
       onClick={handleAdd}
-      className={`w-full rounded-lg py-3 text-sm font-semibold text-white transition-all ${
-        added ? 'bg-green-500' : 'bg-amber-500 hover:bg-amber-600'
+      className={`w-full rounded-xl py-4 text-sm font-semibold text-white transition-all duration-500 flex items-center justify-center gap-2 shadow-lg ${
+        added
+          ? 'bg-gradient-to-r from-[#10b981] to-[#059669] shadow-success/30'
+          : 'bg-gradient-to-r from-[#f59e0b] to-[#fbbf24] hover:from-[#fbbf24] hover:to-[#f59e0b] shadow-[#f59e0b]/30 hover:shadow-xl hover:-translate-y-0.5'
       }`}
     >
-      {added ? '✓ Agregado al carrito' : 'Agregar al carrito'}
+      {added ? (
+        <>
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          ¡Agregado al carrito!
+        </>
+      ) : (
+        <>
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          Agregar al carrito
+        </>
+      )}
     </button>
   )
 }

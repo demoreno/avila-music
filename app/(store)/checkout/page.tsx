@@ -14,66 +14,79 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
-      <h1 className="heading-serif mb-6 text-3xl font-bold text-slate-900">Finalizar pedido</h1>
+      <h1 className="heading-serif mb-2 text-4xl font-bold gradient-text">Finalizar pedido</h1>
+      <p className="text-text-muted mb-8">Completa tu compra en 3 sencillos pasos</p>
 
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
-        <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-amber-800">
-          <span className="text-2xl">💬</span>
-          ¿Cómo funciona el proceso de compra?
+      {/* Steps */}
+      <div className="rounded-2xl border border-[#1e4d6b]/10 bg-gradient-to-br from-[#1e4d6b]/5 to-[#4da8da]/5 p-8 backdrop-blur-sm">
+        <h2 className="mb-6 flex items-center gap-3 text-xl font-bold text-[#1e4d6b]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#f59e0b] to-[#fbbf24] text-white">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          ¿Cómo funciona?
         </h2>
-        <ol className="space-y-3 text-sm text-amber-700">
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">1</span>
-            <span>Haz clic en el botón de WhatsApp para enviarnos tu pedido con los productos seleccionados.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">2</span>
-            <span>Nuestro equipo confirmará la disponibilidad y te enviará los detalles del pago.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">3</span>
-            <span>Una vez confirmado el pago, coordinaremos el envío a tu ubicación.</span>
-          </li>
+        <ol className="space-y-4">
+          {[
+            { step: 1, text: 'Haz clic en el botón de WhatsApp para enviarnos tu pedido con los productos seleccionados.' },
+            { step: 2, text: 'Nuestro equipo confirmará la disponibilidad y te enviará los detalles del pago.' },
+            { step: 3, text: 'Una vez confirmado el pago, coordinaremos el envío a tu ubicación.' },
+          ].map((item) => (
+            <li key={item.step} className="flex gap-4">
+              <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e4d6b] to-[#0f7a5f] text-sm font-bold text-white shadow-lg">
+                {item.step}
+              </span>
+              <span className="text-text pt-1">{item.text}</span>
+            </li>
+          ))}
         </ol>
       </div>
 
+      {/* Order Summary */}
       {items.length > 0 && (
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 font-semibold text-slate-800">Resumen del pedido</h2>
-          <div className="space-y-2">
+        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-[#1e4d6b]">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Resumen del pedido
+          </h2>
+          <div className="divide-y divide-slate-100">
             {items.map((item) => (
-              <div key={item.id} className="flex justify-between text-sm">
-                <span className="text-slate-600">
-                  {item.quantity}x {item.name}
+              <div key={item.id} className="flex justify-between py-3 text-sm">
+                <span className="text-text-muted">
+                  <span className="font-semibold text-[#1e4d6b]">{item.quantity}x</span> {item.name}
                 </span>
-                <span className="font-medium text-slate-800">
+                <span className="font-semibold text-slate-800">
                   USD {(item.quantity * item.price_usd).toFixed(2)}
                 </span>
               </div>
             ))}
-            <div className="mt-3 flex justify-between border-t border-slate-200 pt-3 text-base font-bold">
-              <span>Total</span>
-              <span>USD {cartTotal.toFixed(2)}</span>
-            </div>
+          </div>
+          <div className="mt-4 flex justify-between border-t-2 border-[#1e4d6b]/10 pt-4 text-lg font-bold">
+            <span className="text-[#1e4d6b]">Total</span>
+            <span className="gradient-text">USD {cartTotal.toFixed(2)}</span>
           </div>
         </div>
       )}
 
-      <div className="mt-6 flex flex-col gap-3">
+      {/* Actions */}
+      <div className="mt-8 flex flex-col gap-3">
         <a
           href={waLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-lg bg-green-500 py-4 text-base font-bold text-white shadow-lg transition-colors hover:bg-green-600"
+          className="btn-primary btn-glow justify-center py-4 text-base"
         >
           <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            <path d="M17.886 14.553c-.17-.085-1.009-.499-1.165-.556-.156-.057-.27-.085-.4.114-.127.199-.497.626-.61.754-.114.128-.228.142-.398.057-.17-.085-.723-.298-1.374-.878-.508-.453-.851-1.019-.95-1.19-.099-.17-.01-.262.085-.355.077-.076.17-.199.255-.298.085-.1.128-.17.185-.284.057-.113.028-.213-.014-.298-.043-.085-.383-.922-.525-1.262-.138-.332-.28-.287-.383-.293-.099-.005-.213-.005-.327-.005-.113 0-.298.043-.454.213-.156.17-.596.582-.596 1.423 0 .841.611 1.654.696 1.768.085.114 1.202 1.838 2.913 2.575.408.176.728.282.976.361.41.13.782.111 1.076.067.327-.049 1.009-.412 1.151-.813.142-.4.142-.74.085-.84-.057-.1-.213-.156-.454-.276m-3.103 4.253h-.003a5.675 5.675 0 01-2.888-.793l-.207-.122-2.149.564.572-2.1a5.654 5.654 0 01-.867-3.018c.001-3.127 2.549-5.674 5.678-5.674 1.514 0 2.937.59 4.007 1.662a5.633 5.633 0 011.653 4.011c-.002 3.127-2.551 5.674-5.679 5.674m4.84-10.513a6.788 6.788 0 00-4.796-1.988c-3.763 0-6.823 3.06-6.825 6.825 0 1.202.314 2.375.912 3.413L.635 20.5l4.568-1.198a6.817 6.817 0 003.268.832h.003c3.76 0 6.82-3.06 6.823-6.825a6.793 6.793 0 00-2.003-4.824" />
           </svg>
           Enviar pedido por WhatsApp
         </a>
         <Link
           href="/carrito"
-          className="rounded-lg border border-slate-300 py-3 text-center text-sm font-semibold text-slate-600 hover:border-slate-400"
+          className="btn-outline justify-center"
         >
           Volver al carrito
         </Link>

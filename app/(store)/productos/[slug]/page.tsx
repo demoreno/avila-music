@@ -146,10 +146,10 @@ export default async function ProductPage({
 
   const stockStatus =
     product.stock_total === 0
-      ? { label: 'Sin stock', color: 'bg-red-100 text-red-700' }
+      ? { label: 'Sin stock', color: 'badge-out', icon: '❌' }
       : product.stock_total <= product.stock_minimum
-      ? { label: 'Últimas unidades', color: 'bg-amber-100 text-amber-700' }
-      : { label: 'Disponible', color: 'bg-green-100 text-green-700' }
+      ? { label: 'Últimas unidades', color: 'badge-low-stock', icon: '⚠️' }
+      : { label: 'Disponible', color: 'badge-stock', icon: '✅' }
 
   return (
     <>
@@ -158,82 +158,129 @@ export default async function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* Breadcrumb */}
-        <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-          <Link href="/" className="hover:text-amber-600">Inicio</Link>
-          <span>/</span>
-          <Link href="/productos" className="hover:text-amber-600">Productos</Link>
+        <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-text-muted">
+          <Link href="/" className="hover:text-[#1e4d6b] transition-colors">Inicio</Link>
+          <span className="text-slate-300">/</span>
+          <Link href="/productos" className="hover:text-[#1e4d6b] transition-colors">Productos</Link>
           {categoryInfo && (
             <>
-              <span>/</span>
+              <span className="text-slate-300">/</span>
               <Link
                 href={`/productos?categoria=${categoryInfo.category_slug}`}
-                className="hover:text-amber-600"
+                className="hover:text-[#1e4d6b] transition-colors"
               >
                 {categoryInfo.category_name}
               </Link>
-              <span>/</span>
-              <Link
-                href={`/productos?categoria=${categoryInfo.category_slug}`}
-                className="hover:text-amber-600"
-              >
-                {categoryInfo.subcategory_name}
-              </Link>
+              <span className="text-slate-300">/</span>
+              <span className="font-medium text-text">{categoryInfo.subcategory_name}</span>
             </>
           )}
-          <span>/</span>
-          <span className="max-w-[200px] truncate font-medium text-slate-800">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Image Gallery */}
           <ImageGallery images={images} productName={product.name} />
 
-          <div className="flex flex-col gap-5">
+          {/* Product Info */}
+          <div className="flex flex-col gap-6">
+            {/* Category Badge */}
             {categoryInfo && (
-              <span className="text-xs font-semibold uppercase tracking-wide text-amber-600">
+              <Link
+                href={`/productos?categoria=${categoryInfo.category_slug}`}
+                className="inline-flex items-center gap-2 self-start text-xs font-semibold uppercase tracking-wider text-[#1e4d6b] hover:text-[#0f7a5f] transition-colors"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
                 {categoryInfo.subcategory_name}
-              </span>
+              </Link>
             )}
 
-            <h1 className="heading-serif text-3xl font-bold text-slate-900">{product.name}</h1>
+            {/* Title */}
+            <h1 className="heading-serif text-4xl sm:text-5xl font-bold text-[#1e4d6b] leading-tight">
+              {product.name}
+            </h1>
 
-            <div className="flex items-center gap-3">
-              <span className="text-4xl font-bold text-slate-900">
+            {/* Price and Stock */}
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="text-5xl font-bold gradient-text">
                 USD {Number(product.price_usd).toFixed(2)}
               </span>
-              <span className={`rounded-full px-3 py-1 text-xs font-semibold ${stockStatus.color}`}>
+              <span className={`badge ${stockStatus.color} shadow-lg`}>
+                <span>{stockStatus.icon}</span>
                 {stockStatus.label}
               </span>
             </div>
 
+            {/* Description */}
             {product.notes && (
-              <p className="text-sm leading-relaxed text-slate-600">{product.notes}</p>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <h3 className="font-semibold text-[#1e4d6b] mb-3 flex items-center gap-2">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Descripción
+                </h3>
+                <p className="text-text-muted leading-relaxed">{product.notes}</p>
+              </div>
             )}
 
-            <div className="flex flex-col gap-3 pt-2">
+            {/* Actions */}
+            <div className="flex flex-col gap-4 pt-4">
               <AddToCartButton product={{ ...product, images }} />
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-600"
+                className="btn-primary btn-glow justify-center py-4"
               >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.886 14.553c-.17-.085-1.009-.499-1.165-.556-.156-.057-.27-.085-.4.114-.127.199-.497.626-.61.754-.114.128-.228.142-.398.057-.17-.085-.723-.298-1.374-.878-.508-.453-.851-1.019-.95-1.19-.099-.17-.01-.262.085-.355.077-.076.17-.199.255-.298.085-.1.128-.17.185-.284.057-.113.028-.213-.014-.298-.043-.085-.383-.922-.525-1.262-.138-.332-.28-.287-.383-.293-.099-.005-.213-.005-.327-.005-.113 0-.298.043-.454.213-.156.17-.596.582-.596 1.423 0 .841.611 1.654.696 1.768.085.114 1.202 1.838 2.913 2.575.408.176.728.282.976.361.41.13.782.111 1.076.067.327-.049 1.009-.412 1.151-.813.142-.4.142-.74.085-.84-.057-.1-.213-.156-.454-.276m-3.103 4.253h-.003a5.675 5.675 0 01-2.888-.793l-.207-.122-2.149.564.572-2.1a5.654 5.654 0 01-.867-3.018c.001-3.127 2.549-5.674 5.678-5.674 1.514 0 2.937.59 4.007 1.662a5.633 5.633 0 011.653 4.011c-.002 3.127-2.551 5.674-5.679 5.674m4.84-10.513a6.788 6.788 0 00-4.796-1.988c-3.763 0-6.823 3.06-6.825 6.825 0 1.202.314 2.375.912 3.413L.635 20.5l4.568-1.198a6.817 6.817 0 003.268.832h.003c3.76 0 6.82-3.06 6.823-6.825a6.793 6.793 0 00-2.003-4.824" />
                 </svg>
                 Pedir por WhatsApp
               </a>
             </div>
+
+            {/* Features */}
+            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200">
+              {[
+                { icon: '🚚', text: 'Envío seguro' },
+                { icon: '✅', text: 'Garantía incluida' },
+                { icon: '💬', text: 'Soporte rápido' },
+                { icon: '🔒', text: 'Pago protegido' },
+              ].map((feature) => (
+                <div key={feature.text} className="flex items-center gap-3 text-sm text-text-muted">
+                  <span className="text-xl">{feature.icon}</span>
+                  <span>{feature.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
+        {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <section className="mt-16">
-            <h2 className="heading-serif mb-6 text-2xl font-bold text-slate-900">
-              Productos relacionados
-            </h2>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <section className="mt-20 pt-12 border-t border-slate-200">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="heading-serif text-3xl font-bold gradient-text">
+                  Productos relacionados
+                </h2>
+                <p className="text-text-muted mt-1">También te puede interesar</p>
+              </div>
+              <Link
+                href="/productos"
+                className="group flex items-center gap-2 text-[#1e4d6b] font-semibold hover:text-[#0f7a5f] transition-colors"
+              >
+                Ver todos
+                <svg className="h-4 w-4 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((rp) => (
                 <ProductCard key={rp.id} product={rp} />
               ))}
