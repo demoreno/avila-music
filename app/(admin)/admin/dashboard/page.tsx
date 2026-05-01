@@ -40,17 +40,24 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="heading-serif text-2xl font-bold text-slate-900">Dashboard</h1>
-        {currentMonth && (
-          <span className="text-sm text-slate-500">
-            Mes actual:{' '}
-            {new Date(currentMonth.month + '-01').toLocaleDateString('es-VE', {
-              month: 'long',
-              year: 'numeric',
-            })}
-          </span>
-        )}
+      <div className="mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-[#1e4d6b] to-[#4da8da] p-8 shadow-xl">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="heading-serif text-3xl font-bold text-white">Dashboard</h1>
+            <p className="mt-1 text-blue-100">Resumen ejecutivo de ventas y rendimiento</p>
+          </div>
+          {currentMonth && (
+            <div className="rounded-lg bg-white/10 px-4 py-3 backdrop-blur-sm">
+              <p className="text-xs font-medium uppercase tracking-wider text-blue-100">Mes actual</p>
+              <p className="text-lg font-semibold text-white">
+                {new Date(currentMonth.month + '-01').toLocaleDateString('es-VE', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -132,7 +139,7 @@ export default async function DashboardPage() {
                 </span>
               )}
             </h2>
-            <Link href="/admin/inventario" className="text-xs text-amber-600 hover:text-amber-700">
+            <Link href="/admin/inventario" className="text-xs text-[#1e4d6b] hover:text-[#153a52]">
               Ver inventario →
             </Link>
           </div>
