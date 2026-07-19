@@ -4,7 +4,6 @@ import type { Metadata } from 'next'
 import { catalog } from '@/lib/catalog'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import ImageGallery from './ImageGallery'
-import AddToCartButton from './AddToCartButton'
 import ProductCard from '@/components/store/ProductCard'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
@@ -26,8 +25,9 @@ export async function generateMetadata({
   const ogImage = primaryImage ? catalog.getProductImageUrl(primaryImage.storage_path) : undefined
 
   return {
-    title: `${product.name} | Ávila Music`,
+    title: product.name,
     description: product.description || `${product.name} disponible en Ávila Music`,
+    alternates: { canonical: `/productos/${slug}` },
     openGraph: {
       title: product.name,
       description: product.description || undefined,
@@ -72,6 +72,31 @@ export default async function ProductPage({
     },
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://avilamusic.com' },
+      { '@type': 'ListItem', position: 2, name: 'Productos', item: 'https://avilamusic.com/productos' },
+      ...(categoryInfo
+        ? [
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: categoryInfo.category_name,
+              item: `https://avilamusic.com/productos/categoria/${categoryInfo.category_slug}`,
+            },
+          ]
+        : []),
+      {
+        '@type': 'ListItem',
+        position: categoryInfo ? 4 : 3,
+        name: product.name,
+        item: `https://avilamusic.com/productos/${slug}`,
+      },
+    ],
+  }
+
   const stockStatus =
     product.stock_total === 0
       ? { label: 'Sin stock', color: 'badge-out', icon: '❌' }
@@ -85,6 +110,10 @@ export default async function ProductPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* Breadcrumb */}
@@ -96,7 +125,7 @@ export default async function ProductPage({
             <>
               <span className="text-slate-300">/</span>
               <Link
-                href={`/productos?categoria=${categoryInfo.category_slug}`}
+                href={`/productos/categoria/${categoryInfo.category_slug}`}
                 className="hover:text-[#1e4d6b] transition-colors"
               >
                 {categoryInfo.category_name}
@@ -116,7 +145,7 @@ export default async function ProductPage({
             {/* Category Badge */}
             {categoryInfo && (
               <Link
-                href={`/productos?categoria=${categoryInfo.category_slug}`}
+                href={`/productos/categoria/${categoryInfo.category_slug}`}
                 className="inline-flex items-center gap-2 self-start text-xs font-semibold uppercase tracking-wider text-[#1e4d6b] hover:text-[#0f7a5f] transition-colors"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,7 +186,6 @@ export default async function ProductPage({
 
             {/* Actions */}
             <div className="flex flex-col gap-4 pt-4">
-              <AddToCartButton product={product} />
               <a
                 href={waLink}
                 target="_blank"

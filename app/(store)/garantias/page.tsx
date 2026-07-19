@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Garantías',
+  description: 'Todos los productos de Ávila Music son 100% originales y cuentan con garantía. Conocé las condiciones.',
+  alternates: { canonical: '/garantias' },
+}
+
 export default function GarantiasPage() {
   return (
     <>

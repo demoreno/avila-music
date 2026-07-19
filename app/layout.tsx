@@ -17,13 +17,28 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: 'Ávila Music | Accesorios Musicales',
+  metadataBase: new URL('https://avilamusic.com'),
+  title: {
+    default: 'Ávila Music | Accesorios Musicales',
+    template: '%s | Ávila Music',
+  },
   description:
     'Tienda especializada en accesorios musicales: guitarras, bajos, violines, baterías y equipos electrónicos. Envíos a todo el país.',
+  manifest: '/manifest.json',
   openGraph: {
     siteName: 'Ávila Music',
     locale: 'es_VE',
+    type: 'website',
   },
+}
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Ávila Music',
+  url: 'https://avilamusic.com',
+  logo: 'https://avilamusic.com/avila-logo.jpeg',
+  sameAs: ['https://wa.me/584138288674'],
 }
 
 export default function RootLayout({
@@ -33,7 +48,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${dmSans.variable} ${cormorant.variable}`}>
-      <body className="transition-opacity duration-300">{children}</body>
+      <body className="transition-opacity duration-300">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        {children}
+      </body>
     </html>
   )
 }

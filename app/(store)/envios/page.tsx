@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Envíos',
+  description: 'Conocé cómo hacemos los envíos de tus accesorios musicales a todo el país.',
+  alternates: { canonical: '/envios' },
+}
+
 export default function EnviosPage() {
   return (
     <>

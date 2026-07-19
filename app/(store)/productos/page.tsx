@@ -1,5 +1,13 @@
+import type { Metadata } from 'next'
 import { catalog } from '@/lib/catalog'
 import ProductsClient from './ProductsClient'
+
+export const metadata: Metadata = {
+  title: 'Catálogo de accesorios musicales',
+  description:
+    'Cuerdas, clavijas, correas, cables y accesorios para guitarra, bajo, violín y batería. Envíos a todo el país.',
+  alternates: { canonical: '/productos' },
+}
 
 export default async function ProductsPage({
   searchParams,

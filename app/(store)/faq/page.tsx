@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Preguntas frecuentes',
+  description: 'Resolvé tus dudas sobre pedidos, envíos, pagos y garantías en Ávila Music.',
+  alternates: { canonical: '/faq' },
+}
+
 export default function FaqPage() {
   return (
     <>

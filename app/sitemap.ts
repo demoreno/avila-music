@@ -6,13 +6,24 @@ const BASE_URL = 'https://avilamusic.com'
 const STATIC_PAGES = ['nosotros', 'faq', 'contacto', 'envios', 'garantias', 'terminos']
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await catalog.getAllProducts()
+  const [products, categoryTree] = await Promise.all([
+    catalog.getAllProducts(),
+    catalog.getCategoryTree(),
+  ])
 
   const productUrls: MetadataRoute.Sitemap = products.map((p) => ({
     url: `${BASE_URL}/productos/${p.slug}`,
     lastModified: new Date(p.updated_at),
     changeFrequency: 'weekly',
     priority: 0.8,
+  }))
+
+  const categorySlugs = [...new Set(categoryTree.map((row) => row.category_slug))]
+  const categoryUrls: MetadataRoute.Sitemap = categorySlugs.map((slug) => ({
+    url: `${BASE_URL}/productos/categoria/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
   }))
 
   const staticUrls: MetadataRoute.Sitemap = STATIC_PAGES.map((slug) => ({
@@ -35,7 +46,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 0.9,
     },
+    {
+      url: `${BASE_URL}/productos/categoria`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
     ...productUrls,
+    ...categoryUrls,
     ...staticUrls,
   ]
 }

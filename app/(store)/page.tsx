@@ -1,8 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import type { Metadata } from 'next'
 import { catalog } from '@/lib/catalog'
 import ProductCard from '@/components/store/ProductCard'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 export default async function HomePage() {
   const featuredProducts = await catalog.getFeaturedProducts(8)
@@ -146,7 +151,7 @@ export default async function HomePage() {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-          <svg className="h-5 w-5 text-white/15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-5 w-5 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>

@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Términos y condiciones',
+  description: 'Términos y condiciones de compra y uso del sitio de Ávila Music.',
+  alternates: { canonical: '/terminos' },
+}
+
 export default function TerminosPage() {
   return (
     <>

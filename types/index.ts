@@ -157,15 +157,6 @@ export interface SaleItemDetail {
   category_name: string
 }
 
-export interface CartItem {
-  id: string
-  name: string
-  slug: string
-  price_usd: number
-  quantity: number
-  image_url: string | null
-}
-
 export type Database = {
   public: {
     Tables: {

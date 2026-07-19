@@ -18,6 +18,8 @@ interface ProductsClientProps {
   products: ProductWithMeta[]
   categoryTree: CategoryTree[]
   initialCategory?: string
+  title?: string
+  description?: string
 }
 
 type SortOption = 'precio-asc' | 'precio-desc' | 'mas-vendido'
@@ -26,6 +28,8 @@ export default function ProductsClient({
   products,
   categoryTree,
   initialCategory,
+  title = 'Productos',
+  description,
 }: ProductsClientProps) {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(initialCategory ?? '')
@@ -80,7 +84,10 @@ export default function ProductsClient({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <h1 className="heading-serif mb-6 text-3xl font-bold text-slate-900">Productos</h1>
+      <h1 className={`heading-serif text-3xl font-bold text-slate-900 ${description ? 'mb-2' : 'mb-6'}`}>
+        {title}
+      </h1>
+      {description && <p className="mb-6 text-slate-500 max-w-2xl">{description}</p>}
 
       {/* Filters bar */}
       <div className="mb-6 flex flex-wrap items-center gap-3">

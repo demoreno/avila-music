@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import CartButton from './CartButton'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -24,7 +23,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
   const navLinks = [
     { href: '/productos', label: 'Productos' },
-    { href: '/productos?view=categorias', label: 'Categorías' },
+    { href: '/productos/categoria', label: 'Categorías' },
     { href: '/nosotros', label: 'Nosotros' },
     { href: '/envios', label: 'Envíos' },
     { href: '/contacto', label: 'Contacto' },
@@ -57,7 +56,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
             <nav className="hidden lg:flex items-center gap-1">
               <Link href="/" className="nav-link text-white/70">Inicio</Link>
               {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="nav-link text-white/40 hover:text-white/80">
+                <Link key={link.href} href={link.href} className="nav-link text-white/60 hover:text-white/90">
                   {link.label}
                 </Link>
               ))}
@@ -86,12 +85,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <WhatsAppIcon className="h-3.5 w-3.5" />
                 <span className="hidden lg:inline">WhatsApp</span>
               </a>
-              
-              <CartButton />
-              
+
               <button
                 onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setSearchOpen(false) }}
                 className="lg:hidden p-2.5 rounded-full text-white/40 hover:text-white/80 hover:bg-white/[0.04] transition-all"
+                aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
               >
                 <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {isMobileMenuOpen ? (
@@ -119,7 +119,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Buscar productos..."
                   autoFocus
-                  className="w-full h-11 pl-10 pr-24 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-white/15 focus:outline-none focus:border-amber-500/30 focus:bg-white/[0.05] transition-all duration-300"
+                  className="w-full h-11 pl-10 pr-24 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-white/40 focus:outline-none focus:border-amber-500/30 focus:bg-white/[0.05] transition-all duration-300"
                 />
                 <button
                   type="submit"
@@ -133,7 +133,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Mobile Menu */}
-        <div className={`lg:hidden overflow-hidden transition-all duration-300 ${
+        <div id="mobile-menu" className={`lg:hidden overflow-hidden transition-all duration-300 ${
           isMobileMenuOpen ? 'max-h-96' : 'max-h-0'
         }`}>
           <div className="bg-[#150e08]/95 backdrop-blur-2xl border-t border-white/[0.04]">
@@ -144,7 +144,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2.5 px-3 text-sm text-white/40 hover:text-amber-400 transition-colors rounded-lg"
+                  className="block py-2.5 px-3 text-sm text-white/70 hover:text-amber-400 transition-colors rounded-lg"
                 >
                   {link.label}
                 </Link>
@@ -211,7 +211,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               </h4>
               <ul className="space-y-3">
                 <li><Link href="/productos" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Productos</Link></li>
-                <li><Link href="/productos?view=categorias" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Categorías</Link></li>
+                <li><Link href="/productos/categoria" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Categorías</Link></li>
                 <li><Link href="/productos" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Más vendidos</Link></li>
               </ul>
             </div>
