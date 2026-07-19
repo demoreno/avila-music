@@ -9,10 +9,6 @@ interface ImageGalleryProps {
   productName: string
 }
 
-function buildUrl(path: string) {
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${path}`
-}
-
 export default function ImageGallery({ images, productName }: ImageGalleryProps) {
   const sorted = [...images].sort((a, b) => {
     if (a.is_primary && !b.is_primary) return -1
@@ -37,7 +33,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
       {/* Main Image */}
       <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 shadow-card group">
         <Image
-          src={buildUrl(sorted[active].storage_path)}
+          src={sorted[active].storage_path}
           alt={productName}
           fill
           className="object-contain transition-transform duration-700 group-hover:scale-105"
@@ -67,7 +63,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
               }`}
             >
               <Image
-                src={buildUrl(img.storage_path)}
+                src={img.storage_path}
                 alt={`${productName} ${idx + 1}`}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-110"

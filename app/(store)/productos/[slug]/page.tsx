@@ -1,82 +1,16 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { createClient } from '@supabase/supabase-js'
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { catalog } from '@/lib/catalog'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import ImageGallery from './ImageGallery'
 import AddToCartButton from './AddToCartButton'
 import ProductCard from '@/components/store/ProductCard'
-import type { Product, ProductImage, CategoryTree } from '@/types/index'
-
-export const revalidate = 60
-
-async function getProduct(slug: string) {
-  const supabase = await createSupabaseServerClient()
-  const { data } = await supabase
-    .from('products')
-    .select('*')
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .maybeSingle()
-  return data as Product | null
-}
-
-async function getProductImages(productId: string) {
-  const supabase = await createSupabaseServerClient()
-  const { data } = await supabase
-    .from('product_images')
-    .select('*')
-    .eq('product_id', productId)
-    .order('sort_order')
-  return (data as ProductImage[]) ?? []
-}
-
-async function getCategoryInfo(subcategoryId: string) {
-  const supabase = await createSupabaseServerClient()
-  const { data } = await supabase
-    .from('v_category_tree')
-    .select('*')
-    .eq('subcategory_id', subcategoryId)
-    .maybeSingle()
-  return data as CategoryTree | null
-}
-
-async function getRelatedProducts(subcategoryId: string, excludeId: string) {
-  const supabase = await createSupabaseServerClient()
-  const { data: subs } = await supabase
-    .from('products')
-    .select('*')
-    .eq('subcategory_id', subcategoryId)
-    .eq('is_active', true)
-    .neq('id', excludeId)
-    .limit(4)
-  if (!subs) return []
-
-  const { data: images } = await supabase
-    .from('product_images')
-    .select('*')
-    .in('product_id', (subs as Product[]).map((p) => p.id))
-
-  const imgMap = ((images as ProductImage[]) ?? []).reduce<Record<string, ProductImage[]>>(
-    (acc, img) => {
-      if (!acc[img.product_id]) acc[img.product_id] = []
-      acc[img.product_id].push(img)
-      return acc
-    },
-    {}
-  )
-
-  return (subs as Product[]).map((p) => ({ ...p, images: imgMap[p.id] ?? [] }))
-}
+import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export async function generateStaticParams() {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-  const { data } = await supabase.from('products').select('slug').eq('is_active', true)
-  return (data as { slug: string }[] ?? []).map((p) => ({ slug: p.slug }))
+  const products = await catalog.getAllProducts()
+  return products.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({
@@ -85,21 +19,18 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const product = await getProduct(slug)
+  const product = await catalog.getProductBySlug(slug)
   if (!product) return { title: 'Producto no encontrado' }
 
-  const images = await getProductImages(product.id)
-  const primaryImage = images.find((i) => i.is_primary) ?? images[0]
-  const ogImage = primaryImage
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${primaryImage.storage_path}`
-    : undefined
+  const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
+  const ogImage = primaryImage ? catalog.getProductImageUrl(primaryImage.storage_path) : undefined
 
   return {
     title: `${product.name} | Ávila Music`,
-    description: product.notes ?? `${product.name} disponible en Ávila Music`,
+    description: product.description || `${product.name} disponible en Ávila Music`,
     openGraph: {
       title: product.name,
-      description: product.notes ?? undefined,
+      description: product.description || undefined,
       images: ogImage ? [{ url: ogImage }] : undefined,
     },
   }
@@ -111,27 +42,24 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const product = await getProduct(slug)
+  const product = await catalog.getProductBySlug(slug)
   if (!product) notFound()
 
-  const [images, categoryInfo, relatedProducts] = await Promise.all([
-    getProductImages(product.id),
-    getCategoryInfo(product.subcategory_id),
-    getRelatedProducts(product.subcategory_id, product.id),
+  const [categoryInfo, relatedProducts] = await Promise.all([
+    catalog.getCategoryBySubcategoryId(product.subcategory_id),
+    catalog.getRelatedProducts(product.subcategory_id, product.id),
   ])
 
   const waLink = whatsappProductLink(product.name, product.price_usd)
 
-  const primaryImage = images.find((i) => i.is_primary) ?? images[0]
-  const ogImageUrl = primaryImage
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${primaryImage.storage_path}`
-    : null
+  const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
+  const ogImageUrl = primaryImage ? catalog.getProductImageUrl(primaryImage.storage_path) : null
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    description: product.notes ?? undefined,
+    description: product.description || undefined,
     image: ogImageUrl ?? undefined,
     offers: {
       '@type': 'Offer',
@@ -181,7 +109,7 @@ export default async function ProductPage({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
-          <ImageGallery images={images} productName={product.name} />
+          <ImageGallery images={product.images} productName={product.name} />
 
           {/* Product Info */}
           <div className="flex flex-col gap-6">
@@ -215,7 +143,7 @@ export default async function ProductPage({
             </div>
 
             {/* Description */}
-            {product.notes && (
+            {product.description && (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <h3 className="font-semibold text-[#1e4d6b] mb-3 flex items-center gap-2">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,22 +151,20 @@ export default async function ProductPage({
                   </svg>
                   Descripción
                 </h3>
-                <p className="text-text-muted leading-relaxed">{product.notes}</p>
+                <p className="text-text-muted leading-relaxed">{product.description}</p>
               </div>
             )}
 
             {/* Actions */}
             <div className="flex flex-col gap-4 pt-4">
-              <AddToCartButton product={{ ...product, images }} />
+              <AddToCartButton product={product} />
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary btn-glow justify-center py-4"
               >
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.886 14.553c-.17-.085-1.009-.499-1.165-.556-.156-.057-.27-.085-.4.114-.127.199-.497.626-.61.754-.114.128-.228.142-.398.057-.17-.085-.723-.298-1.374-.878-.508-.453-.851-1.019-.95-1.19-.099-.17-.01-.262.085-.355.077-.076.17-.199.255-.298.085-.1.128-.17.185-.284.057-.113.028-.213-.014-.298-.043-.085-.383-.922-.525-1.262-.138-.332-.28-.287-.383-.293-.099-.005-.213-.005-.327-.005-.113 0-.298.043-.454.213-.156.17-.596.582-.596 1.423 0 .841.611 1.654.696 1.768.085.114 1.202 1.838 2.913 2.575.408.176.728.282.976.361.41.13.782.111 1.076.067.327-.049 1.009-.412 1.151-.813.142-.4.142-.74.085-.84-.057-.1-.213-.156-.454-.276m-3.103 4.253h-.003a5.675 5.675 0 01-2.888-.793l-.207-.122-2.149.564.572-2.1a5.654 5.654 0 01-.867-3.018c.001-3.127 2.549-5.674 5.678-5.674 1.514 0 2.937.59 4.007 1.662a5.633 5.633 0 011.653 4.011c-.002 3.127-2.551 5.674-5.679 5.674m4.84-10.513a6.788 6.788 0 00-4.796-1.988c-3.763 0-6.823 3.06-6.825 6.825 0 1.202.314 2.375.912 3.413L.635 20.5l4.568-1.198a6.817 6.817 0 003.268.832h.003c3.76 0 6.82-3.06 6.823-6.825a6.793 6.793 0 00-2.003-4.824" />
-                </svg>
+                <WhatsAppIcon className="h-6 w-6" />
                 Pedir por WhatsApp
               </a>
             </div>

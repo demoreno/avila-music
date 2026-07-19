@@ -122,6 +122,7 @@ CREATE TABLE app_config (
 CREATE VIEW v_sale_items_detail AS
 SELECT
   si.id,
+  s.id             AS sale_id,
   s.sale_date,
   DATE_TRUNC('month', s.sale_date) AS sale_month,
   s.channel,

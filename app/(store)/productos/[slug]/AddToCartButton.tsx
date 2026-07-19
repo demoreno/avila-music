@@ -2,20 +2,18 @@
 
 import { useState } from 'react'
 import { useCartStore } from '@/store/cart'
-import type { Product, ProductImage } from '@/types/index'
+import type { PublicProduct } from '@/lib/catalog'
 
 interface AddToCartButtonProps {
-  product: Product & { images?: ProductImage[] }
+  product: PublicProduct
 }
 
 export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const [added, setAdded] = useState(false)
   const addItem = useCartStore((s) => s.addItem)
 
-  const primaryImage = product.images?.find((i) => i.is_primary) ?? product.images?.[0]
-  const imageUrl = primaryImage
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${primaryImage.storage_path}`
-    : null
+  const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
+  const imageUrl = primaryImage ? primaryImage.storage_path : null
 
   function handleAdd() {
     addItem({

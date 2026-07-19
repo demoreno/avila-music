@@ -5,24 +5,18 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
-import type { Product, ProductImage } from '@/types/index'
+import type { PublicProduct } from '@/lib/catalog'
 
 interface ProductCardProps {
-  product: Product & {
-    images?: ProductImage[]
+  product: PublicProduct & {
     subcategory_name?: string
   }
 }
 
-function getImageUrl(images: ProductImage[] | undefined, productId: string): string | null {
-  if (!images || images.length === 0) return null
-  const primary = images.find((i) => i.is_primary) ?? images[0]
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${primary.storage_path}`
-}
-
 export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const imageUrl = getImageUrl(product.images, product.id)
+  const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
+  const imageUrl = primaryImage ? primaryImage.storage_path : null
   const waLink = whatsappProductLink(product.name, product.price_usd)
 
   const isOutOfStock = product.stock_total === 0

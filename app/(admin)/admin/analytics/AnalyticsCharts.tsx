@@ -36,7 +36,7 @@ export interface RestockRow {
 }
 
 function formatMonth(month: string) {
-  const d = new Date(month + '-01')
+  const d = new Date(month.substring(0, 10))
   return d.toLocaleDateString('es-VE', { month: 'short', year: '2-digit' })
 }
 

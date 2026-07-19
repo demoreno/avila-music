@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import CartButton from './CartButton'
+import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -31,7 +32,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#08080c] border-b border-white/[0.04] shadow-2xl shadow-black/20">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#150e08]/90 backdrop-blur-xl border-b border-white/[0.04] shadow-2xl shadow-black/20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-between h-[68px]">
             {/* Logo */}
@@ -135,7 +136,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <div className={`lg:hidden overflow-hidden transition-all duration-300 ${
           isMobileMenuOpen ? 'max-h-96' : 'max-h-0'
         }`}>
-          <div className="bg-[#08080c] backdrop-blur-2xl border-t border-white/[0.04]">
+          <div className="bg-[#150e08]/95 backdrop-blur-2xl border-t border-white/[0.04]">
             <nav className="mx-auto max-w-7xl px-6 py-5 space-y-1">
               <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-2.5 px-3 text-sm text-white/60 hover:text-amber-400 transition-colors rounded-lg">Inicio</Link>
               {navLinks.map((link) => (
@@ -279,13 +280,5 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         </div>
       </footer>
     </div>
-  )
-}
-
-function WhatsAppIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.886 14.553c-.17-.085-1.009-.499-1.165-.556-.156-.057-.27-.085-.4.114-.127.199-.497.626-.61.754-.114.128-.228.142-.398.057-.17-.085-.723-.298-1.374-.878-.508-.453-.851-1.019-.95-1.19-.099-.17-.01-.262.085-.355.077-.076.17-.199.255-.298.085-.1.128-.17.185-.284.057-.113.028-.213-.014-.298-.043-.085-.383-.922-.525-1.262-.138-.332-.28-.287-.383-.293-.099-.005-.213-.005-.327-.005-.113 0-.298.043-.454.213-.156.17-.596.582-.596 1.423 0 .841.611 1.654.696 1.768.085.114 1.202 1.838 2.913 2.575.408.176.728.282.976.361.41.13.782.111 1.076.067.327-.049 1.009-.412 1.151-.813.142-.4.142-.74.085-.84-.057-.1-.213-.156-.454-.276m-3.103 4.253h-.003a5.675 5.675 0 01-2.888-.793l-.207-.122-2.149.564.572-2.1a5.654 5.654 0 01-.867-3.018c.001-3.127 2.549-5.674 5.678-5.674 1.514 0 2.937.59 4.007 1.662a5.633 5.633 0 011.653 4.011c-.002 3.127-2.551 5.674-5.679 5.674m4.84-10.513a6.788 6.788 0 00-4.796-1.988c-3.763 0-6.823 3.06-6.825 6.825 0 1.202.314 2.375.912 3.413L.635 20.5l4.568-1.198a6.817 6.817 0 003.268.832h.003c3.76 0 6.82-3.06 6.823-6.825a6.793 6.793 0 00-2.003-4.824" />
-    </svg>
   )
 }

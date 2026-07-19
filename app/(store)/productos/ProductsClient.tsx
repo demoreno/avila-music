@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import ProductCard from '@/components/store/ProductCard'
-import type { Product, ProductImage, CategoryTree } from '@/types/index'
+import type { PublicProduct } from '@/lib/catalog'
+import type { CategoryTree } from '@/types/index'
 
-interface ProductWithMeta extends Product {
-  images: ProductImage[]
+interface ProductWithMeta extends PublicProduct {
   subcategory_name: string
   subcategory_slug: string
   category_name: string

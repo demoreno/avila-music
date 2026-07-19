@@ -1,85 +1,31 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { catalog } from '@/lib/catalog'
 import ProductCard from '@/components/store/ProductCard'
-import type { ProductRanking, Product, ProductImage } from '@/types/index'
-
-async function getFeaturedProducts() {
-  const supabase = await createSupabaseServerClient()
-  const { data } = await supabase
-    .from('v_product_ranking')
-    .select('*')
-    .order('total_units_sold', { ascending: false })
-    .limit(8)
-  return (data as ProductRanking[]) ?? []
-}
-
-async function getProductImages(productIds: string[]) {
-  if (productIds.length === 0) return []
-  const supabase = await createSupabaseServerClient()
-  const { data } = await supabase
-    .from('product_images')
-    .select('*')
-    .in('product_id', productIds)
-  return (data as ProductImage[]) ?? []
-}
-
-async function getProducts(ids: string[]) {
-  if (ids.length === 0) return []
-  const supabase = await createSupabaseServerClient()
-  const { data } = await supabase
-    .from('products')
-    .select('*')
-    .in('id', ids)
-    .eq('is_active', true)
-  return (data as Product[]) ?? []
-}
+import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export default async function HomePage() {
-  const rankings = await getFeaturedProducts()
-
-  const productIds = rankings.map((r) => r.id)
-  const [products, images] = await Promise.all([
-    getProducts(productIds),
-    getProductImages(productIds),
-  ])
-
-  const imagesByProduct = images.reduce<Record<string, ProductImage[]>>((acc, img) => {
-    if (!acc[img.product_id]) acc[img.product_id] = []
-    acc[img.product_id].push(img)
-    return acc
-  }, {})
-
-  const rankingMap = rankings.reduce<Record<string, ProductRanking>>((acc, r) => {
-    acc[r.id] = r
-    return acc
-  }, {})
-
-  const featuredProducts = products.map((p) => ({
-    ...p,
-    images: imagesByProduct[p.id] ?? [],
-    subcategory_name: rankingMap[p.id]?.subcategory_name,
-  }))
+  const featuredProducts = await catalog.getFeaturedProducts(8)
 
   return (
     <>
        {/* Hero Section — Recording Studio Aesthetic */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0a0f14]">
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#150e08]">
         {/* Noise Texture */}
         <div className="noise-overlay absolute inset-0 z-10 pointer-events-none" />
 
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="/photo-1511379938547-c1f69419868d.webp"
+            src="/vecteezy_a-guitar-sits-in-front-of-a-drum-kit_72914186.jpeg"
             alt=""
             fill
             priority
-            className="object-cover opacity-[0.15] scale-105"
+            className="object-cover opacity-[0.6] scale-105"
             sizes="100vw"
           />
           {/* Vignette */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,#0a0f14_85%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#150e08_95%)]" />
         </div>
 
         {/* Gradient Orbs */}
@@ -112,7 +58,7 @@ export default async function HomePage() {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-white/35 leading-relaxed max-w-lg mb-10 animate-fade-in-up stagger-1">
+            <p className="text-base sm:text-lg text-white/80 leading-relaxed max-w-lg mb-10 animate-fade-in-up stagger-1">
               Accesorios musicales seleccionados para artistas que exigen lo mejor. 
               Envíos a todo el país con garantía incluida.
             </p>
@@ -130,7 +76,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/nosotros"
-                className="inline-flex items-center gap-2 px-8 py-4 border border-white/10 text-white/70 font-semibold rounded-xl hover:border-white/30 hover:text-white hover:bg-white/[0.03] transition-all duration-300"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-black/30 backdrop-blur-md border border-white/25 text-white font-semibold rounded-xl hover:border-white/50 hover:bg-black/40 transition-all duration-300"
               >
                 Conócenos
               </Link>
@@ -161,15 +107,18 @@ export default async function HomePage() {
                     sub: 'Múltiples métodos',
                   },
                 ].map((badge) => (
-                  <div key={badge.label} className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.04] flex-shrink-0">
-                      <svg className="h-4 w-4 text-amber-500/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div
+                    key={badge.label}
+                    className="flex items-center gap-3 rounded-xl bg-black/35 backdrop-blur-md border border-white/10 px-3 py-2.5"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 flex-shrink-0">
+                      <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {badge.svg}
                       </svg>
                     </div>
-                    <div>
-                      <div className="text-xs font-medium text-white/70">{badge.label}</div>
-                      <div className="text-[10px] text-white/25">{badge.sub}</div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-semibold text-white whitespace-nowrap">{badge.label}</div>
+                      <div className="text-[10px] text-white/60 whitespace-nowrap">{badge.sub}</div>
                     </div>
                   </div>
                 ))}
@@ -297,7 +246,7 @@ export default async function HomePage() {
                 ),
                 title: 'Garantía incluida',
                 desc: 'Productos 100% originales',
-                color: 'from-[#3b82f6] to-[#2563eb]',
+                color: 'from-[#2d6a8f] to-[#1e4d6b]',
               },
               {
                 icon: (
@@ -317,7 +266,7 @@ export default async function HomePage() {
                 ),
                 title: 'Pago seguro',
                 desc: 'Múltiples métodos',
-                color: 'from-[#8b5cf6] to-[#7c3aed]',
+                color: 'from-[#0f7a5f] to-[#0b5c48]',
               },
             ].map((feature) => (
               <div
@@ -376,13 +325,5 @@ export default async function HomePage() {
         </div>
       </section>
     </>
-  )
-}
-
-function WhatsAppIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.886 14.553c-.17-.085-1.009-.499-1.165-.556-.156-.057-.27-.085-.4.114-.127.199-.497.626-.61.754-.114.128-.228.142-.398.057-.17-.085-.723-.298-1.374-.878-.508-.453-.851-1.019-.95-1.19-.099-.17-.01-.262.085-.355.077-.076.17-.199.255-.298.085-.1.128-.17.185-.284.057-.113.028-.213-.014-.298-.043-.085-.383-.922-.525-1.262-.138-.332-.28-.287-.383-.293-.099-.005-.213-.005-.327-.005-.113 0-.298.043-.454.213-.156.17-.596.582-.596 1.423 0 .841.611 1.654.696 1.768.085.114 1.202 1.838 2.913 2.575.408.176.728.282.976.361.41.13.782.111 1.076.067.327-.049 1.009-.412 1.151-.813.142-.4.142-.74.085-.84-.057-.1-.213-.156-.454-.276m-3.103 4.253h-.003a5.675 5.675 0 01-2.888-.793l-.207-.122-2.149.564.572-2.1a5.654 5.654 0 01-.867-3.018c.001-3.127 2.549-5.674 5.678-5.674 1.514 0 2.937.59 4.007 1.662a5.633 5.633 0 011.653 4.011c-.002 3.127-2.551 5.674-5.679 5.674m4.84-10.513a6.788 6.788 0 00-4.796-1.988c-3.763 0-6.823 3.06-6.825 6.825 0 1.202.314 2.375.912 3.413L.635 20.5l4.568-1.198a6.817 6.817 0 003.268.832h.003c3.76 0 6.82-3.06 6.823-6.825a6.793 6.793 0 00-2.003-4.824" />
-    </svg>
   )
 }
