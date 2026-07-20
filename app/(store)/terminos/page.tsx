@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ShieldCheck } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Términos y condiciones',
@@ -213,7 +214,7 @@ export default function TerminosPage() {
                 </p>
                 <div className="rounded-xl border border-edge bg-raised/50 p-6">
                   <p className="text-sand/60">
-                    <strong className="text-cream">WhatsApp:</strong> +58 413-8288674<br />
+                    <strong className="text-cream">WhatsApp:</strong> +58 412-8288674<br />
                     <strong className="text-cream">Email:</strong> contacto@avilamusic.com<br />
                     <strong className="text-cream">Horario:</strong> Lunes a Viernes 9am-6pm, Sábados 9am-1pm
                   </p>
@@ -228,9 +229,7 @@ export default function TerminosPage() {
       <section className="py-20 bg-gradient-to-b from-ink to-panel/30">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
           <div className="rounded-2xl border border-edge bg-panel/40 p-8">
-            <svg className="h-12 w-12 text-gold mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
+            <ShieldCheck className="h-12 w-12 text-gold mx-auto mb-4" strokeWidth={1.5} />
             <p className="text-sand/60">
               Al realizar una compra en Ávila Music, aceptas automáticamente estos 
               términos y condiciones.

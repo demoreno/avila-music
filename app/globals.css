@@ -24,6 +24,16 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-error-dark: #dc2626;
+
+  /* Dark theme for informational pages (nosotros, contacto, envios, garantias, faq, terminos) */
+  --color-ink: #150e08;
+  --color-panel: #1f160e;
+  --color-raised: #2a1f16;
+  --color-edge: #3a2c1f;
+  --color-cream: #f5f0e6;
+  --color-sand: #b3a696;
+  --color-gold: #f59e0b;
+
   --font-sans: var(--font-dm-sans);
   --font-serif: var(--font-cormorant);
 }

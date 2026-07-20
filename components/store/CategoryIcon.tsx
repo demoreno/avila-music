@@ -1,4 +1,5 @@
 import type { SVGProps } from 'react'
+import { Music } from 'lucide-react'
 
 interface CategoryIconProps {
   slug: string
@@ -65,17 +66,6 @@ const categoryIcons: Record<string, (props: SVGProps<SVGSVGElement>) => React.Re
   ),
 }
 
-export function getCategoryIcon(slug: string): string {
-  const emojiMap: Record<string, string> = {
-    guitarras: '🎸',
-    bajo: '🎸',
-    'violin-cuerdas': '🎻',
-    'bateria-percusion': '🥁',
-    'electronica-cables': '🔌',
-  }
-  return emojiMap[slug] ?? '🎵'
-}
-
 export default function CategoryIcon({ slug, size = 'md', className = '' }: CategoryIconProps) {
   const IconComponent = categoryIcons[slug]
   const sizeClasses = {
@@ -93,5 +83,9 @@ export default function CategoryIcon({ slug, size = 'md', className = '' }: Cate
     )
   }
 
-  return <span className={size === 'xl' ? 'text-6xl' : size === 'lg' ? 'text-5xl' : size === 'md' ? 'text-4xl' : 'text-2xl'}>🎵</span>
+  return (
+    <div className={`${sizeClasses[size]} ${className}`}>
+      <Music className="h-full w-full" strokeWidth={1} />
+    </div>
+  )
 }

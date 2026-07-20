@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { Tag, Info, ArrowRight, XCircle, AlertTriangle, CheckCircle2, Truck, ShieldCheck, MessageCircle, Lock } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import ImageGallery from './ImageGallery'
@@ -99,10 +100,10 @@ export default async function ProductPage({
 
   const stockStatus =
     product.stock_total === 0
-      ? { label: 'Sin stock', color: 'badge-out', icon: '❌' }
+      ? { label: 'Sin stock', color: 'badge-out', icon: XCircle }
       : product.stock_total <= product.stock_minimum
-      ? { label: 'Últimas unidades', color: 'badge-low-stock', icon: '⚠️' }
-      : { label: 'Disponible', color: 'badge-stock', icon: '✅' }
+      ? { label: 'Últimas unidades', color: 'badge-low-stock', icon: AlertTriangle }
+      : { label: 'Disponible', color: 'badge-stock', icon: CheckCircle2 }
 
   return (
     <>
@@ -148,9 +149,7 @@ export default async function ProductPage({
                 href={`/productos/categoria/${categoryInfo.category_slug}`}
                 className="inline-flex items-center gap-2 self-start text-xs font-semibold uppercase tracking-wider text-[#1e4d6b] hover:text-[#0f7a5f] transition-colors"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
+                <Tag className="h-4 w-4" />
                 {categoryInfo.subcategory_name}
               </Link>
             )}
@@ -166,7 +165,7 @@ export default async function ProductPage({
                 USD {Number(product.price_usd).toFixed(2)}
               </span>
               <span className={`badge ${stockStatus.color} shadow-lg`}>
-                <span>{stockStatus.icon}</span>
+                <stockStatus.icon className="h-3.5 w-3.5" />
                 {stockStatus.label}
               </span>
             </div>
@@ -175,9 +174,7 @@ export default async function ProductPage({
             {product.description && (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <h3 className="font-semibold text-[#1e4d6b] mb-3 flex items-center gap-2">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Info className="h-5 w-5" />
                   Descripción
                 </h3>
                 <p className="text-text-muted leading-relaxed">{product.description}</p>
@@ -200,13 +197,13 @@ export default async function ProductPage({
             {/* Features */}
             <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200">
               {[
-                { icon: '🚚', text: 'Envío seguro' },
-                { icon: '✅', text: 'Garantía incluida' },
-                { icon: '💬', text: 'Soporte rápido' },
-                { icon: '🔒', text: 'Pago protegido' },
+                { icon: Truck, text: 'Envío seguro' },
+                { icon: ShieldCheck, text: 'Garantía incluida' },
+                { icon: MessageCircle, text: 'Soporte rápido' },
+                { icon: Lock, text: 'Pago protegido' },
               ].map((feature) => (
                 <div key={feature.text} className="flex items-center gap-3 text-sm text-text-muted">
-                  <span className="text-xl">{feature.icon}</span>
+                  <feature.icon className="h-5 w-5 text-[#1e4d6b]" />
                   <span>{feature.text}</span>
                 </div>
               ))}
@@ -229,9 +226,7 @@ export default async function ProductPage({
                 className="group flex items-center gap-2 text-[#1e4d6b] font-semibold hover:text-[#0f7a5f] transition-colors"
               >
                 Ver todos
-                <svg className="h-4 w-4 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

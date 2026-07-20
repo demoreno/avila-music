@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+import { Eye, ArrowRight, CheckCircle2, Music } from 'lucide-react'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import type { PublicProduct } from '@/lib/catalog'
@@ -44,8 +45,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className={`absolute inset-0 bg-gradient-to-t from-[#1e4d6b]/80 via-transparent to-transparent transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
           </>
         ) : (
-          <div className="flex h-full items-center justify-center text-6xl text-slate-400">
-            🎵
+          <div className="flex h-full items-center justify-center text-slate-300">
+            <Music className="h-16 w-16" strokeWidth={1} />
           </div>
         )}
 
@@ -86,10 +87,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             title="Ver detalles"
             aria-label={`Ver detalles de ${product.name}`}
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
+            <Eye className="h-5 w-5" />
           </Link>
         </div>
 
@@ -99,9 +97,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             href={`/productos/${product.slug}`}
             className="flex items-center justify-center gap-2 w-full rounded-xl bg-white/95 backdrop-blur-sm py-3 text-sm font-semibold text-[#1e4d6b] shadow-lg transition-all hover:bg-[#1e4d6b] hover:text-white"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
+            <ArrowRight className="h-5 w-5" />
             Ver producto
           </Link>
         </div>
@@ -130,9 +126,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </p>
           {!isOutOfStock && (
             <p className="mt-1 text-xs text-success font-medium flex items-center gap-1">
-              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
+              <CheckCircle2 className="h-3 w-3" />
               Disponible
             </p>
           )}

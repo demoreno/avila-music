@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -31,7 +32,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#150e08]/90 backdrop-blur-xl border-b border-white/[0.04] shadow-2xl shadow-black/20">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-between h-[68px]">
             {/* Logo */}
@@ -42,21 +43,21 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   src="/avila-logo.jpeg"
                   alt="Ávila Music"
                   width={36} height={36}
-                  className="relative rounded-full object-cover ring-1 ring-white/[0.06] transition-all duration-500 group-hover:ring-amber-500/20"
+                  className="relative rounded-full object-cover ring-1 ring-slate-200 transition-all duration-500 group-hover:ring-amber-500/40"
                   priority
                 />
               </div>
               <div className="hidden sm:block leading-none select-none">
-                <span className="heading-serif text-lg font-bold text-white tracking-tight">Ávila Music</span>
-                <p className="text-[9px] text-amber-400/40 uppercase tracking-[0.2em] mt-0.5">Accesorios Musicales</p>
+                <span className="heading-serif text-lg font-bold text-[#1e4d6b] tracking-tight">Ávila Music</span>
+                <p className="text-[9px] text-amber-600/70 uppercase tracking-[0.2em] mt-0.5">Accesorios Musicales</p>
               </div>
             </Link>
 
             {/* Nav - Desktop */}
             <nav className="hidden lg:flex items-center gap-1">
-              <Link href="/" className="nav-link text-white/70">Inicio</Link>
+              <Link href="/" className="nav-link text-slate-700">Inicio</Link>
               {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="nav-link text-white/60 hover:text-white/90">
+                <Link key={link.href} href={link.href} className="nav-link text-slate-500 hover:text-slate-900">
                   {link.label}
                 </Link>
               ))}
@@ -67,20 +68,18 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               <button
                 onClick={() => { setSearchOpen(!searchOpen); setIsMobileMenuOpen(false) }}
                 className={`group relative p-2.5 rounded-full transition-all duration-300 ${
-                  searchOpen ? 'bg-amber-500/10' : 'hover:bg-white/[0.04]'
+                  searchOpen ? 'bg-amber-500/10' : 'hover:bg-slate-100'
                 }`}
                 aria-label="Buscar"
               >
-                <svg className={`h-[18px] w-[18px] transition-all duration-300 ${
-                  searchOpen ? 'text-amber-400' : 'text-white/40 group-hover:text-white/80'
-                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <Search className={`h-[18px] w-[18px] transition-all duration-300 ${
+                  searchOpen ? 'text-amber-500' : 'text-slate-400 group-hover:text-slate-700'
+                }`} strokeWidth={1.5} />
               </button>
-              
+
               <a
                 href="https://wa.me/584138288674" target="_blank" rel="noopener noreferrer"
-                className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 text-xs font-medium"
+                className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#25D366]/10 text-[#1c9a4f] hover:bg-[#25D366]/20 transition-all duration-300 text-xs font-medium"
               >
                 <WhatsAppIcon className="h-3.5 w-3.5" />
                 <span className="hidden lg:inline">WhatsApp</span>
@@ -88,18 +87,16 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
               <button
                 onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setSearchOpen(false) }}
-                className="lg:hidden p-2.5 rounded-full text-white/40 hover:text-white/80 hover:bg-white/[0.04] transition-all"
+                className="lg:hidden p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
                 aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
               >
-                <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
+                {isMobileMenuOpen ? (
+                  <X className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                ) : (
+                  <Menu className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                )}
               </button>
             </div>
           </div>
@@ -110,16 +107,14 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
           }`}>
             <form onSubmit={handleSearch} className="max-w-xl mx-auto">
               <div className="relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={1.5} />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Buscar productos..."
                   autoFocus
-                  className="w-full h-11 pl-10 pr-24 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder-white/40 focus:outline-none focus:border-amber-500/30 focus:bg-white/[0.05] transition-all duration-300"
+                  className="w-full h-11 pl-10 pr-24 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500/50 focus:bg-white transition-all duration-300"
                 />
                 <button
                   type="submit"
@@ -136,22 +131,22 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <div id="mobile-menu" className={`lg:hidden overflow-hidden transition-all duration-300 ${
           isMobileMenuOpen ? 'max-h-96' : 'max-h-0'
         }`}>
-          <div className="bg-[#150e08]/95 backdrop-blur-2xl border-t border-white/[0.04]">
+          <div className="bg-white/95 backdrop-blur-2xl border-t border-slate-200">
             <nav className="mx-auto max-w-7xl px-6 py-5 space-y-1">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-2.5 px-3 text-sm text-white/60 hover:text-amber-400 transition-colors rounded-lg">Inicio</Link>
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-2.5 px-3 text-sm text-slate-700 hover:text-amber-600 transition-colors rounded-lg">Inicio</Link>
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2.5 px-3 text-sm text-white/70 hover:text-amber-400 transition-colors rounded-lg"
+                  className="block py-2.5 px-3 text-sm text-slate-600 hover:text-amber-600 transition-colors rounded-lg"
                 >
                   {link.label}
                 </Link>
               ))}
               <a
                 href="https://wa.me/584138288674" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 mt-3 py-3 px-4 bg-[#25D366]/10 text-[#25D366] rounded-xl text-sm font-medium"
+                className="flex items-center gap-3 mt-3 py-3 px-4 bg-[#25D366]/10 text-[#1c9a4f] rounded-xl text-sm font-medium"
               >
                 <WhatsAppIcon className="h-4 w-4" />
                 Contactar por WhatsApp
@@ -190,76 +185,60 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
                 <a href="mailto:contacto@avilamusic.com" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+                  <Mail className="h-5 w-5" />
                 </a>
                 <a href="tel:+584138288674" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
+                  <Phone className="h-5 w-5" />
                 </a>
               </div>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-6 flex items-center gap-2">
-                <svg className="h-5 w-5 text-[#f59e0b]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                </svg>
+                <CirclePlus className="h-5 w-5 text-[#f59e0b]" />
                 Tienda
               </h4>
               <ul className="space-y-3">
-                <li><Link href="/productos" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Productos</Link></li>
-                <li><Link href="/productos/categoria" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Categorías</Link></li>
-                <li><Link href="/productos" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Más vendidos</Link></li>
+                <li><Link href="/productos" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Productos</Link></li>
+                <li><Link href="/productos/categoria" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Categorías</Link></li>
+                <li><Link href="/productos" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Más vendidos</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-6 flex items-center gap-2">
-                <svg className="h-5 w-5 text-[#f59e0b]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
+                <Info className="h-5 w-5 text-[#f59e0b]" />
                 Información
               </h4>
               <ul className="space-y-3">
-                <li><Link href="/nosotros" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Nosotros</Link></li>
-                <li><Link href="/envios" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Envíos y entregas</Link></li>
-                <li><Link href="/garantias" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Garantías</Link></li>
-                <li><Link href="/faq" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>Preguntas frecuentes</Link></li>
+                <li><Link href="/nosotros" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Nosotros</Link></li>
+                <li><Link href="/envios" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Envíos y entregas</Link></li>
+                <li><Link href="/garantias" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Garantías</Link></li>
+                <li><Link href="/faq" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Preguntas frecuentes</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-6 flex items-center gap-2">
-                <svg className="h-5 w-5 text-[#f59e0b]" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                </svg>
+                <MessageCircle className="h-5 w-5 text-[#f59e0b]" />
                 Contáctanos
               </h4>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
-                    <svg className="h-4 w-4 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
+                    <Phone className="h-4 w-4 text-[#f59e0b]" />
                   </div>
-                  <div><a href="tel:+584138288674" className="text-slate-400 hover:text-white transition-colors">+58 413-8288674</a></div>
+                  <div><a href="tel:+584138288674" className="text-slate-400 hover:text-white transition-colors">+58 412-8288674</a></div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
-                    <svg className="h-4 w-4 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                    <Mail className="h-4 w-4 text-[#f59e0b]" />
                   </div>
                   <div><a href="mailto:contacto@avilamusic.com" className="text-slate-400 hover:text-white transition-colors">contacto@avilamusic.com</a></div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
-                    <svg className="h-4 w-4 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <Clock className="h-4 w-4 text-[#f59e0b]" />
                   </div>
                   <div className="text-slate-400">Lun-Vie: 9am-6pm<br />Sáb: 9am-1pm</div>
                 </li>

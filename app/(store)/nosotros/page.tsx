@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { Check, Target, Handshake, Truck, Percent, Scale } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
@@ -73,22 +74,22 @@ export default function NosotrosPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                icon: '🎯',
+                icon: Target,
                 title: 'Calidad primero',
                 description: 'Cada producto pasa por nuestro filtro de calidad. Solo ofrecemos lo que usaríamos nosotros.',
               },
               {
-                icon: '🤝',
+                icon: Handshake,
                 title: 'Servicio cercano',
                 description: 'Atención personalizada por WhatsApp. Hablas con personas que entienden de música.',
               },
               {
-                icon: '🚚',
+                icon: Truck,
                 title: 'Envíos confiables',
                 description: 'Despachos a todo el país con MRW y Zoom. Tu instrumento llega seguro.',
               },
               {
-                icon: '💯',
+                icon: Percent,
                 title: 'Transparencia',
                 description: 'Precios claros, sin sorpresas. Lo que ves es lo que pagas.',
               },
@@ -98,7 +99,7 @@ export default function NosotrosPage() {
                 className="rounded-xl border border-border bg-white p-6 transition-all hover:border-primary/30 hover:shadow-md"
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mb-4">
-                  <span className="text-2xl">{value.icon}</span>
+                  <value.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-text mb-2">{value.title}</h3>
                 <p className="text-text-muted text-sm leading-relaxed">{value.description}</p>
@@ -165,7 +166,7 @@ export default function NosotrosPage() {
               <div className="relative">
                 <div className="aspect-video rounded-2xl overflow-hidden shadow-lg bg-primary/5 flex items-center justify-center">
                   <div className="text-center p-8">
-                    <span className="text-6xl mb-4 block">⚖️</span>
+                    <Scale className="h-16 w-16 mx-auto mb-4 text-primary" strokeWidth={1.5} />
                     <p className="text-2xl heading-serif font-bold text-primary">Calidad + Precio Justo</p>
                   </div>
                 </div>
@@ -192,9 +193,7 @@ export default function NosotrosPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 flex-shrink-0">
-                    <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+<Check className="h-5 w-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="text-text font-semibold">Productos verificados</h3>
@@ -203,9 +202,7 @@ export default function NosotrosPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 flex-shrink-0">
-                    <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+<Check className="h-5 w-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="text-text font-semibold">Precios competitivos</h3>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import { ArrowRight, ArrowDown, Truck, ShieldCheck, MessageCircle, Lock, Music } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
 import ProductCard from '@/components/store/ProductCard'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
@@ -75,9 +76,7 @@ export default async function HomePage() {
                 className="inline-flex items-center gap-3 px-8 py-4 bg-amber-500 text-black font-semibold rounded-xl hover:bg-amber-400 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 group"
               >
                 Ver productos
-                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/nosotros"
@@ -91,35 +90,17 @@ export default async function HomePage() {
             <div className="mt-16 pt-8 border-t border-white/[0.04] animate-fade-in-up stagger-3">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 {[
-                  {
-                    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />,
-                    label: 'Envíos nacionales',
-                    sub: 'A todo el país',
-                  },
-                  {
-                    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />,
-                    label: 'Garantía',
-                    sub: '100% originales',
-                  },
-                  {
-                    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />,
-                    label: 'Atención rápida',
-                    sub: 'Por WhatsApp',
-                  },
-                  {
-                    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />,
-                    label: 'Pago seguro',
-                    sub: 'Múltiples métodos',
-                  },
+                  { icon: Truck, label: 'Envíos nacionales', sub: 'A todo el país' },
+                  { icon: ShieldCheck, label: 'Garantía', sub: '100% originales' },
+                  { icon: MessageCircle, label: 'Atención rápida', sub: 'Por WhatsApp' },
+                  { icon: Lock, label: 'Pago seguro', sub: 'Múltiples métodos' },
                 ].map((badge) => (
                   <div
                     key={badge.label}
                     className="flex items-center gap-3 rounded-xl bg-black/35 backdrop-blur-md border border-white/10 px-3 py-2.5"
                   >
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.06] border border-white/10 flex-shrink-0">
-                      <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {badge.svg}
-                      </svg>
+                      <badge.icon className="h-4 w-4 text-amber-400" strokeWidth={1.5} />
                     </div>
                     <div className="min-w-0">
                       <div className="text-xs font-semibold text-white whitespace-nowrap">{badge.label}</div>
@@ -151,9 +132,7 @@ export default async function HomePage() {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-          <svg className="h-5 w-5 text-white/35" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
+          <ArrowDown className="h-5 w-5 text-white/35" strokeWidth={1.5} />
         </div>
       </section>
 
@@ -173,15 +152,13 @@ export default async function HomePage() {
               className="group flex items-center gap-2 text-[#1e4d6b] font-semibold hover:text-[#0f7a5f] transition-colors"
             >
               Ver todos
-              <svg className="h-4 w-4 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
             </Link>
           </div>
           
           {featuredProducts.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl shadow-card">
-              <span className="text-6xl mb-4 block">🎵</span>
+              <Music className="h-16 w-16 mx-auto mb-4 text-slate-300" strokeWidth={1} />
               <p className="text-text-muted text-lg">Próximamente nuevos productos</p>
             </div>
           ) : (
@@ -234,41 +211,25 @@ export default async function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                icon: (
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                  </svg>
-                ),
+                icon: Truck,
                 title: 'Envíos nacionales',
                 desc: 'A todo el país de forma segura',
                 color: 'from-[#10b981] to-[#059669]',
               },
               {
-                icon: (
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                ),
+                icon: ShieldCheck,
                 title: 'Garantía incluida',
                 desc: 'Productos 100% originales',
                 color: 'from-[#2d6a8f] to-[#1e4d6b]',
               },
               {
-                icon: (
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                ),
+                icon: MessageCircle,
                 title: 'Atención rápida',
                 desc: 'Respuesta por WhatsApp',
                 color: 'from-[#f59e0b] to-[#d97706]',
               },
               {
-                icon: (
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                ),
+                icon: Lock,
                 title: 'Pago seguro',
                 desc: 'Múltiples métodos',
                 color: 'from-[#0f7a5f] to-[#0b5c48]',
@@ -279,7 +240,7 @@ export default async function HomePage() {
                 className="group relative bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/10 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
               >
                 <div className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.color} text-white mb-6 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                  {feature.icon}
+                  <feature.icon className="h-8 w-8" strokeWidth={1.5} />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
                 <p className="text-white/60">{feature.desc}</p>
