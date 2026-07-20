@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/admin/',
       },
     ],
-    sitemap: 'https://avilamusic.com/sitemap.xml',
+    sitemap: 'https://avilamusic.shop/sitemap.xml',
   }
 }

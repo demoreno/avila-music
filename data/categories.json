@@ -46,5 +46,13 @@
       { "name": "Cables", "slug": "cables", "sort_order": 1 },
       { "name": "Pedales & Efectos", "slug": "pedales-efectos", "sort_order": 2 }
     ]
+  },
+  {
+    "name": "Teclado",
+    "slug": "teclado",
+    "sort_order": 6,
+    "subcategories": [
+      { "name": "Accesorios de Teclado", "slug": "accesorios-teclado", "sort_order": 1 }
+    ]
   }
 ]

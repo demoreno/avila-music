@@ -39,7 +39,7 @@ export default function ContactoPage() {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* WhatsApp */}
             <a
-              href="https://wa.me/584138288674"
+              href="https://wa.me/584128288674"
               target="_blank"
               rel="noopener noreferrer"
               className="group rounded-2xl border border-green-200 bg-green-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover"
@@ -59,7 +59,7 @@ export default function ContactoPage() {
               </div>
               <h3 className="text-xl font-semibold text-text mb-3">Correo electrónico</h3>
               <p className="text-text-muted mb-4">Para consultas formales, cotizaciones o pedidos especiales.</p>
-              <span className="text-accent-hover font-mono text-sm">contacto@avilamusic.com</span>
+              <span className="text-accent-hover font-mono text-sm">contacto@avilamusic.shop</span>
             </div>
 
             {/* Redes sociales */}
@@ -71,7 +71,7 @@ export default function ContactoPage() {
               </div>
               <h3 className="text-xl font-semibold text-text mb-3">Instagram</h3>
               <p className="text-text-muted mb-4">Síguenos para novedades, promos y contenido musical.</p>
-              <span className="text-purple-700 text-sm">@avilamusic</span>
+              <span className="text-purple-700 text-sm">@avilamusiccs</span>
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function ContactoPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-3 border-b border-amber-200/60">
                     <span className="text-text font-medium">Lunes a Viernes</span>
-                    <span className="text-accent-hover font-mono">9:00 AM - 6:00 PM</span>
+                    <span className="text-accent-hover font-mono">9:00 AM - 5:00 PM</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-amber-200/60">
                     <span className="text-text font-medium">Sábados</span>
@@ -207,7 +207,7 @@ export default function ContactoPage() {
             Estamos aquí para ayudarte a encontrar exactamente lo que necesitas.
           </p>
           <a
-            href="https://wa.me/584138288674"
+            href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#10b981] to-[#059669] hover:from-[#059669] hover:to-[#10b981] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-success/30 hover:shadow-2xl hover:shadow-success/40 hover:scale-105 transition-all duration-300"

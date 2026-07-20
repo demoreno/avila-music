@@ -265,7 +265,7 @@ export default function EnviosPage() {
             Explora nuestro catálogo y haz tu pedido hoy mismo.
           </p>
           <a
-            href="https://wa.me/584138288674"
+            href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#10b981] to-[#059669] hover:from-[#059669] hover:to-[#10b981] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-success/30 hover:shadow-2xl hover:shadow-success/40 hover:scale-105 transition-all duration-300"

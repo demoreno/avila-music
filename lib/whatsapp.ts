@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = '584138288674'
+const WHATSAPP_NUMBER = '584128288674'
 
 export function whatsappProductLink(productName: string, price: number): string {
   const message = `Hola, me interesa el producto: *${productName}* (USD ${price.toFixed(2)}). ¿Está disponible?`

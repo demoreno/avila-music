@@ -77,15 +77,15 @@ export default async function ProductPage({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://avilamusic.com' },
-      { '@type': 'ListItem', position: 2, name: 'Productos', item: 'https://avilamusic.com/productos' },
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://avilamusic.shop' },
+      { '@type': 'ListItem', position: 2, name: 'Productos', item: 'https://avilamusic.shop/productos' },
       ...(categoryInfo
         ? [
             {
               '@type': 'ListItem',
               position: 3,
               name: categoryInfo.category_name,
-              item: `https://avilamusic.com/productos/categoria/${categoryInfo.category_slug}`,
+              item: `https://avilamusic.shop/productos/categoria/${categoryInfo.category_slug}`,
             },
           ]
         : []),
@@ -93,7 +93,7 @@ export default async function ProductPage({
         '@type': 'ListItem',
         position: categoryInfo ? 4 : 3,
         name: product.name,
-        item: `https://avilamusic.com/productos/${slug}`,
+        item: `https://avilamusic.shop/productos/${slug}`,
       },
     ],
   }

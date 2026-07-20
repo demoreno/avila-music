@@ -254,7 +254,7 @@ export default function GarantiasPage() {
             Estamos aquí para ayudarte. Escríbenos y buscaremos la mejor solución.
           </p>
           <a
-            href="https://wa.me/584138288674"
+            href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 rounded-full bg-green-600 px-8 py-4 text-base font-semibold text-white shadow-[0_0_40px_-10px_rgba(22,163,74,0.5)] transition-all hover:bg-green-500 hover:shadow-[0_0_60px_-10px_rgba(22,163,74,0.7)]"

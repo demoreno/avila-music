@@ -11,7 +11,8 @@
     "notes": null,
     "is_active": true,
     "featured": true,
-    "description": "Juego de cuerdas de nylon para guitarra clásica, con las 3 primas de nylon transparente y las 3 bordonas entorchadas en plata. Tensión normal, ideal para uso general y estudio."
+    "description": "Juego de cuerdas de nylon para guitarra clásica, con las 3 primas de nylon transparente y las 3 bordonas entorchadas en plata. Tensión normal, ideal para uso general y estudio.",
+    "new_arrival": false
   },
   {
     "id": "clavijas-guitarra-clasica-doradas",
@@ -25,7 +26,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de 6 clavijas de repuesto para guitarra clásica, acabado dorado con botones perlados. Mecanismo de engranaje 1:14 para afinación precisa y estable."
+    "description": "Juego de 6 clavijas de repuesto para guitarra clásica, acabado dorado con botones perlados. Mecanismo de engranaje 1:14 para afinación precisa y estable.",
+    "new_arrival": false
   },
   {
     "id": "clavijas-guitarra-clasica-plateadas",
@@ -39,7 +41,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de 6 clavijas de repuesto para guitarra clásica, acabado plateado con botones perlados. Mecanismo de engranaje 1:14 para afinación precisa y estable."
+    "description": "Juego de 6 clavijas de repuesto para guitarra clásica, acabado plateado con botones perlados. Mecanismo de engranaje 1:14 para afinación precisa y estable.",
+    "new_arrival": false
   },
   {
     "id": "cejilla-cejuela",
@@ -53,7 +56,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Cejuela de repuesto para guitarra, pieza clave para la altura de las cuerdas y la afinación en el clavijero. Fácil de ajustar y reemplazar."
+    "description": "Cejuela de repuesto para guitarra, pieza clave para la altura de las cuerdas y la afinación en el clavijero. Fácil de ajustar y reemplazar.",
+    "new_arrival": false
   },
   {
     "id": "cuerdas-alice-electrica-sl",
@@ -66,8 +70,9 @@
     "stock_minimum": 20,
     "notes": null,
     "is_active": true,
-    "featured": true,
-    "description": "Juego de cuerdas para guitarra eléctrica, calibre Super Light. Entorchado níquel para un tono brillante y buena sensación al tacto en manos livianas."
+    "featured": false,
+    "description": "Juego de cuerdas para guitarra eléctrica, calibre Super Light. Entorchado níquel para un tono brillante y buena sensación al tacto en manos livianas.",
+    "new_arrival": false
   },
   {
     "id": "cuerdas-alice-electrica-l",
@@ -80,10 +85,11 @@
     "stock_minimum": 20,
     "notes": null,
     "is_active": true,
-    "featured": false,
-    "description": "Juego de cuerdas para guitarra eléctrica, calibre Light. Entorchado níquel, balance entre tensión cómoda y proyección de sonido."
+    "featured": true,
+    "description": "Juego de cuerdas para guitarra eléctrica, calibre Light. Entorchado níquel, balance entre tensión cómoda y proyección de sonido.",
+    "new_arrival": false
   },
-  { 
+  {
     "id": "daddario-10-46-electrica",
     "name": "Daddario 10-46 Electrica",
     "slug": "daddario-10-46-electrica",
@@ -95,7 +101,8 @@
     "notes": "pendiente de agregar stock",
     "is_active": true,
     "featured": false,
-    "description": "Juego de cuerdas D'Addario para guitarra eléctrica, calibre 10-46 (Regular Light). El estándar de la marca por su durabilidad y consistencia tonal."
+    "description": "Juego de cuerdas D'Addario para guitarra eléctrica, calibre 10-46 (Regular Light). El estándar de la marca por su durabilidad y consistencia tonal.",
+    "new_arrival": false
   },
   {
     "id": "daddario-09-42-electrica",
@@ -109,7 +116,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de cuerdas D'Addario para guitarra eléctrica, calibre 09-44 (Super Light). Ideal para técnicas de bending y solos con menor tensión en el mástil."
+    "description": "Juego de cuerdas D'Addario para guitarra eléctrica, calibre 09-44 (Super Light). Ideal para técnicas de bending y solos con menor tensión en el mástil.",
+    "new_arrival": false
   },
   {
     "id": "ernie-ball-power-slinky",
@@ -122,8 +130,9 @@
     "stock_minimum": 2,
     "notes": null,
     "is_active": true,
-    "featured": true,
-    "description": "Juego de cuerdas Ernie Ball Power Slinky, calibre 11-48. Mayor grosor para afinaciones más graves y un tono con más cuerpo."
+    "featured": false,
+    "description": "Juego de cuerdas Ernie Ball Power Slinky, calibre 11-48. Mayor grosor para afinaciones más graves y un tono con más cuerpo.",
+    "new_arrival": false
   },
   {
     "id": "ernie-ball-super-slinky",
@@ -137,7 +146,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de cuerdas Ernie Ball Super Slinky, calibre 09-42. El calibre más popular de la marca, cómodo para solos y bends."
+    "description": "Juego de cuerdas Ernie Ball Super Slinky, calibre 09-42. El calibre más popular de la marca, cómodo para solos y bends.",
+    "new_arrival": false
   },
   {
     "id": "ernie-ball-regular-slinky",
@@ -150,8 +160,9 @@
     "stock_minimum": 2,
     "notes": null,
     "is_active": true,
-    "featured": false,
-    "description": "Juego de cuerdas Ernie Ball Regular Slinky, calibre 10-46. El clásico intermedio de la marca, equilibrio entre tensión y tono."
+    "featured": true,
+    "description": "Juego de cuerdas Ernie Ball Regular Slinky, calibre 10-46. El clásico intermedio de la marca, equilibrio entre tensión y tono.",
+    "new_arrival": false
   },
   {
     "id": "cuerdas-alice-folk-11-52",
@@ -165,7 +176,8 @@
     "notes": null,
     "is_active": true,
     "featured": true,
-    "description": "Juego de cuerdas Alice Folk para guitarra acústica, calibre 11-52 con entorchado bronce. Sonido cálido y proyección para rasgueo y fingerstyle."
+    "description": "Juego de cuerdas Alice Folk para guitarra acústica, calibre 11-52 con entorchado bronce. Sonido cálido y proyección para rasgueo y fingerstyle.",
+    "new_arrival": false
   },
   {
     "id": "pickguard-negro-acustica",
@@ -179,7 +191,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Golpeador (pickguard) negro autoadhesivo para guitarra acústica. Protege la tapa del roce de la púa y suma un detalle estético."
+    "description": "Golpeador (pickguard) negro autoadhesivo para guitarra acústica. Protege la tapa del roce de la púa y suma un detalle estético.",
+    "new_arrival": false
   },
   {
     "id": "correa-guitarra-bajo",
@@ -192,8 +205,9 @@
     "stock_minimum": 10,
     "notes": null,
     "is_active": true,
-    "featured": true,
-    "description": "Correa ajustable de nylon para guitarra o bajo, con regulación de largo para distintas alturas de ejecución. Resistente para uso prolongado en vivo o ensayo."
+    "featured": false,
+    "description": "Correa ajustable de nylon para guitarra o bajo, con regulación de largo para distintas alturas de ejecución. Resistente para uso prolongado en vivo o ensayo.",
+    "new_arrival": false
   },
   {
     "id": "base-pared-guitarra-bajo",
@@ -207,7 +221,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Soporte de pared para guitarra o bajo, con brazos acolchados que sostienen el instrumento por el clavijero. Práctico para exhibir y ahorrar espacio."
+    "description": "Soporte de pared para guitarra o bajo, con brazos acolchados que sostienen el instrumento por el clavijero. Práctico para exhibir y ahorrar espacio.",
+    "new_arrival": false
   },
   {
     "id": "capotraste",
@@ -221,7 +236,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Capotraste de sujeción rápida para guitarra, permite cambiar de tono sin retocar la afinación de cada cuerda. Presión ajustable, apto para clásica y eléctrica según modelo."
+    "description": "Capotraste de sujeción rápida para guitarra, permite cambiar de tono sin retocar la afinación de cada cuerda. Presión ajustable, apto para clásica y eléctrica según modelo.",
+    "new_arrival": false
   },
   {
     "id": "pines-de-correa",
@@ -235,7 +251,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de pines (strap locks) para asegurar la correa al instrumento y evitar que se suelte durante la ejecución en vivo."
+    "description": "Juego de pines (strap locks) para asegurar la correa al instrumento y evitar que se suelte durante la ejecución en vivo.",
+    "new_arrival": false
   },
   {
     "id": "cable-pedales",
@@ -249,7 +266,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Cable corto para conectar pedales de efectos entre sí, con conectores plug de 1/4\" en ambos extremos. Blindado para minimizar ruido en la señal."
+    "description": "Cable corto para conectar pedales de efectos entre sí, con conectores plug de 1/4\" en ambos extremos. Blindado para minimizar ruido en la señal.",
+    "new_arrival": false
   },
   {
     "id": "cuerdas-bajo-4c-alice",
@@ -262,8 +280,9 @@
     "stock_minimum": 10,
     "notes": null,
     "is_active": true,
-    "featured": true,
-    "description": "Juego de cuerdas Alice para bajo de 4 cuerdas, entorchado níquel. Buena definición de graves y respuesta pareja en todo el diapasón."
+    "featured": false,
+    "description": "Juego de cuerdas Alice para bajo de 4 cuerdas, entorchado níquel. Buena definición de graves y respuesta pareja en todo el diapasón.",
+    "new_arrival": false
   },
   {
     "id": "clavijas-bajo-mariposa",
@@ -277,7 +296,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de clavijas tipo mariposa para bajo, diseño detallado que facilita el ajuste fino de afinación con la mano."
+    "description": "Juego de clavijas tipo mariposa para bajo, diseño detallado que facilita el ajuste fino de afinación con la mano.",
+    "new_arrival": false
   },
   {
     "id": "cuerdas-violin-44",
@@ -290,8 +310,9 @@
     "stock_minimum": 10,
     "notes": null,
     "is_active": true,
-    "featured": true,
-    "description": "Juego de cuerdas para violín tamaño 4/4 (completo), las 4 cuerdas (Mi, La, Re, Sol). Sonido equilibrado apto para estudio y práctica regular."
+    "featured": false,
+    "description": "Juego de cuerdas para violín tamaño 4/4 (completo), las 4 cuerdas (Mi, La, Re, Sol). Sonido equilibrado apto para estudio y práctica regular.",
+    "new_arrival": false
   },
   {
     "id": "hombrera-violin-34-44",
@@ -305,7 +326,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Hombrera ajustable para violín 3/4 y 4/4, mejora la comodidad y estabilidad del instrumento contra el hombro durante la ejecución."
+    "description": "Hombrera ajustable para violín 3/4 y 4/4, mejora la comodidad y estabilidad del instrumento contra el hombro durante la ejecución.",
+    "new_arrival": false
   },
   {
     "id": "cuerdas-viola-a90",
@@ -319,7 +341,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Juego de cuerdas Alice A90 para viola, entorchado que aporta calidez y proyección al registro grave característico del instrumento."
+    "description": "Juego de cuerdas Alice A90 para viola, entorchado que aporta calidez y proyección al registro grave característico del instrumento.",
+    "new_arrival": false
   },
   {
     "id": "baqueta-bateria-5a",
@@ -333,7 +356,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Par de baquetas de batería modelo 5A, diámetro estándar y punta de madera. El calibre más versátil, apto para todos los estilos."
+    "description": "Par de baquetas de batería modelo 5A, diámetro estándar y punta de madera. El calibre más versátil, apto para todos los estilos.",
+    "new_arrival": false
   },
   {
     "id": "baqueta-bateria-7a",
@@ -347,7 +371,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Par de baquetas de batería modelo 7A, más finas que el 5A. Ideales para baterista de mano liviana, jazz o estudio con menor volumen."
+    "description": "Par de baquetas de batería modelo 7A, más finas que el 5A. Ideales para baterista de mano liviana, jazz o estudio con menor volumen.",
+    "new_arrival": false
   },
   {
     "id": "baqueta-bateria-5b",
@@ -361,7 +386,8 @@
     "notes": null,
     "is_active": true,
     "featured": false,
-    "description": "Par de baquetas de batería modelo 5B, más gruesas que el 5A. Mayor cuerpo y volumen, pensadas para rock y estilos de pegada fuerte."
+    "description": "Par de baquetas de batería modelo 5B, más gruesas que el 5A. Mayor cuerpo y volumen, pensadas para rock y estilos de pegada fuerte.",
+    "new_arrival": false
   },
   {
     "id": "cable-hebikuo-xa03",
@@ -374,7 +400,83 @@
     "stock_minimum": 10,
     "notes": null,
     "is_active": true,
-    "featured": true,
-    "description": "Cable de instrumento Hebikuo XA03, conectores plug de 1/4\" en ambos extremos. Blindado para conectar guitarra o bajo al amplificador o pedalera con señal limpia."
+    "featured": false,
+    "description": "Cable de instrumento Hebikuo XA03, conectores plug de 1/4\" en ambos extremos. Blindado para conectar guitarra o bajo al amplificador o pedalera con señal limpia.",
+    "new_arrival": false
+  },
+  {
+    "id": "cuerdas-bajo-5c-alice",
+    "name": "Cuerdas de Bajo 5 Cuerdas Alice",
+    "slug": "cuerdas-bajo-5c-alice",
+    "subcategory_id": "bajo-electrico",
+    "price_usd": 16,
+    "stock_total": 20,
+    "stock_minimum": 10,
+    "notes": null,
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Juego de cuerdas Alice para bajo de 5 cuerdas, entorchado níquel. Buena definición de graves y respuesta pareja en todo el diapasón, incluida la quinta cuerda grave.",
+    "asset_id": "a89c5c0e-becc-4dd1-a563-94006bd9c458"
+  },
+  {
+    "id": "pedal-sustain-universal-teclado",
+    "name": "Pedal Sustain Universal para Teclado",
+    "slug": "pedal-sustain-universal-teclado",
+    "subcategory_id": "accesorios-teclado",
+    "price_usd": 20,
+    "stock_total": 40,
+    "stock_minimum": 10,
+    "notes": null,
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Pedal de sustain universal para teclados y pianos digitales, con polaridad conmutable para compatibilidad con la mayoría de las marcas. Base antideslizante y respuesta firme.",
+    "asset_id": "2e029b08-605d-4a50-8b55-4976ef317cd0"
+  },
+  {
+    "id": "arco-violin-34-44",
+    "name": "Arco de Violín 3/4 - 4/4",
+    "slug": "arco-violin-34-44",
+    "subcategory_id": "violin",
+    "price_usd": 25,
+    "stock_total": 40,
+    "stock_minimum": 5,
+    "notes": "pendiente de confirmar stock real",
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Arco para violín tamaños 3/4 y 4/4, cerdas naturales y vara balanceada para un buen control del sonido. Apto para estudio y práctica regular.",
+    "asset_id": "ab62ab0a-6cec-46e3-a143-698fa627bdf5"
+  },
+  {
+    "id": "afinador-pinza-universal",
+    "name": "Afinador de Pinza Universal (Guitarra/Bajo/Cuatro/Violín)",
+    "slug": "afinador-pinza-universal",
+    "subcategory_id": "accesorios-guitarra",
+    "price_usd": 8,
+    "stock_total": 30,
+    "stock_minimum": 10,
+    "notes": null,
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Afinador de pinza universal, compatible con guitarra, bajo, cuatro y violín. Pantalla giratoria de fácil lectura y sujeción firme al clavijero de cualquier instrumento.",
+    "asset_id": "34437420-5fdd-4ed0-8da2-4a6b6c496e37"
+  },
+  {
+    "id": "puente-madera-violin",
+    "name": "Puente de Madera para Violín (1/8 a 4/4)",
+    "slug": "puente-madera-violin",
+    "subcategory_id": "violin",
+    "price_usd": 5,
+    "stock_total": 10,
+    "stock_minimum": 5,
+    "notes": "disponible en todas las medidas",
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Puente de madera de repuesto para violín, disponible en todas las medidas de 1/8 a 4/4. Pieza clave para la altura de las cuerdas y la proyección del sonido — requiere ajuste según el instrumento.",
+    "asset_id": "58855768-c949-43e5-b766-c5686b52b039"
   }
 ]

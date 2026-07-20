@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { catalog } from '@/lib/catalog'
 
-const BASE_URL = 'https://avilamusic.com'
+const BASE_URL = 'https://avilamusic.shop'
 
 const STATIC_PAGES = ['nosotros', 'faq', 'contacto', 'envios', 'garantias', 'terminos']
 

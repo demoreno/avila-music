@@ -153,11 +153,11 @@ export default function FaqPage() {
               {[
                 {
                   q: '¿Cuál es su horario de atención?',
-                  a: 'Lunes a Viernes: 9:00 AM - 6:00 PM. Sábados: 9:00 AM - 1:00 PM. Domingos: cerrado. Fuera de horario, déjanos un mensaje y te respondemos al día siguiente.',
+                  a: 'Lunes a Viernes: 9:00 AM - 5:00 PM. Sábados: 9:00 AM - 1:00 PM. Domingos: cerrado. Fuera de horario, déjanos un mensaje y te respondemos al día siguiente.',
                 },
                 {
                   q: '¿Por qué medio puedo contactarlos?',
-                  a: 'El canal principal es WhatsApp (+58 412-8288674). También puedes escribirnos por Instagram (@avilamusic) o correo electrónico.',
+                  a: 'El canal principal es WhatsApp (+58 412-8288674). También puedes escribirnos por Instagram (@avilamusiccs) o correo electrónico.',
                 },
                 {
                   q: '¿Tienen tienda física?',
@@ -185,7 +185,7 @@ export default function FaqPage() {
             Escríbenos por WhatsApp. Estamos aquí para ayudarte.
           </p>
           <a
-            href="https://wa.me/584138288674"
+            href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 rounded-full bg-green-600 px-8 py-4 text-base font-semibold text-white shadow-[0_0_40px_-10px_rgba(22,163,74,0.5)] transition-all hover:bg-green-500 hover:shadow-[0_0_60px_-10px_rgba(22,163,74,0.7)]"

@@ -33,6 +33,7 @@ interface RawProduct {
   description: string
   is_active: boolean
   featured: boolean
+  new_arrival: boolean
 }
 
 /** Static placeholder timestamp — this catalog has no real created/updated tracking. */
@@ -119,6 +120,13 @@ export class JsonCatalogProvider implements CatalogProvider {
     const featured = active.filter((p) => p.featured)
     const pool = featured.length > 0 ? featured : active
     return pool.slice(0, limit).map(toPublicProduct)
+  }
+
+  async getNewArrivals(limit: number): Promise<PublicProduct[]> {
+    return products
+      .filter((p) => p.is_active && p.new_arrival)
+      .slice(0, limit)
+      .map(toPublicProduct)
   }
 
   async getAllProducts(): Promise<PublicProduct[]> {

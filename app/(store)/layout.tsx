@@ -78,7 +78,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               </button>
 
               <a
-                href="https://wa.me/584138288674" target="_blank" rel="noopener noreferrer"
+                href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
                 className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#25D366]/10 text-[#1c9a4f] hover:bg-[#25D366]/20 transition-all duration-300 text-xs font-medium"
               >
                 <WhatsAppIcon className="h-3.5 w-3.5" />
@@ -145,7 +145,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 </Link>
               ))}
               <a
-                href="https://wa.me/584138288674" target="_blank" rel="noopener noreferrer"
+                href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 mt-3 py-3 px-4 bg-[#25D366]/10 text-[#1c9a4f] rounded-xl text-sm font-medium"
               >
                 <WhatsAppIcon className="h-4 w-4" />
@@ -181,13 +181,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Envíos seguros a todo el país.
               </p>
               <div className="flex gap-3">
-                <a href="https://wa.me/584138288674" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-success transition-colors">
+                <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-success transition-colors">
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
-                <a href="mailto:contacto@avilamusic.com" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
+                <a href="mailto:contacto@avilamusic.shop" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
                   <Mail className="h-5 w-5" />
                 </a>
-                <a href="tel:+584138288674" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
+                <a href="tel:+584128288674" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
                   <Phone className="h-5 w-5" />
                 </a>
               </div>
@@ -228,13 +228,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
                     <Phone className="h-4 w-4 text-[#f59e0b]" />
                   </div>
-                  <div><a href="tel:+584138288674" className="text-slate-400 hover:text-white transition-colors">+58 412-8288674</a></div>
+                  <div><a href="tel:+584128288674" className="text-slate-400 hover:text-white transition-colors">+58 412-8288674</a></div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
                     <Mail className="h-4 w-4 text-[#f59e0b]" />
                   </div>
-                  <div><a href="mailto:contacto@avilamusic.com" className="text-slate-400 hover:text-white transition-colors">contacto@avilamusic.com</a></div>
+                  <div><a href="mailto:contacto@avilamusic.shop" className="text-slate-400 hover:text-white transition-colors">contacto@avilamusic.shop</a></div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">

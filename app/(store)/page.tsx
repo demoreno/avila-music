@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
-import { ArrowRight, ArrowDown, Truck, ShieldCheck, MessageCircle, Lock, Music } from 'lucide-react'
+import { ArrowRight, ArrowDown, Truck, ShieldCheck, MessageCircle, Lock, Music, Shirt } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
-import ProductCard from '@/components/store/ProductCard'
+import ProductCarousel from '@/components/store/ProductCarousel'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
@@ -11,7 +11,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const featuredProducts = await catalog.getFeaturedProducts(8)
+  const [featuredProducts, newArrivals] = await Promise.all([
+    catalog.getFeaturedProducts(8),
+    catalog.getNewArrivals(8),
+  ])
 
   return (
     <>
@@ -92,7 +95,7 @@ export default async function HomePage() {
                 {[
                   { icon: Truck, label: 'Envíos nacionales', sub: 'A todo el país' },
                   { icon: ShieldCheck, label: 'Garantía', sub: '100% originales' },
-                  { icon: MessageCircle, label: 'Atención rápida', sub: 'Por WhatsApp' },
+                  { icon: MessageCircle, label: 'Atención personalizada', sub: 'Por WhatsApp' },
                   { icon: Lock, label: 'Pago seguro', sub: 'Múltiples métodos' },
                 ].map((badge) => (
                   <div
@@ -141,9 +144,8 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
             <div>
-              <span className="badge badge-hot mb-4">Más vendidos</span>
               <h2 className="heading-serif text-4xl sm:text-5xl font-bold gradient-text mb-2">
-                Productos destacados
+                Productos más vendidos
               </h2>
               <p className="text-lg text-text-muted">Los favoritos de nuestros clientes</p>
             </div>
@@ -162,17 +164,7 @@ export default async function HomePage() {
               <p className="text-text-muted text-lg">Próximamente nuevos productos</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {featuredProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
+            <ProductCarousel products={featuredProducts} />
           )}
 
           <div className="mt-10 text-center sm:hidden">
@@ -185,6 +177,32 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Novedades */}
+      {newArrivals.length > 0 && (
+        <section className="py-24 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
+              <div>
+                <span className="badge bg-[#1e4d6b]/10 text-[#1e4d6b] border-[#1e4d6b]/20 mb-4">Novedades</span>
+                <h2 className="heading-serif text-4xl sm:text-5xl font-bold gradient-text mb-2">
+                  Recién llegados
+                </h2>
+                <p className="text-lg text-text-muted">Lo último que sumamos al catálogo</p>
+              </div>
+              <Link
+                href="/productos"
+                className="group flex items-center gap-2 text-[#1e4d6b] font-semibold hover:text-[#0f7a5f] transition-colors"
+              >
+                Ver todos
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
+              </Link>
+            </div>
+
+            <ProductCarousel products={newArrivals} />
+          </div>
+        </section>
+      )}
 
       {/* Features Section */}
       <section className="py-24 bg-gradient-to-br from-[#1e4d6b] via-[#0f7a5f] to-[#1e4d6b] relative overflow-hidden">
@@ -224,7 +242,7 @@ export default async function HomePage() {
               },
               {
                 icon: MessageCircle,
-                title: 'Atención rápida',
+                title: 'Atención Personalizada',
                 desc: 'Respuesta por WhatsApp',
                 color: 'from-[#f59e0b] to-[#d97706]',
               },
@@ -252,6 +270,44 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Merchandising / Sublimación */}
+      <section className="relative py-24 sm:py-32 overflow-hidden bg-[#150e08]">
+        <div className="absolute inset-0">
+          <Image
+            src="/merchandising-sublimacion.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-40"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#150e08_90%)]" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-amber-400 mb-6">
+            <Shirt className="h-3.5 w-3.5" />
+            Otro servicio de Ávila Music
+          </span>
+
+          <h2 className="heading-serif text-4xl sm:text-5xl font-bold text-white mb-6">
+            ¿Tienes una banda y necesitas<br className="hidden sm:block" /> gestionar el merchandising?
+          </h2>
+          <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+            Franelas sublimadas para tu banda o proyecto musical. Diseño, producción y entrega — todo en un solo lugar.
+          </p>
+
+          <a
+            href={`https://wa.me/584128288674?text=${encodeURIComponent('Hola, quiero cotizar merchandising/sublimación para mi banda.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-amber-500 text-black px-8 py-4 rounded-xl font-semibold hover:bg-amber-400 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
+          >
+            <WhatsAppIcon className="h-5 w-5" />
+            Cotizar mi merchandising
+          </a>
+        </div>
+      </section>
+
       {/* WhatsApp CTA */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-[#10b981]/10 to-transparent rounded-full blur-3xl" />
@@ -276,7 +332,7 @@ export default async function HomePage() {
           </p>
           
           <a
-            href="https://wa.me/584138288674"
+            href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-[#10b981] to-[#059669] hover:from-[#059669] hover:to-[#10b981] text-white px-10 py-5 rounded-full font-semibold text-lg shadow-xl shadow-success/30 hover:shadow-2xl hover:shadow-success/40 hover:scale-105 transition-all duration-300 btn-glow"
@@ -286,7 +342,7 @@ export default async function HomePage() {
           </a>
           
           <p className="mt-6 text-sm text-text-muted">
-            Horario: Lunes a Sábado, 9am - 6pm
+            Horario: Lunes a Sábado, 9am - 5pm
           </p>
         </div>
       </section>

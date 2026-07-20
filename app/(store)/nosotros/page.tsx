@@ -276,7 +276,7 @@ export default function NosotrosPage() {
               Ver productos
             </Link>
             <a
-              href="https://wa.me/584138288674"
+              href="https://wa.me/584128288674"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 border-2 border-success text-success hover:bg-success hover:text-white px-8 py-3.5 rounded-lg font-semibold transition-all"

@@ -17,7 +17,7 @@ export default function NotFound() {
           Ver productos
         </Link>
         <a
-          href="https://wa.me/584138288674"
+          href="https://wa.me/584128288674"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-8 py-4 border border-slate-200 text-[#1e4d6b] font-semibold rounded-xl hover:border-[#1e4d6b]/30 hover:bg-slate-50 transition-all duration-300"

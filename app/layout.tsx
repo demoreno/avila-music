@@ -17,7 +17,7 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://avilamusic.com'),
+  metadataBase: new URL('https://avilamusic.shop'),
   title: {
     default: 'Ávila Music | Accesorios Musicales',
     template: '%s | Ávila Music',
@@ -36,9 +36,9 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Ávila Music',
-  url: 'https://avilamusic.com',
-  logo: 'https://avilamusic.com/avila-logo.jpeg',
-  sameAs: ['https://wa.me/584138288674'],
+  url: 'https://avilamusic.shop',
+  logo: 'https://avilamusic.shop/avila-logo.jpeg',
+  sameAs: ['https://wa.me/584128288674'],
 }
 
 export default function RootLayout({

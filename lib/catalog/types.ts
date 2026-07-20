@@ -5,6 +5,7 @@ export type PublicProduct = Omit<Product, 'cost_usd'> & { images: ProductImage[]
 
 export interface CatalogProvider {
   getFeaturedProducts(limit: number): Promise<PublicProduct[]>
+  getNewArrivals(limit: number): Promise<PublicProduct[]>
   getAllProducts(): Promise<PublicProduct[]>
   getProductBySlug(slug: string): Promise<PublicProduct | null>
   getRelatedProducts(subcategoryId: string, excludeId: string): Promise<PublicProduct[]>
