@@ -4,13 +4,121 @@ import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
   title: 'Preguntas frecuentes',
-  description: 'Resolvé tus dudas sobre pedidos, envíos, pagos y garantías en Ávila Music.',
+  description: 'Resuelve tus dudas sobre pedidos, envíos, pagos y garantías en Ávila Music.',
   alternates: { canonical: '/faq' },
+}
+
+const COMPRAS_FAQ = [
+  {
+    q: '¿Cómo puedo realizar un pedido?',
+    a: 'Puedes comprar directamente en nuestra tienda online o escribirnos por WhatsApp para ayudarte con el proceso. Te guiaremos paso a paso.',
+  },
+  {
+    q: '¿Qué métodos de pago aceptan?',
+    a: 'Aceptamos pagos en USD (efectivo, Zelle, PayPal, Binance Pay) y bolívares a la tasa del BCV. También transferencias bancarias nacionales.',
+  },
+  {
+    q: '¿Los precios incluyen IVA?',
+    a: 'Sí, todos nuestros precios publicados incluyen IVA. No hay cargos ocultos ni sorpresas al finalizar tu compra.',
+  },
+  {
+    q: '¿Puedo apartar un producto?',
+    a: 'Sí, puedes apartar productos con un 50% de anticipo. El tiempo máximo de apartado es de 7 días.',
+  },
+  {
+    q: '¿Hacen cotizaciones para pedidos grandes?',
+    a: 'Sí, ofrecemos precios especiales para escuelas de música, academias y compras al mayor. Escríbenos para una cotización personalizada.',
+  },
+]
+
+const ENVIOS_FAQ = [
+  {
+    q: '¿Hacen envíos a todo el país?',
+    a: 'Sí, despachamos a cualquier ciudad de Venezuela a través de MRW y Zoom. El costo del envío se paga directamente al recibir el paquete.',
+  },
+  {
+    q: '¿Cuánto tarda en llegar mi pedido?',
+    a: 'Para ciudades principales (Caracas, Valencia, Maracaibo): 24-48 horas. Para otras ciudades: 3-5 días hábiles. Te enviamos el número de tracking apenas despachamos.',
+  },
+  {
+    q: '¿Puedo recoger mi pedido personalmente?',
+    a: 'Sí, puedes retirar tu pedido sin costo adicional en nuestro showroom de Caracas, coordinando una cita previa. Te notificaremos cuando esté listo.',
+  },
+  {
+    q: '¿Empacan bien los instrumentos?',
+    a: 'Absolutamente. Usamos embalaje reforzado con burbuja, espuma y cajas rígidas. Los instrumentos van asegurados para evitar daños durante el transporte.',
+  },
+  {
+    q: '¿Qué pasa si mi producto llega dañado?',
+    a: 'Toma fotos del daño y del empaque al momento de recibir. Contáctanos dentro de las 24 horas y gestionaremos el reclamo con la empresa de envío o te enviaremos un reemplazo.',
+  },
+]
+
+const PRODUCTOS_FAQ = [
+  {
+    q: '¿Todos los productos tienen garantía?',
+    a: 'Sí, todos nuestros productos cuentan con garantía por defectos de fabricación. El período varía: 30 días para accesorios, 90 días para instrumentos, 1 año para equipos electrónicos.',
+  },
+  {
+    q: '¿Los productos son originales?',
+    a: 'Sí, trabajamos solo con proveedores autorizados. Todos nuestros productos son 100% originales y nuevos en su empaque.',
+  },
+  {
+    q: '¿Puedo probar un instrumento antes de comprarlo?',
+    a: 'Si coordinas una cita en nuestro showroom, sí puedes probarlo antes de retirarlo. Para envíos a domicilio, ofrecemos 7 días de prueba (el producto debe estar sin señales de uso).',
+  },
+  {
+    q: '¿Tienen catálogo físico?',
+    a: 'Puedes ver todo nuestro catálogo en esta página web, o coordinar una cita en nuestro showroom de Caracas para verlo en persona. Si necesitas ayuda, escríbenos y te asesoramos.',
+  },
+  {
+    q: '¿Reciben productos como parte de pago?',
+    a: 'No manejamos trade-ins ni recibimos instrumentos usados como parte de pago. Solo vendemos productos nuevos.',
+  },
+]
+
+const ATENCION_FAQ = [
+  {
+    q: '¿Cuál es su horario de atención?',
+    a: 'Lunes a Viernes: 10:00 AM - 5:00 PM. Sábados: 9:00 AM - 1:00 PM. Domingos: cerrado. Fuera de horario, déjanos un mensaje y te respondemos al día siguiente.',
+  },
+  {
+    q: '¿Por qué medio puedo contactarlos?',
+    a: 'El canal principal es WhatsApp (+58 412-8288674). También puedes escribirnos por Instagram (@avilamusiccs) o correo electrónico.',
+  },
+  {
+    q: '¿Tienen tienda física?',
+    a: 'Operamos principalmente en línea para ofrecerte los mejores precios, pero contamos con un showroom en Caracas (Centro de Operaciones y Despacho) para retiro y atención presencial, exclusivamente bajo previa cita.',
+  },
+  {
+    q: '¿Hacen envíos internacionales?',
+    a: 'Por ahora solo enviamos dentro de Venezuela. Si estás en el exterior, puedes hacer un pedido y nosotros lo enviamos a un familiar en el país.',
+  },
+]
+
+const ALL_FAQS = [...COMPRAS_FAQ, ...ENVIOS_FAQ, ...PRODUCTOS_FAQ, ...ATENCION_FAQ]
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: ALL_FAQS.map((faq) => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a,
+    },
+  })),
 }
 
 export default function FaqPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* Hero */}
       <section className="relative min-h-[350px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-panel to-raised">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
@@ -39,28 +147,7 @@ export default function FaqPage() {
             </h2>
 
             <div className="space-y-4">
-              {[
-                {
-                  q: '¿Cómo puedo realizar un pedido?',
-                  a: 'Puedes comprar directamente en nuestra tienda online o escribirnos por WhatsApp para ayudarte con el proceso. Te guiaremos paso a paso.',
-                },
-                {
-                  q: '¿Qué métodos de pago aceptan?',
-                  a: 'Aceptamos pagos en USD (efectivo, Zelle, PayPal, Binance Pay) y bolívares a la tasa del BCV. También transferencias bancarias nacionales.',
-                },
-                {
-                  q: '¿Los precios incluyen IVA?',
-                  a: 'Sí, todos nuestros precios publicados incluyen IVA. No hay cargos ocultos ni sorpresas al finalizar tu compra.',
-                },
-                {
-                  q: '¿Puedo apartar un producto?',
-                  a: 'Sí, puedes apartar productos con un 50% de anticipo. El tiempo máximo de apartado es de 7 días.',
-                },
-                {
-                  q: '¿Hacen cotizaciones para pedidos grandes?',
-                  a: 'Sí, ofrecemos precios especiales para escuelas de música, academias y compras al mayor. Escríbenos para una cotización personalizada.',
-                },
-              ].map((faq, index) => (
+              {COMPRAS_FAQ.map((faq, index) => (
                 <FaqItem key={index} question={faq.q} answer={faq.a} />
               ))}
             </div>
@@ -76,28 +163,7 @@ export default function FaqPage() {
             </h2>
 
             <div className="space-y-4">
-              {[
-                {
-                  q: '¿Hacen envíos a todo el país?',
-                  a: 'Sí, despachamos a cualquier ciudad de Venezuela a través de MRW y Zoom. El costo del envío se paga directamente al recibir el paquete.',
-                },
-                {
-                  q: '¿Cuánto tarda en llegar mi pedido?',
-                  a: 'Para ciudades principales (Caracas, Valencia, Maracaibo): 24-48 horas. Para otras ciudades: 3-5 días hábiles. Te enviamos el número de tracking apenas despachamos.',
-                },
-                {
-                  q: '¿Puedo recoger mi pedido personalmente?',
-                  a: 'Sí, puedes retirar tu pedido sin costo adicional en nuestro showroom de Caracas, coordinando una cita previa. Te notificaremos cuando esté listo.',
-                },
-                {
-                  q: '¿Empacan bien los instrumentos?',
-                  a: 'Absolutamente. Usamos embalaje reforzado con burbuja, espuma y cajas rígidas. Los instrumentos van asegurados para evitar daños durante el transporte.',
-                },
-                {
-                  q: '¿Qué pasa si mi producto llega dañado?',
-                  a: 'Toma fotos del daño y del empaque al momento de recibir. Contáctanos dentro de las 24 horas y gestionaremos el reclamo con la empresa de envío o te enviaremos un reemplazo.',
-                },
-              ].map((faq, index) => (
+              {ENVIOS_FAQ.map((faq, index) => (
                 <FaqItem key={index} question={faq.q} answer={faq.a} />
               ))}
             </div>
@@ -113,28 +179,7 @@ export default function FaqPage() {
             </h2>
 
             <div className="space-y-4">
-              {[
-                {
-                  q: '¿Todos los productos tienen garantía?',
-                  a: 'Sí, todos nuestros productos cuentan con garantía por defectos de fabricación. El período varía: 30 días para accesorios, 90 días para instrumentos, 1 año para equipos electrónicos.',
-                },
-                {
-                  q: '¿Los productos son originales?',
-                  a: 'Sí, trabajamos solo con proveedores autorizados. Todos nuestros productos son 100% originales y nuevos en su empaque.',
-                },
-                {
-                  q: '¿Puedo probar un instrumento antes de comprarlo?',
-                  a: 'Si coordinas una cita en nuestro showroom, sí puedes probarlo antes de retirarlo. Para envíos a domicilio, ofrecemos 7 días de prueba (el producto debe estar sin señales de uso).',
-                },
-                {
-                  q: '¿Tienen catálogo físico?',
-                  a: 'Puedes ver todo nuestro catálogo en esta página web, o coordinar una cita en nuestro showroom de Caracas para verlo en persona. Si necesitas ayuda, escríbenos y te asesoramos.',
-                },
-                {
-                  q: '¿Reciben productos como parte de pago?',
-                  a: 'No manejamos trade-ins ni recibimos instrumentos usados como parte de pago. Solo vendemos productos nuevos.',
-                },
-              ].map((faq, index) => (
+              {PRODUCTOS_FAQ.map((faq, index) => (
                 <FaqItem key={index} question={faq.q} answer={faq.a} />
               ))}
             </div>
@@ -150,24 +195,7 @@ export default function FaqPage() {
             </h2>
 
             <div className="space-y-4">
-              {[
-                {
-                  q: '¿Cuál es su horario de atención?',
-                  a: 'Lunes a Viernes: 10:00 AM - 5:00 PM. Sábados: 9:00 AM - 1:00 PM. Domingos: cerrado. Fuera de horario, déjanos un mensaje y te respondemos al día siguiente.',
-                },
-                {
-                  q: '¿Por qué medio puedo contactarlos?',
-                  a: 'El canal principal es WhatsApp (+58 412-8288674). También puedes escribirnos por Instagram (@avilamusiccs) o correo electrónico.',
-                },
-                {
-                  q: '¿Tienen tienda física?',
-                  a: 'Operamos principalmente en línea para ofrecerte los mejores precios, pero contamos con un showroom en Caracas (Centro de Operaciones y Despacho) para retiro y atención presencial, exclusivamente bajo previa cita.',
-                },
-                {
-                  q: '¿Hacen envíos internacionales?',
-                  a: 'Por ahora solo enviamos dentro de Venezuela. Si estás en el exterior, puedes hacer un pedido y nosotros lo enviamos a un familiar en el país.',
-                },
-              ].map((faq, index) => (
+              {ATENCION_FAQ.map((faq, index) => (
                 <FaqItem key={index} question={faq.q} answer={faq.a} />
               ))}
             </div>

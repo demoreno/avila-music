@@ -5,7 +5,7 @@ import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
   title: 'Contacto',
-  description: 'Departamentos de ventas, soporte y compras de Ávila Music. Escribinos por WhatsApp o correo electrónico.',
+  description: 'Departamentos de ventas, soporte y compras de Ávila Music. Escríbenos por WhatsApp o correo electrónico.',
   alternates: { canonical: '/contacto' },
 }
 

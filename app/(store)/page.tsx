@@ -209,7 +209,7 @@ export default async function HomePage() {
               Las Stratocaster Smiger están por llegar
             </h2>
             <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto sm:mx-0 sm:ml-auto">
-              El sonido y la sensación de una Stratocaster clásica, en varios colores. Cantidad limitada — reservá la tuya antes que se agoten.
+              El sonido y la sensación de una Stratocaster clásica, en varios colores. Cantidad limitada — reserva la tuya antes que se agoten.
             </p>
 
             <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 mb-10">

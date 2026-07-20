@@ -9,7 +9,7 @@ export default function NotFound() {
         No encontramos esta página
       </h1>
       <p className="text-text-muted text-lg mb-10 max-w-md">
-        El enlace puede estar roto o el producto ya no está disponible. Volvé al catálogo o escribinos si buscabas algo puntual.
+        El enlace puede estar roto o el producto ya no está disponible. Vuelve al catálogo o escríbenos si buscabas algo puntual.
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-3">

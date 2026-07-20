@@ -42,8 +42,8 @@ export default function EnviosPage() {
               </h2>
               <p className="mt-4 text-lg text-text-muted">
                 Operamos principalmente en línea para ofrecerte los mejores precios.
-                Despachamos a cualquier ciudad de Venezuela. Si querés conocer o probar
-                un producto en persona, coordiná una visita a nuestro showroom en Caracas.
+                Despachamos a cualquier ciudad de Venezuela. Si quieres conocer o probar
+                un producto en persona, coordina una visita a nuestro showroom en Caracas.
               </p>
             </div>
 

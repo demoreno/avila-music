@@ -39,6 +39,36 @@ const organizationJsonLd = {
   url: 'https://avilamusic.shop',
   logo: 'https://avilamusic.shop/avila-logo.jpeg',
   sameAs: ['https://wa.me/584128288674'],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Av. Urdaneta, Torre Alfa, Oficina 8A',
+    addressLocality: 'Caracas',
+    addressCountry: 'VE',
+  },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      email: 'ventas@avilamusic.store',
+      telephone: '+58-412-8288674',
+      areaServed: 'VE',
+      availableLanguage: 'Spanish',
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'soporte@avilamusic.store',
+      areaServed: 'VE',
+      availableLanguage: 'Spanish',
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'purchasing',
+      email: 'compras@avilamusic.store',
+      areaServed: 'VE',
+      availableLanguage: 'Spanish',
+    },
+  ],
 }
 
 export default function RootLayout({
