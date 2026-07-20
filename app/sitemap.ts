@@ -3,7 +3,7 @@ import { catalog } from '@/lib/catalog'
 
 const BASE_URL = 'https://avilamusic.shop'
 
-const STATIC_PAGES = ['nosotros', 'faq', 'contacto', 'envios', 'garantias', 'terminos']
+const STATIC_PAGES = ['nosotros', 'faq', 'contacto', 'envios', 'garantias', 'terminos', 'politica-privacidad']
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, categoryTree] = await Promise.all([

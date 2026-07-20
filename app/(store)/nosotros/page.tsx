@@ -38,14 +38,22 @@ export default function NosotrosPage() {
                 Nacimos músicos,<br />crecimos sirviendo
               </h2>
               <p className="text-text-muted text-lg leading-relaxed mb-4">
-                Ávila Music nació en 2020 con una misión clara: ofrecer a los músicos venezolanos 
+                Ávila Music nació en 2020 con una misión clara: ofrecer a los músicos venezolanos
                 instrumentos y accesorios de calidad, con un servicio que entienda sus necesidades reales.
+                Desde entonces evolucionamos de un catálogo pequeño a una estructura de retail digital
+                formal, con procesos definidos de cotización, despacho y postventa.
+              </p>
+              <p className="text-text-muted text-lg leading-relaxed mb-4">
+                Contamos con capacidad de distribución a nivel nacional a través de alianzas logísticas
+                con MRW y Zoom, lo que nos permite llevar pedidos a cualquier ciudad de Venezuela con
+                tiempos de entrega predecibles. Cada producto que comercializamos es 100% original,
+                adquirido directamente con marcas y proveedores autorizados — sin intermediarios que
+                comprometan la calidad o la garantía.
               </p>
               <p className="text-text-muted text-lg leading-relaxed">
-                Lo que comenzó como un sueño entre amigos, hoy es una tienda de referencia para 
-                guitarristas, bajistas, bateristas y músicos de cuerdas en todo el país. Cada producto 
-                que ofrecemos ha sido seleccionado con el mismo criterio con el que elegiríamos para 
-                nosotros mismos.
+                Hoy somos una tienda de referencia para guitarristas, bajistas, bateristas y músicos de
+                cuerdas en todo el país, y una operación pensada para escalar: desde cotizaciones
+                individuales hasta alianzas comerciales con nuevos proveedores y distribuidores.
               </p>
             </div>
             
@@ -229,19 +237,20 @@ export default function NosotrosPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
             {[
-              { name: 'Ernie Ball', file: 'ernie-ball.svg', bg: 'bg-ink' },
-              { name: "D'Addario", file: 'daddario.svg', bg: 'bg-white' },
-              { name: 'Alice', file: 'alice.svg', bg: 'bg-white' },
+              { name: 'Ernie Ball', file: 'ernie-ball.webp', bg: 'bg-white' },
+              { name: "D'Addario", file: 'daddario-logo.jpg', bg: 'bg-white' },
+              { name: 'Alice', file: 'alice-logo.jpeg', bg: 'bg-white' },
               { name: 'Smiger', file: 'smiger.png', bg: 'bg-white' },
-              { name: 'Wilkinson', file: 'wilkinson.svg', bg: 'bg-white' },
+              { name: 'Wilkinson', file: 'wilkinson.png', bg: 'bg-white' },
+              { name: 'Yamaha', file: 'Yamaha-Logo.png', bg: 'bg-white' },
             ].map((brand) => (
               <div
                 key={brand.name}
-                className={`group flex items-center justify-center rounded-xl border border-border ${brand.bg} p-6 transition-all hover:border-primary/30 hover:shadow-md`}
+                className={`group flex items-center justify-center rounded-xl border border-border ${brand.bg} p-4 transition-all hover:border-primary/30 hover:shadow-md`}
               >
-                <div className="relative h-10 w-full flex items-center justify-center">
+                <div className="relative h-16 w-full flex items-center justify-center">
                   <Image
                     src={`/marcas/${brand.file}`}
                     alt={brand.name}

@@ -176,10 +176,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 </div>
                 <span className="heading-serif text-2xl font-bold">Ávila Music</span>
               </div>
-              <p className="text-slate-400 leading-relaxed mb-6">
-                Accesorios musicales de calidad para artistas y entusiastas. 
+              <p className="text-slate-400 leading-relaxed mb-4">
+                Accesorios musicales de calidad para artistas y entusiastas.
                 Envíos seguros a todo el país.
               </p>
+              <div className="text-sm text-slate-500 leading-relaxed mb-6 space-y-1">
+                <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas</p>
+              </div>
               <div className="flex gap-3">
                 <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-success transition-colors">
                   <WhatsAppIcon className="h-5 w-5" />
@@ -253,6 +256,8 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               <p className="text-sm text-slate-400">© {new Date().getFullYear()} Ávila Music. Todos los derechos reservados.</p>
               <div className="flex items-center gap-6">
                 <Link href="/terminos" className="text-sm text-slate-400 hover:text-white transition-colors">Términos y condiciones</Link>
+                <Link href="/garantias" className="text-sm text-slate-400 hover:text-white transition-colors">Garantías y devoluciones</Link>
+                <Link href="/politica-privacidad" className="text-sm text-slate-400 hover:text-white transition-colors">Política de privacidad</Link>
               </div>
             </div>
           </div>

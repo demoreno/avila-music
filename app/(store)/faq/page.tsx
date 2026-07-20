@@ -87,7 +87,7 @@ export default function FaqPage() {
                 },
                 {
                   q: '¿Puedo recoger mi pedido personalmente?',
-                  a: 'Sí, puedes retirar tu pedido en nuestro almacén en Caracas sin costo adicional. Te notificaremos cuando esté listo.',
+                  a: 'Sí, puedes retirar tu pedido sin costo adicional en nuestro showroom de Caracas, coordinando una cita previa. Te notificaremos cuando esté listo.',
                 },
                 {
                   q: '¿Empacan bien los instrumentos?',
@@ -124,11 +124,11 @@ export default function FaqPage() {
                 },
                 {
                   q: '¿Puedo probar un instrumento antes de comprarlo?',
-                  a: 'Si retiras en nuestro almacén, sí puedes probarlo. Para envíos a domicilio, ofrecemos 7 días de prueba (el producto debe estar sin señales de uso).',
+                  a: 'Si coordinas una cita en nuestro showroom, sí puedes probarlo antes de retirarlo. Para envíos a domicilio, ofrecemos 7 días de prueba (el producto debe estar sin señales de uso).',
                 },
                 {
                   q: '¿Tienen catálogo físico?',
-                  a: 'Somos tienda 100% online, pero puedes ver todo nuestro catálogo en esta página web. Si necesitas ayuda, escríbenos y te asesoramos.',
+                  a: 'Puedes ver todo nuestro catálogo en esta página web, o coordinar una cita en nuestro showroom de Caracas para verlo en persona. Si necesitas ayuda, escríbenos y te asesoramos.',
                 },
                 {
                   q: '¿Reciben productos como parte de pago?',
@@ -153,7 +153,7 @@ export default function FaqPage() {
               {[
                 {
                   q: '¿Cuál es su horario de atención?',
-                  a: 'Lunes a Viernes: 9:00 AM - 5:00 PM. Sábados: 9:00 AM - 1:00 PM. Domingos: cerrado. Fuera de horario, déjanos un mensaje y te respondemos al día siguiente.',
+                  a: 'Lunes a Viernes: 10:00 AM - 5:00 PM. Sábados: 9:00 AM - 1:00 PM. Domingos: cerrado. Fuera de horario, déjanos un mensaje y te respondemos al día siguiente.',
                 },
                 {
                   q: '¿Por qué medio puedo contactarlos?',
@@ -161,7 +161,7 @@ export default function FaqPage() {
                 },
                 {
                   q: '¿Tienen tienda física?',
-                  a: 'No, operamos exclusivamente en línea para ofrecerte los mejores precios. Tenemos almacén en Caracas pero no atención al público.',
+                  a: 'Operamos principalmente en línea para ofrecerte los mejores precios, pero contamos con un showroom en Caracas (Centro de Operaciones y Despacho) para retiro y atención presencial, exclusivamente bajo previa cita.',
                 },
                 {
                   q: '¿Hacen envíos internacionales?',

@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Mail, MapPin, Package, ChevronDown } from 'lucide-react'
+import { Mail, MapPin, ShoppingCart, LifeBuoy, Handshake, CalendarCheck, ChevronDown } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
   title: 'Contacto',
-  description: 'Escribinos por WhatsApp o completá el formulario de contacto de Ávila Music. Te respondemos rápido.',
+  description: 'Departamentos de ventas, soporte y compras de Ávila Music. Escribinos por WhatsApp o correo electrónico.',
   alternates: { canonical: '/contacto' },
 }
 
@@ -16,7 +16,7 @@ export default function ContactoPage() {
       <section className="relative min-h-[350px] flex items-center justify-center overflow-hidden bg-gradient-to-r from-primary-light/30 via-white to-primary-light/30">
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            Hablemos
+            Departamentos
           </span>
           <h1 className="heading-serif mt-4 text-5xl font-bold gradient-text sm:text-6xl">
             Contáctanos
@@ -24,55 +24,74 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* Canales de contacto */}
+      {/* Departamentos */}
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-16">
             <h2 className="heading-serif text-4xl font-bold text-text">
-              Estamos para servirte
+              Un correo para cada gestión
             </h2>
             <p className="mt-4 text-text-muted max-w-2xl mx-auto">
-              Elige tu canal preferido. Respondemos rápido porque sabemos que tu música no puede esperar.
+              Escríbenos al departamento correspondiente para una respuesta más rápida y precisa.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* WhatsApp */}
+            {/* Ventas */}
+            <a
+              href="mailto:ventas@avilamusic.store"
+              className="group rounded-2xl border border-amber-200 bg-amber-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover"
+            >
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent/80 to-accent ring-1 ring-amber-300/50 mb-6 group-hover:scale-110 transition-transform">
+                <ShoppingCart className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-text mb-2">Ventas</h3>
+              <p className="text-text-muted mb-4">Cotizaciones y atención a clientes.</p>
+              <span className="text-accent-hover font-mono text-sm">ventas@avilamusic.store</span>
+            </a>
+
+            {/* Soporte */}
+            <a
+              href="mailto:soporte@avilamusic.store"
+              className="group rounded-2xl border border-sky-200 bg-sky-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover"
+            >
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-sky-700 ring-1 ring-sky-300/50 mb-6 group-hover:scale-110 transition-transform">
+                <LifeBuoy className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-text mb-2">Soporte</h3>
+              <p className="text-text-muted mb-4">Garantías y atención técnica.</p>
+              <span className="text-sky-700 font-mono text-sm">soporte@avilamusic.store</span>
+            </a>
+
+            {/* Compras / B2B */}
+            <a
+              href="mailto:compras@avilamusic.store"
+              className="group rounded-2xl border border-purple-200 bg-purple-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover"
+            >
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-purple-800 ring-1 ring-purple-500/30 mb-6 group-hover:scale-110 transition-transform">
+                <Handshake className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-text mb-2">Compras</h3>
+              <p className="text-text-muted mb-4">Exclusivo para alianzas B2B y proveedores.</p>
+              <span className="text-purple-700 font-mono text-sm">compras@avilamusic.store</span>
+            </a>
+          </div>
+
+          <div className="mt-8 max-w-5xl mx-auto">
             <a
               href="https://wa.me/584128288674"
               target="_blank"
               rel="noopener noreferrer"
-              className="group rounded-2xl border border-green-200 bg-green-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover"
+              className="group flex items-center gap-4 rounded-2xl border border-green-200 bg-green-50 p-6 shadow-card transition-all duration-300 hover:shadow-card-hover"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-600 to-green-700 ring-1 ring-green-500/30 mb-6 group-hover:scale-110 transition-transform">
-                <WhatsAppIcon className="h-8 w-8 text-white" />
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-600 to-green-700 ring-1 ring-green-500/30 group-hover:scale-110 transition-transform">
+                <WhatsAppIcon className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-text mb-3">WhatsApp</h3>
-              <p className="text-text-muted mb-4">Respuesta en minutos. Atención personalizada de músicos para músicos.</p>
-              <span className="text-green-700 font-mono text-sm">+58 412-8288674</span>
+              <div>
+                <h3 className="text-lg font-semibold text-text">Atención Rápida — WhatsApp</h3>
+                <p className="text-text-muted text-sm">Respuesta en minutos · <span className="text-green-700 font-mono">+58 412-8288674</span></p>
+              </div>
             </a>
-
-            {/* Email */}
-            <div className="group rounded-2xl border border-amber-200 bg-amber-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent/80 to-accent ring-1 ring-amber-300/50 mb-6 group-hover:scale-110 transition-transform">
-                <Mail className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-text mb-3">Correo electrónico</h3>
-              <p className="text-text-muted mb-4">Para consultas formales, cotizaciones o pedidos especiales.</p>
-              <span className="text-accent-hover font-mono text-sm">contacto@avilamusic.shop</span>
-            </div>
-
-            {/* Redes sociales */}
-            <div className="group rounded-2xl border border-purple-200 bg-purple-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-purple-800 ring-1 ring-purple-500/30 mb-6 group-hover:scale-110 transition-transform">
-                <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-text mb-3">Instagram</h3>
-              <p className="text-text-muted mb-4">Síguenos para novedades, promos y contenido musical.</p>
-              <span className="text-purple-700 text-sm">@avilamusiccs</span>
-            </div>
           </div>
         </div>
       </section>
@@ -90,11 +109,11 @@ export default function ContactoPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-3 border-b border-amber-200/60">
                     <span className="text-text font-medium">Lunes a Viernes</span>
-                    <span className="text-accent-hover font-mono">9:00 AM - 5:00 PM</span>
+                    <span className="text-accent-hover font-mono">10:00 AM - 5:00 PM</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-amber-200/60">
                     <span className="text-text font-medium">Sábados</span>
-                    <span className="text-accent-hover font-mono">9:00 AM - 1:00 PM</span>
+                    <span className="text-accent-hover font-mono">10:00 AM - 1:00 PM</span>
                   </div>
                   <div className="flex justify-between items-center py-3">
                     <span className="text-text font-medium">Domingos</span>
@@ -116,29 +135,29 @@ export default function ContactoPage() {
 
             <div>
               <h2 className="heading-serif text-3xl font-bold text-text mb-8">
-                Ubicación
+                Oficina Comercial
               </h2>
 
               <div className="rounded-2xl border border-sky-200 bg-sky-50 p-8 shadow-card">
-                <div className="aspect-video rounded-xl bg-white border border-sky-100 flex items-center justify-center mb-6">
-                  <div className="text-center">
-                    <MapPin className="h-16 w-16 text-sky-200 mx-auto mb-4" strokeWidth={1.5} />
-                    <p className="text-text-light">Próximamente mapa interactivo</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3 text-text-muted">
+                <div className="space-y-4 text-text-muted mb-6">
                   <p className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-sky-600 mt-0.5" />
+                    <MapPin className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
+                    <span>
+                      <strong className="text-text">Centro de Operaciones y Despacho:</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Venezuela
+                    </span>
+                  </p>
+                  <p className="flex items-start gap-3">
+                    <Mail className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
                     <span>
                       <strong className="text-text">Tienda online:</strong> Operamos en todo el territorio venezolano
                     </span>
                   </p>
-                  <p className="flex items-start gap-3">
-                    <Package className="h-5 w-5 text-sky-600 mt-0.5" />
-                    <span>
-                      <strong className="text-text">Almacén:</strong> Caracas, Venezuela
-                    </span>
+                </div>
+
+                <div className="rounded-xl bg-white border border-sky-100 p-4">
+                  <p className="text-sm text-text-muted flex items-start gap-2">
+                    <CalendarCheck className="h-4 w-4 text-sky-600 mt-0.5 flex-shrink-0" />
+                    Atención presencial y retiro de mercancía exclusivamente bajo previa cita. Coordina la tuya por WhatsApp o el correo de ventas.
                   </p>
                 </div>
               </div>

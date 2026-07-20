@@ -35,14 +35,15 @@ export default function EnviosPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                 </span>
-                Tienda 100% online
+                Showroom con cita previa
               </span>
               <h2 className="heading-serif mt-6 text-3xl font-bold text-text">
-                Sin tienda física,<br />con alcance nacional
+                Showroom bajo cita,<br />con alcance nacional
               </h2>
               <p className="mt-4 text-lg text-text-muted">
-                Operamos exclusivamente en línea para ofrecerte los mejores precios.
-                Despachamos a cualquier ciudad de Venezuela.
+                Operamos principalmente en línea para ofrecerte los mejores precios.
+                Despachamos a cualquier ciudad de Venezuela. Si querés conocer o probar
+                un producto en persona, coordiná una visita a nuestro showroom en Caracas.
               </p>
             </div>
 
@@ -96,7 +97,7 @@ export default function EnviosPage() {
             <div className="group rounded-2xl border border-red-200 bg-red-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm p-2">
-                  <Image src="/logos/mrw.png" alt="MRW" width={56} height={56} className="h-full w-full object-contain" />
+                  <Image src="/logos/mrw-logo.png" alt="MRW" width={56} height={56} className="h-full w-full object-contain" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-text">MRW</h3>
@@ -125,7 +126,7 @@ export default function EnviosPage() {
             <div className="group rounded-2xl border border-sky-200 bg-sky-50 p-8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm p-2">
-                  <Image src="/logos/zoom.png" alt="Zoom" width={56} height={56} className="h-full w-full object-contain" />
+                  <Image src="/logos/zoom-logo.png" alt="Zoom" width={56} height={56} className="h-full w-full object-contain" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-text">Zoom</h3>
