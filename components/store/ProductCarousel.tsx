@@ -6,7 +6,7 @@ import ProductCard from '@/components/store/ProductCard'
 import type { PublicProduct } from '@/lib/catalog'
 
 interface ProductCarouselProps {
-  products: PublicProduct[]
+  products: (Omit<PublicProduct, 'price_usd'> & { price_usd: number | null })[]
 }
 
 export default function ProductCarousel({ products }: ProductCarouselProps) {

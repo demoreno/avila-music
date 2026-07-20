@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { catalog } from '@/lib/catalog'
+import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import ProductsClient from '../../ProductsClient'
 
 async function getCategoryRows(slug: string) {
@@ -53,7 +54,7 @@ export default async function CategoryPage({
   const categoryName = rows[0].category_name
   const subcategoryNames = rows.map((r) => r.subcategory_name).join(', ')
 
-  const products = await catalog.getAllProducts()
+  const [products, showPrices] = await Promise.all([catalog.getAllProducts(), canShowPrices()])
   const catMap = categoryTree.reduce<Record<string, (typeof categoryTree)[number]>>((acc, row) => {
     acc[row.subcategory_id] = row
     return acc
@@ -61,15 +62,18 @@ export default async function CategoryPage({
 
   const productsWithMeta = products.map((p) => {
     const cat = catMap[p.subcategory_id]
-    return {
-      ...p,
-      subcategory_name: cat?.subcategory_name ?? '',
-      subcategory_slug: cat?.subcategory_slug ?? '',
-      category_name: cat?.category_name ?? '',
-      category_slug: cat?.category_slug ?? '',
-      category_id: cat?.category_id ?? '',
-      subcategory_id: p.subcategory_id,
-    }
+    return withPriceVisibility(
+      {
+        ...p,
+        subcategory_name: cat?.subcategory_name ?? '',
+        subcategory_slug: cat?.subcategory_slug ?? '',
+        category_name: cat?.category_name ?? '',
+        category_slug: cat?.category_slug ?? '',
+        category_id: cat?.category_id ?? '',
+        subcategory_id: p.subcategory_id,
+      },
+      showPrices
+    )
   })
 
   const jsonLd = {
@@ -103,6 +107,7 @@ export default async function CategoryPage({
         initialCategory={slug}
         title={categoryName}
         description={`${subcategoryNames}.`}
+        showPrices={showPrices}
       />
     </>
   )

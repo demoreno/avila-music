@@ -9,7 +9,8 @@ import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import type { PublicProduct } from '@/lib/catalog'
 
 interface ProductCardProps {
-  product: PublicProduct & {
+  product: Omit<PublicProduct, 'price_usd'> & {
+    price_usd: number | null
     subcategory_name?: string
   }
 }
@@ -18,7 +19,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
   const imageUrl = primaryImage ? primaryImage.storage_path : null
-  const waLink = whatsappProductLink(product.name, product.price_usd)
+  const waLink = whatsappProductLink(product.name, product.price_usd ?? undefined)
 
   const isOutOfStock = product.stock_total === 0
   const isLowStock = product.stock_total > 0 && product.stock_total <= product.stock_minimum
@@ -121,9 +122,15 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Price and Action */}
         <div className="mt-auto pt-4">
-          <p className="text-2xl font-bold gradient-text">
-            USD {product.price_usd.toFixed(2)}
-          </p>
+          {product.price_usd !== null ? (
+            <p className="text-2xl font-bold gradient-text">
+              USD {product.price_usd.toFixed(2)}
+            </p>
+          ) : (
+            <p className="text-lg font-semibold gradient-text">
+              Cotizar por WhatsApp
+            </p>
+          )}
           {!isOutOfStock && (
             <p className="mt-1 text-xs text-success font-medium flex items-center gap-1">
               <CheckCircle2 className="h-3 w-3" />

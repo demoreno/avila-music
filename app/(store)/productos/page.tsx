@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { catalog } from '@/lib/catalog'
+import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import ProductsClient from './ProductsClient'
 
 export const metadata: Metadata = {
@@ -15,9 +16,10 @@ export default async function ProductsPage({
   searchParams: Promise<{ categoria?: string }>
 }) {
   const params = await searchParams
-  const [products, categoryTree] = await Promise.all([
+  const [products, categoryTree, showPrices] = await Promise.all([
     catalog.getAllProducts(),
     catalog.getCategoryTree(),
+    canShowPrices(),
   ])
 
   const catMap = categoryTree.reduce<Record<string, (typeof categoryTree)[number]>>((acc, row) => {
@@ -27,15 +29,18 @@ export default async function ProductsPage({
 
   const productsWithMeta = products.map((p) => {
     const cat = catMap[p.subcategory_id]
-    return {
-      ...p,
-      subcategory_name: cat?.subcategory_name ?? '',
-      subcategory_slug: cat?.subcategory_slug ?? '',
-      category_name: cat?.category_name ?? '',
-      category_slug: cat?.category_slug ?? '',
-      category_id: cat?.category_id ?? '',
-      subcategory_id: p.subcategory_id,
-    }
+    return withPriceVisibility(
+      {
+        ...p,
+        subcategory_name: cat?.subcategory_name ?? '',
+        subcategory_slug: cat?.subcategory_slug ?? '',
+        category_name: cat?.category_name ?? '',
+        category_slug: cat?.category_slug ?? '',
+        category_id: cat?.category_id ?? '',
+        subcategory_id: p.subcategory_id,
+      },
+      showPrices
+    )
   })
 
   return (
@@ -43,6 +48,7 @@ export default async function ProductsPage({
       products={productsWithMeta}
       categoryTree={categoryTree}
       initialCategory={params.categoria}
+      showPrices={showPrices}
     />
   )
 }

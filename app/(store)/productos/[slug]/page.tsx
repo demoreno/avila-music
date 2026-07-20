@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Tag, Info, ArrowRight, XCircle, AlertTriangle, CheckCircle2, Truck, ShieldCheck, MessageCircle, Lock } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
+import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import ImageGallery from './ImageGallery'
 import ProductCard from '@/components/store/ProductCard'
@@ -46,12 +47,14 @@ export default async function ProductPage({
   const product = await catalog.getProductBySlug(slug)
   if (!product) notFound()
 
-  const [categoryInfo, relatedProducts] = await Promise.all([
+  const [categoryInfo, rawRelatedProducts, showPrices] = await Promise.all([
     catalog.getCategoryBySubcategoryId(product.subcategory_id),
     catalog.getRelatedProducts(product.subcategory_id, product.id),
+    canShowPrices(),
   ])
+  const relatedProducts = rawRelatedProducts.map((p) => withPriceVisibility(p, showPrices))
 
-  const waLink = whatsappProductLink(product.name, product.price_usd)
+  const waLink = whatsappProductLink(product.name, showPrices ? product.price_usd : undefined)
 
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
   const ogImageUrl = primaryImage ? catalog.getProductImageUrl(primaryImage.storage_path) : null
@@ -62,15 +65,19 @@ export default async function ProductPage({
     name: product.name,
     description: product.description || undefined,
     image: ogImageUrl ?? undefined,
-    offers: {
-      '@type': 'Offer',
-      price: product.price_usd,
-      priceCurrency: 'USD',
-      availability:
-        product.stock_total > 0
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/OutOfStock',
-    },
+    ...(showPrices
+      ? {
+          offers: {
+            '@type': 'Offer',
+            price: product.price_usd,
+            priceCurrency: 'USD',
+            availability:
+              product.stock_total > 0
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+          },
+        }
+      : {}),
   }
 
   const breadcrumbJsonLd = {
@@ -161,9 +168,15 @@ export default async function ProductPage({
 
             {/* Price and Stock */}
             <div className="flex items-center gap-4 flex-wrap">
-              <span className="text-5xl font-bold gradient-text">
-                USD {Number(product.price_usd).toFixed(2)}
-              </span>
+              {showPrices ? (
+                <span className="text-5xl font-bold gradient-text">
+                  USD {Number(product.price_usd).toFixed(2)}
+                </span>
+              ) : (
+                <span className="text-2xl font-semibold gradient-text">
+                  Consulta el precio por WhatsApp
+                </span>
+              )}
               <span className={`badge ${stockStatus.color} shadow-lg`}>
                 <stockStatus.icon className="h-3.5 w-3.5" />
                 {stockStatus.label}

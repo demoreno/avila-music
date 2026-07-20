@@ -5,7 +5,8 @@ import ProductCard from '@/components/store/ProductCard'
 import type { PublicProduct } from '@/lib/catalog'
 import type { CategoryTree } from '@/types/index'
 
-interface ProductWithMeta extends PublicProduct {
+interface ProductWithMeta extends Omit<PublicProduct, 'price_usd'> {
+  price_usd: number | null
   subcategory_name: string
   subcategory_slug: string
   category_name: string
@@ -20,6 +21,7 @@ interface ProductsClientProps {
   initialCategory?: string
   title?: string
   description?: string
+  showPrices: boolean
 }
 
 type SortOption = 'precio-asc' | 'precio-desc' | 'mas-vendido'
@@ -30,6 +32,7 @@ export default function ProductsClient({
   initialCategory,
   title = 'Productos',
   description,
+  showPrices,
 }: ProductsClientProps) {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(initialCategory ?? '')
@@ -71,11 +74,11 @@ export default function ProductsClient({
       result = result.filter((p) => p.subcategory_slug === selectedSubcategory)
     }
 
-    if (sort === 'precio-asc') result.sort((a, b) => a.price_usd - b.price_usd)
-    else if (sort === 'precio-desc') result.sort((a, b) => b.price_usd - a.price_usd)
+    if (showPrices && sort === 'precio-asc') result.sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0))
+    else if (showPrices && sort === 'precio-desc') result.sort((a, b) => (b.price_usd ?? 0) - (a.price_usd ?? 0))
 
     return result
-  }, [products, search, selectedCategory, selectedSubcategory, sort])
+  }, [products, search, selectedCategory, selectedSubcategory, sort, showPrices])
 
   function handleCategoryChange(slug: string) {
     setSelectedCategory(slug)
@@ -130,8 +133,8 @@ export default function ProductsClient({
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
         >
           <option value="mas-vendido">Más vendido</option>
-          <option value="precio-asc">Precio: menor a mayor</option>
-          <option value="precio-desc">Precio: mayor a menor</option>
+          {showPrices && <option value="precio-asc">Precio: menor a mayor</option>}
+          {showPrices && <option value="precio-desc">Precio: mayor a menor</option>}
         </select>
       </div>
 

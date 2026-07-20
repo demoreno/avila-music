@@ -3,6 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { ArrowRight, ArrowDown, Truck, ShieldCheck, MessageCircle, Lock, Music, Shirt } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
+import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import ProductCarousel from '@/components/store/ProductCarousel'
 import ColorGallery from '@/components/store/ColorGallery'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
@@ -12,10 +13,13 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [featuredProducts, newArrivals] = await Promise.all([
+  const [rawFeaturedProducts, rawNewArrivals, showPrices] = await Promise.all([
     catalog.getFeaturedProducts(8),
     catalog.getNewArrivals(8),
+    canShowPrices(),
   ])
+  const featuredProducts = rawFeaturedProducts.map((p) => withPriceVisibility(p, showPrices))
+  const newArrivals = rawNewArrivals.map((p) => withPriceVisibility(p, showPrices))
 
   return (
     <>
