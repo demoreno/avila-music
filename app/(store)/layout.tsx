@@ -79,7 +79,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
               <a
                 href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
-                className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#25D366]/10 text-[#1c9a4f] hover:bg-[#25D366]/20 transition-all duration-300 text-xs font-medium"
+                className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-whatsapp/10 text-whatsapp hover:bg-whatsapp/20 transition-all duration-300 text-xs font-medium"
               >
                 <WhatsAppIcon className="h-3.5 w-3.5" />
                 <span className="hidden lg:inline">WhatsApp</span>
@@ -146,7 +146,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               ))}
               <a
                 href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 mt-3 py-3 px-4 bg-[#25D366]/10 text-[#1c9a4f] rounded-xl text-sm font-medium"
+                className="flex items-center gap-3 mt-3 py-3 px-4 bg-whatsapp/10 text-whatsapp rounded-xl text-sm font-medium"
               >
                 <WhatsAppIcon className="h-4 w-4" />
                 Contactar por WhatsApp
@@ -159,7 +159,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 pt-[68px]">{children}</main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white">
+      <footer className="bg-[#150e08] text-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             <div>
@@ -184,7 +184,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas</p>
               </div>
               <div className="flex gap-3">
-                <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-success transition-colors">
+                <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
                 <a href="mailto:contacto@avilamusic.shop" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
@@ -243,7 +243,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
                     <Clock className="h-4 w-4 text-[#f59e0b]" />
                   </div>
-                  <div className="text-slate-400">Lun-Vie: 9am-6pm<br />Sáb: 9am-1pm</div>
+                  <div className="text-slate-400">Lun-Vie: 10am-5pm<br />Sáb: 10am-1pm</div>
                 </li>
               </ul>
             </div>

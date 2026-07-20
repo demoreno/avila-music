@@ -255,7 +255,7 @@ export default function EnviosPage() {
 
       {/* CTA */}
       <section className="py-20 bg-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-[#10b981]/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-whatsapp/10 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl" />
 
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6">
@@ -269,7 +269,7 @@ export default function EnviosPage() {
             href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#10b981] to-[#059669] hover:from-[#059669] hover:to-[#10b981] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-success/30 hover:shadow-2xl hover:shadow-success/40 hover:scale-105 transition-all duration-300"
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-whatsapp to-whatsapp-hover hover:from-whatsapp-hover hover:to-whatsapp px-8 py-4 text-base font-semibold text-white shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-105 transition-all duration-300"
           >
             <WhatsAppIcon className="h-5 w-5" />
             Consultar por WhatsApp

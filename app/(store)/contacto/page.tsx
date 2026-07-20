@@ -82,14 +82,14 @@ export default function ContactoPage() {
               href="https://wa.me/584128288674"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-4 rounded-2xl border border-green-200 bg-green-50 p-6 shadow-card transition-all duration-300 hover:shadow-card-hover"
+              className="group flex items-center gap-4 rounded-2xl border border-whatsapp/20 bg-whatsapp/5 p-6 shadow-card transition-all duration-300 hover:shadow-card-hover"
             >
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-600 to-green-700 ring-1 ring-green-500/30 group-hover:scale-110 transition-transform">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-whatsapp to-whatsapp-hover ring-1 ring-whatsapp/30 group-hover:scale-110 transition-transform">
                 <WhatsAppIcon className="h-7 w-7 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-text">Atención Rápida — WhatsApp</h3>
-                <p className="text-text-muted text-sm">Respuesta en minutos · <span className="text-green-700 font-mono">+58 412-8288674</span></p>
+                <p className="text-text-muted text-sm">Respuesta en minutos · <span className="text-whatsapp font-mono">+58 412-8288674</span></p>
               </div>
             </a>
           </div>
@@ -215,7 +215,7 @@ export default function ContactoPage() {
 
       {/* CTA */}
       <section className="py-20 bg-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-[#10b981]/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-whatsapp/10 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl" />
 
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6">
@@ -229,7 +229,7 @@ export default function ContactoPage() {
             href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#10b981] to-[#059669] hover:from-[#059669] hover:to-[#10b981] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-success/30 hover:shadow-2xl hover:shadow-success/40 hover:scale-105 transition-all duration-300"
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-whatsapp to-whatsapp-hover hover:from-whatsapp-hover hover:to-whatsapp px-8 py-4 text-base font-semibold text-white shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-105 transition-all duration-300"
           >
             <WhatsAppIcon className="h-5 w-5" />
             Iniciar conversación

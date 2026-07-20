@@ -120,28 +120,26 @@ export default function FaqPage() {
       />
 
       {/* Hero */}
-      <section className="relative min-h-[350px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-panel to-raised">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
-        
+      <section className="relative min-h-[350px] flex items-center justify-center overflow-hidden bg-gradient-to-r from-primary-light/30 via-white to-primary-light/30">
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             Ayuda
           </span>
-          <h1 className="heading-serif mt-4 text-5xl font-bold text-cream sm:text-6xl">
+          <h1 className="heading-serif mt-4 text-5xl font-bold gradient-text sm:text-6xl">
             Preguntas<br />
-            <span className="text-gold">frecuentes</span>
+            frecuentes
           </h1>
         </div>
       </section>
 
       {/* Categorías de FAQ */}
-      <section className="py-20 bg-ink">
+      <section className="py-20 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           {/* Compras y pagos */}
           <div className="mb-16">
-            <h2 className="heading-serif text-2xl font-bold text-cream mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20">
-                <ShoppingBag className="h-5 w-5 text-gold" />
+            <h2 className="heading-serif text-2xl font-bold text-text mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50">
+                <ShoppingBag className="h-5 w-5 text-accent-hover" />
               </div>
               Compras y pagos
             </h2>
@@ -155,9 +153,9 @@ export default function FaqPage() {
 
           {/* Envíos y entregas */}
           <div className="mb-16">
-            <h2 className="heading-serif text-2xl font-bold text-cream mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20">
-                <Truck className="h-5 w-5 text-gold" />
+            <h2 className="heading-serif text-2xl font-bold text-text mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50">
+                <Truck className="h-5 w-5 text-accent-hover" />
               </div>
               Envíos y entregas
             </h2>
@@ -171,9 +169,9 @@ export default function FaqPage() {
 
           {/* Productos y garantía */}
           <div className="mb-16">
-            <h2 className="heading-serif text-2xl font-bold text-cream mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20">
-                <ShieldCheck className="h-5 w-5 text-gold" />
+            <h2 className="heading-serif text-2xl font-bold text-text mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50">
+                <ShieldCheck className="h-5 w-5 text-accent-hover" />
               </div>
               Productos y garantía
             </h2>
@@ -187,9 +185,9 @@ export default function FaqPage() {
 
           {/* Atención al cliente */}
           <div>
-            <h2 className="heading-serif text-2xl font-bold text-cream mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20">
-                <Headphones className="h-5 w-5 text-gold" />
+            <h2 className="heading-serif text-2xl font-bold text-text mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50">
+                <Headphones className="h-5 w-5 text-accent-hover" />
               </div>
               Atención al cliente
             </h2>
@@ -204,19 +202,19 @@ export default function FaqPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-b from-ink to-panel/30">
+      <section className="py-20 bg-bg-alt">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h2 className="heading-serif text-4xl font-bold text-cream mb-6">
+          <h2 className="heading-serif text-4xl font-bold gradient-text mb-6">
             ¿No encontraste tu respuesta?
           </h2>
-          <p className="text-lg text-sand/70 mb-10">
+          <p className="text-lg text-text-muted mb-10">
             Escríbenos por WhatsApp. Estamos aquí para ayudarte.
           </p>
           <a
             href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 rounded-full bg-green-600 px-8 py-4 text-base font-semibold text-white shadow-[0_0_40px_-10px_rgba(22,163,74,0.5)] transition-all hover:bg-green-500 hover:shadow-[0_0_60px_-10px_rgba(22,163,74,0.7)]"
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-whatsapp to-whatsapp-hover hover:from-whatsapp-hover hover:to-whatsapp px-8 py-4 text-base font-semibold text-white shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-105 transition-all duration-300"
           >
             <WhatsAppIcon className="h-5 w-5" />
             Hablar con un asesor
@@ -229,12 +227,12 @@ export default function FaqPage() {
 
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
-    <details className="group rounded-xl border border-edge bg-panel/40 p-6 [&_summary::-webkit-details-marker]:hidden">
+    <details className="group rounded-xl border border-border bg-bg-alt p-6 [&_summary::-webkit-details-marker]:hidden">
       <summary className="flex items-center justify-between cursor-pointer list-none">
-        <span className="text-cream font-medium pr-8">{question}</span>
-        <ChevronDown className="h-5 w-5 text-gold transition-transform group-open:rotate-180" />
+        <span className="text-text font-medium pr-8">{question}</span>
+        <ChevronDown className="h-5 w-5 text-accent transition-transform group-open:rotate-180" />
       </summary>
-      <p className="mt-4 text-sand/60 leading-relaxed">{answer}</p>
+      <p className="mt-4 text-text-muted leading-relaxed">{answer}</p>
     </details>
   )
 }

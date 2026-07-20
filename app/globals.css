@@ -21,6 +21,9 @@
   --color-border-dark: #cbd5e1;
   --color-success: #10b981;
   --color-success-dark: #059669;
+  /* Brand teal, used for WhatsApp CTAs instead of WhatsApp's own green — keeps CTAs on-brand. */
+  --color-whatsapp: #0f7a5f;
+  --color-whatsapp-hover: #0b5c48;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-error-dark: #dc2626;

@@ -12,34 +12,32 @@ export default function GarantiasPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[350px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-ink via-panel to-raised">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
-        
+      <section className="relative min-h-[350px] flex items-center justify-center overflow-hidden bg-gradient-to-r from-primary-light/30 via-white to-primary-light/30">
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             Protección al cliente
           </span>
-          <h1 className="heading-serif mt-4 text-5xl font-bold text-cream sm:text-6xl">
+          <h1 className="heading-serif mt-4 text-5xl font-bold gradient-text sm:text-6xl">
             Garantías y<br />
-            <span className="text-gold">devoluciones</span>
+            devoluciones
           </h1>
         </div>
       </section>
 
       {/* Info principal */}
-      <section className="py-20 bg-ink">
+      <section className="py-20 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <div className="rounded-2xl border border-edge bg-panel/40 p-8 sm:p-12">
+          <div className="rounded-2xl border border-border bg-bg-alt p-8 sm:p-12">
             <div className="flex items-start gap-4 mb-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-gold to-gold/70 ring-1 ring-gold/30 flex-shrink-0">
-                <ShieldCheck className="h-7 w-7 text-ink" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-hover ring-1 ring-amber-300/50 flex-shrink-0">
+                <ShieldCheck className="h-7 w-7 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-cream mb-2">
+                <h2 className="text-2xl font-bold text-text mb-2">
                   Todos nuestros productos tienen garantía
                 </h2>
-                <p className="text-sand/70">
-                  Compramos solo a proveedores autorizados. Cada instrumento y accesorio 
+                <p className="text-text-muted">
+                  Compramos solo a proveedores autorizados. Cada instrumento y accesorio
                   cuenta con respaldo por defectos de fabricación.
                 </p>
               </div>
@@ -65,11 +63,11 @@ export default function GarantiasPage() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-xl border border-edge bg-raised/50 p-6 text-center"
+                  className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center shadow-card"
                 >
-                  <item.icon className="h-9 w-9 mb-3 mx-auto text-gold" strokeWidth={1.5} />
-                  <span className="text-2xl font-bold text-gold block mb-2">{item.title}</span>
-                  <p className="text-sm text-sand/60">{item.description}</p>
+                  <item.icon className="h-9 w-9 mb-3 mx-auto text-accent-hover" strokeWidth={1.5} />
+                  <span className="text-2xl font-bold text-accent-hover block mb-2">{item.title}</span>
+                  <p className="text-sm text-text-muted">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -78,21 +76,21 @@ export default function GarantiasPage() {
       </section>
 
       {/* Cobertura */}
-      <section className="py-20 bg-panel/30">
+      <section className="py-20 bg-bg-alt">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Qué cubre
             </span>
-            <h2 className="heading-serif mt-4 text-4xl font-bold text-cream">
+            <h2 className="heading-serif mt-4 text-4xl font-bold text-text">
               Cobertura de garantía
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Cubre */}
-            <div className="rounded-2xl border border-green-800/30 bg-green-900/10 p-8">
-              <h3 className="text-xl font-semibold text-green-400 mb-6 flex items-center gap-3">
+            <div className="rounded-2xl border border-green-200 bg-green-50 p-8 shadow-card">
+              <h3 className="text-xl font-semibold text-green-700 mb-6 flex items-center gap-3">
                 <Check className="h-6 w-6" />
                 Sí está cubierto
               </h3>
@@ -105,8 +103,8 @@ export default function GarantiasPage() {
                   'Defectos en acabados (laca, barniz, pintura)',
                   'Fallas en amplificadores y pedales',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sand/70">
-                    <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <li key={item} className="flex items-start gap-3 text-text-muted">
+                    <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -114,8 +112,8 @@ export default function GarantiasPage() {
             </div>
 
             {/* No cubre */}
-            <div className="rounded-2xl border border-red-800/30 bg-red-900/10 p-8">
-              <h3 className="text-xl font-semibold text-red-400 mb-6 flex items-center gap-3">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-8 shadow-card">
+              <h3 className="text-xl font-semibold text-red-700 mb-6 flex items-center gap-3">
                 <X className="h-6 w-6" />
                 No está cubierto
               </h3>
@@ -128,8 +126,8 @@ export default function GarantiasPage() {
                   'Golpes, caídas o accidentes',
                   'Productos sin factura de compra',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sand/70">
-                    <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <li key={item} className="flex items-start gap-3 text-text-muted">
+                    <X className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -140,13 +138,13 @@ export default function GarantiasPage() {
       </section>
 
       {/* Proceso de reclamo */}
-      <section className="py-20 bg-ink">
+      <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Paso a paso
             </span>
-            <h2 className="heading-serif mt-4 text-4xl font-bold text-cream">
+            <h2 className="heading-serif mt-4 text-4xl font-bold text-text">
               ¿Cómo hacer un reclamo?
             </h2>
           </div>
@@ -176,14 +174,14 @@ export default function GarantiasPage() {
             ].map((item, index) => (
               <div key={item.step} className="relative">
                 {index < 3 && (
-                  <div className="hidden md:block absolute top-12 left-full w-full h-px bg-gradient-to-r from-gold/50 to-transparent" />
+                  <div className="hidden md:block absolute top-12 left-full w-full h-px bg-gradient-to-r from-accent/40 to-transparent" />
                 )}
                 <div className="text-center">
-                  <div className="inline-flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gold to-gold/70 ring-4 ring-ink mb-6">
-                    <span className="text-2xl font-black text-ink">{item.step}</span>
+                  <div className="inline-flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-hover ring-4 ring-white shadow-card mb-6">
+                    <span className="text-2xl font-black text-white">{item.step}</span>
                   </div>
-                  <h3 className="text-xl font-semibold text-cream mb-3">{item.title}</h3>
-                  <p className="text-sand/60">{item.description}</p>
+                  <h3 className="text-xl font-semibold text-text mb-3">{item.title}</h3>
+                  <p className="text-text-muted">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -192,49 +190,49 @@ export default function GarantiasPage() {
       </section>
 
       {/* Política de devoluciones */}
-      <section className="py-20 bg-panel/30">
+      <section className="py-20 bg-bg-alt">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <div className="rounded-2xl border border-edge bg-panel/40 p-8 sm:p-12">
-            <h2 className="heading-serif text-3xl font-bold text-cream mb-8">
+          <div className="rounded-2xl border border-border bg-white p-8 sm:p-12 shadow-card">
+            <h2 className="heading-serif text-3xl font-bold text-text mb-8">
               Política de devoluciones
             </h2>
 
             <div className="space-y-6">
               <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20 flex-shrink-0">
-                  <span className="text-gold font-bold">1</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50 flex-shrink-0">
+                  <span className="text-accent-hover font-bold">1</span>
                 </div>
                 <div>
-                  <h3 className="text-cream font-semibold mb-2">Devolución por garantía</h3>
-                  <p className="text-sand/60">
-                    Si tu producto presenta un defecto de fabricación dentro del período de garantía, 
+                  <h3 className="text-text font-semibold mb-2">Devolución por garantía</h3>
+                  <p className="text-text-muted">
+                    Si tu producto presenta un defecto de fabricación dentro del período de garantía,
                     cubrimos los costos de envío para reparación o reemplazo.
                   </p>
                 </div>
               </div>
 
               <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20 flex-shrink-0">
-                  <span className="text-gold font-bold">2</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50 flex-shrink-0">
+                  <span className="text-accent-hover font-bold">2</span>
                 </div>
                 <div>
-                  <h3 className="text-cream font-semibold mb-2">Devolución por arrepentimiento</h3>
-                  <p className="text-sand/60">
-                    Si cambiaste de opinión, puedes devolver el producto dentro de los 7 días 
-                    posteriores a la compra. Debe estar sin usar, en su empaque original. 
+                  <h3 className="text-text font-semibold mb-2">Devolución por arrepentimiento</h3>
+                  <p className="text-text-muted">
+                    Si cambiaste de opinión, puedes devolver el producto dentro de los 7 días
+                    posteriores a la compra. Debe estar sin usar, en su empaque original.
                     Los costos de envío corren por tu cuenta.
                   </p>
                 </div>
               </div>
 
               <div className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10 ring-1 ring-gold/20 flex-shrink-0">
-                  <span className="text-gold font-bold">3</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 ring-1 ring-amber-300/50 flex-shrink-0">
+                  <span className="text-accent-hover font-bold">3</span>
                 </div>
                 <div>
-                  <h3 className="text-cream font-semibold mb-2">Productos no retornables</h3>
-                  <p className="text-sand/60">
-                    Por razones de higiene, las cuerdas, baquetas y accesorios de contacto 
+                  <h3 className="text-text font-semibold mb-2">Productos no retornables</h3>
+                  <p className="text-text-muted">
+                    Por razones de higiene, las cuerdas, baquetas y accesorios de contacto
                     personal no son retornables una vez abiertos, salvo defecto de fabricación.
                   </p>
                 </div>
@@ -245,19 +243,22 @@ export default function GarantiasPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-b from-ink to-panel/30">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h2 className="heading-serif text-4xl font-bold text-cream mb-6">
+      <section className="py-20 bg-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-whatsapp/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl" />
+
+        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <h2 className="heading-serif text-4xl font-bold gradient-text mb-6">
             ¿Tienes un problema con tu producto?
           </h2>
-          <p className="text-lg text-sand/70 mb-10">
+          <p className="text-lg text-text-muted mb-10">
             Estamos aquí para ayudarte. Escríbenos y buscaremos la mejor solución.
           </p>
           <a
             href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 rounded-full bg-green-600 px-8 py-4 text-base font-semibold text-white shadow-[0_0_40px_-10px_rgba(22,163,74,0.5)] transition-all hover:bg-green-500 hover:shadow-[0_0_60px_-10px_rgba(22,163,74,0.7)]"
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-whatsapp to-whatsapp-hover hover:from-whatsapp-hover hover:to-whatsapp px-8 py-4 text-base font-semibold text-white shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-105 transition-all duration-300"
           >
             <WhatsAppIcon className="h-5 w-5" />
             Reportar un problema

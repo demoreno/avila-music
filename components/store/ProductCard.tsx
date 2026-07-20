@@ -76,7 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm text-success shadow-lg transition-all hover:scale-110 hover:bg-success hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm text-whatsapp shadow-lg transition-all hover:scale-110 hover:bg-whatsapp hover:text-white"
             title="Consultar por WhatsApp"
             aria-label={`Consultar ${product.name} por WhatsApp`}
           >

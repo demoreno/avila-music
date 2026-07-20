@@ -297,7 +297,7 @@ export default async function HomePage() {
                 icon: Truck,
                 title: 'Envíos nacionales',
                 desc: 'A todo el país de forma segura',
-                color: 'from-[#10b981] to-[#059669]',
+                color: 'from-[#0ea5e9] to-[#0284c7]',
               },
               {
                 icon: ShieldCheck,
@@ -375,7 +375,7 @@ export default async function HomePage() {
 
       {/* WhatsApp CTA */}
       <section className="py-24 bg-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-[#10b981]/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-whatsapp/10 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-[#f59e0b]/10 to-transparent rounded-full blur-3xl" />
         
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 relative z-10">
@@ -400,7 +400,7 @@ export default async function HomePage() {
             href="https://wa.me/584128288674"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#10b981] to-[#059669] hover:from-[#059669] hover:to-[#10b981] text-white px-10 py-5 rounded-full font-semibold text-lg shadow-xl shadow-success/30 hover:shadow-2xl hover:shadow-success/40 hover:scale-105 transition-all duration-300 btn-glow"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-whatsapp to-whatsapp-hover hover:from-whatsapp-hover hover:to-whatsapp text-white px-10 py-5 rounded-full font-semibold text-lg shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-105 transition-all duration-300 btn-glow"
           >
             <WhatsAppIcon className="h-6 w-6" />
             Chatear ahora
