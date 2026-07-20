@@ -78,7 +78,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${dmSans.variable} ${cormorant.variable}`}>
-      <body className="transition-opacity duration-300">
+      <body className="transition-opacity duration-300" suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
