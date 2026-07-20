@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { ArrowRight, ArrowDown, Truck, ShieldCheck, MessageCircle, Lock, Music, Shirt } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
 import ProductCarousel from '@/components/store/ProductCarousel'
+import ColorGallery from '@/components/store/ColorGallery'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
@@ -178,6 +179,66 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Smiger Stratocaster */}
+      <section className="relative py-24 sm:py-32 overflow-hidden bg-[#150e08]">
+        <div className="absolute inset-0">
+          <Image
+            src="/smiger-strat-lineup.avif"
+            alt=""
+            fill
+            className="object-cover"
+            style={{ objectPosition: '25% center' }}
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#150e08]/70 to-[#150e08]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#150e08]/60 via-transparent to-[#150e08]/40 sm:hidden" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="ml-auto max-w-xl text-center sm:text-right">
+            <div className="inline-flex items-center gap-3 rounded-full bg-white/10 border border-white/15 pl-2 pr-4 py-1.5 mb-6">
+              <div className="flex h-6 w-14 items-center justify-center rounded-full bg-white">
+                <Image src="/smiger-log.png" alt="Smiger" width={48} height={20} className="h-4 w-auto object-contain" />
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-400">
+                Nuevo ingreso · Stock limitado
+              </span>
+            </div>
+
+            <h2 className="heading-serif text-4xl sm:text-5xl font-bold text-white mb-6">
+              Las Stratocaster Smiger están por llegar
+            </h2>
+            <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto sm:mx-0 sm:ml-auto">
+              El sonido y la sensación de una Stratocaster clásica, en varios colores. Cantidad limitada — reservá la tuya antes que se agoten.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 mb-10">
+              <ColorGallery
+                productName="Stratocaster Smiger"
+                images={[
+                  { name: 'Azul', src: '/smiger-azul.avif' },
+                  { name: 'Negro', src: '/smiger-negro.avif' },
+                  { name: 'Crema', src: '/smiger-crema.avif' },
+                  { name: 'Celeste', src: '/smiger-celeste.avif' },
+                  { name: 'Rojo', src: '/smiger-rojo.avif' },
+                  { name: 'Verde menta', src: '/smiger-verde-menta.avif' },
+                ].map((c) => ({ label: c.name, src: c.src }))}
+              />
+            </div>
+
+            <a
+              href={`https://wa.me/584128288674?text=${encodeURIComponent('Hola, quiero reservar una guitarra Smiger Stratocaster.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 bg-amber-500 text-black px-8 py-4 rounded-xl font-semibold hover:bg-amber-400 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+              Reservar la mía
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Novedades */}
       {newArrivals.length > 0 && (
         <section className="py-24 bg-white">
@@ -342,7 +403,7 @@ export default async function HomePage() {
           </a>
           
           <p className="mt-6 text-sm text-text-muted">
-            Horario: Lunes a Sábado, 9am - 5pm
+            Horario: Lunes a Sábado, 10am - 5pm
           </p>
         </div>
       </section>

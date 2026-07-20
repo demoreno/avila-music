@@ -205,7 +205,7 @@
     "stock_minimum": 10,
     "notes": null,
     "is_active": true,
-    "featured": false,
+    "featured": true,
     "description": "Correa ajustable de nylon para guitarra o bajo, con regulación de largo para distintas alturas de ejecución. Resistente para uso prolongado en vivo o ensayo.",
     "new_arrival": false
   },

@@ -216,7 +216,7 @@ export default function TerminosPage() {
                   <p className="text-sand/60">
                     <strong className="text-cream">WhatsApp:</strong> +58 412-8288674<br />
                     <strong className="text-cream">Email:</strong> contacto@avilamusic.shop<br />
-                    <strong className="text-cream">Horario:</strong> Lunes a Viernes 9am-6pm, Sábados 9am-1pm
+                    <strong className="text-cream">Horario:</strong> Lunes a Viernes 10am-6pm, Sábados 10am-1pm
                   </p>
                 </div>
               </section>

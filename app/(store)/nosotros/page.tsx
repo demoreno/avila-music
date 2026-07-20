@@ -234,7 +234,7 @@ export default function NosotrosPage() {
               { name: 'Ernie Ball', file: 'ernie-ball.svg', bg: 'bg-ink' },
               { name: "D'Addario", file: 'daddario.svg', bg: 'bg-white' },
               { name: 'Alice', file: 'alice.svg', bg: 'bg-white' },
-              { name: 'Smiger', file: 'smiger.svg', bg: 'bg-ink' },
+              { name: 'Smiger', file: 'smiger.png', bg: 'bg-white' },
               { name: 'Wilkinson', file: 'wilkinson.svg', bg: 'bg-white' },
             ].map((brand) => (
               <div
