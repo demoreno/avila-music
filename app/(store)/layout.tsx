@@ -4,14 +4,17 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle } from 'lucide-react'
+import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle, ShoppingCart } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
+import CartHydration from '@/components/store/CartHydration'
+import { useCartCount } from '@/lib/cart/store'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const router = useRouter()
+  const cartCount = useCartCount()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,6 +35,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
+      <CartHydration />
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-between h-[68px]">
@@ -84,6 +88,19 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <WhatsAppIcon className="h-3.5 w-3.5" />
                 <span className="hidden lg:inline">WhatsApp</span>
               </a>
+
+              <Link
+                href="/carrito"
+                aria-label={`Carrito de compras${cartCount > 0 ? `, ${cartCount} producto${cartCount === 1 ? '' : 's'}` : ''}`}
+                className="relative p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
+              >
+                <ShoppingCart className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                {cartCount > 0 && (
+                  <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold text-black">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
 
               <button
                 onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setSearchOpen(false) }}
@@ -144,6 +161,14 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                   {link.label}
                 </Link>
               ))}
+              <Link
+                href="/carrito"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 py-2.5 px-3 text-sm text-slate-600 hover:text-amber-600 transition-colors rounded-lg"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Carrito{cartCount > 0 ? ` (${cartCount})` : ''}
+              </Link>
               <a
                 href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 mt-3 py-3 px-4 bg-whatsapp/10 text-whatsapp rounded-xl text-sm font-medium"

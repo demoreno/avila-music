@@ -7,6 +7,7 @@ import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import ImageGallery from './ImageGallery'
 import ProductCard from '@/components/store/ProductCard'
+import AddToCartButton from '@/components/store/AddToCartButton'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export async function generateStaticParams() {
@@ -196,11 +197,22 @@ export default async function ProductPage({
 
             {/* Actions */}
             <div className="flex flex-col gap-4 pt-4">
+              <AddToCartButton
+                product={{
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  imageUrl: ogImageUrl,
+                  unitPriceUsd: showPrices ? product.price_usd : null,
+                  stockTotal: product.stock_total,
+                }}
+                className="btn-primary btn-glow justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              />
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-primary btn-glow justify-center py-4"
+                className="btn-outline justify-center py-4"
               >
                 <WhatsAppIcon className="h-6 w-6" />
                 Pedir por WhatsApp

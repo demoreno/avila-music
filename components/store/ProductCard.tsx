@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { Eye, ArrowRight, CheckCircle2, Music } from 'lucide-react'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
+import AddToCartButton from '@/components/store/AddToCartButton'
 import type { PublicProduct } from '@/lib/catalog'
 
 interface ProductCardProps {
@@ -90,6 +91,20 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             <Eye className="h-5 w-5" />
           </Link>
+          <AddToCartButton
+            product={{
+              productId: product.id,
+              slug: product.slug,
+              name: product.name,
+              imageUrl,
+              unitPriceUsd: product.price_usd,
+              stockTotal: product.stock_total,
+            }}
+            ariaLabel={`Agregar ${product.name} al carrito`}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm text-[#1e4d6b] shadow-lg transition-all hover:scale-110 hover:bg-[#1e4d6b] hover:text-white disabled:opacity-40 disabled:pointer-events-none"
+          >
+            {''}
+          </AddToCartButton>
         </div>
 
         {/* Ver producto - Slide up on hover */}
