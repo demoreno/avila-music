@@ -143,7 +143,7 @@ export default function ContactoPage() {
                   <p className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
                     <span>
-                      <strong className="text-text">Centro de Operaciones y Despacho:</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Venezuela
+                      <strong className="text-text">Centro de Operaciones y Despacho:</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Distrito Capital, Venezuela
                     </span>
                   </p>
                   <p className="flex items-start gap-3">

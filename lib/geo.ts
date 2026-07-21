@@ -1,11 +1,16 @@
 import { headers } from 'next/headers'
 
 /**
- * Vercel's edge attaches this header to every request before our code runs —
- * no extra network call, no added latency. Missing header (local dev, non-Vercel
- * preview) defaults to showing prices so development isn't broken.
+ * Master switch — geo-blocking is OFF by default. Set PRICE_GEOFENCE_ENABLED=true
+ * (in Vercel's env vars) to turn it back on without touching any code.
+ *
+ * When enabled: Vercel's edge attaches the country header to every request before
+ * our code runs — no extra network call, no added latency. Missing header (local
+ * dev, non-Vercel preview) defaults to showing prices so development isn't broken.
  */
 export async function canShowPrices(): Promise<boolean> {
+  if (process.env.PRICE_GEOFENCE_ENABLED !== 'true') return true
+
   if (process.env.ALWAYS_SHOW_PRICES === 'true') return true
 
   const headersList = await headers()

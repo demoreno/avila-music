@@ -181,7 +181,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Envíos seguros a todo el país.
               </p>
               <div className="text-sm text-slate-500 leading-relaxed mb-6 space-y-1">
-                <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas</p>
+                <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas, Distrito Capital, Venezuela</p>
               </div>
               <div className="flex gap-3">
                 <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
