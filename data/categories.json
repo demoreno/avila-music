@@ -54,5 +54,14 @@
     "subcategories": [
       { "name": "Accesorios de Teclado", "slug": "accesorios-teclado", "sort_order": 1 }
     ]
+  },
+  {
+    "name": "Otros Instrumentos",
+    "slug": "otros-instrumentos",
+    "sort_order": 7,
+    "subcategories": [
+      { "name": "Percusión de Mano", "slug": "percusion-mano", "sort_order": 1 },
+      { "name": "Viento", "slug": "viento", "sort_order": 2 }
+    ]
   }
 ]

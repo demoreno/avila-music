@@ -478,5 +478,35 @@
     "new_arrival": true,
     "description": "Puente de madera de repuesto para violín, disponible en todas las medidas de 1/8 a 4/4. Pieza clave para la altura de las cuerdas y la proyección del sonido — requiere ajuste según el instrumento.",
     "asset_id": "58855768-c949-43e5-b766-c5686b52b039"
+  },
+  {
+    "id": "flauta-dulce-soprano",
+    "name": "Flauta Dulce Soprano con Varilla de Limpieza",
+    "slug": "flauta-dulce-soprano",
+    "subcategory_id": "viento",
+    "price_usd": 5,
+    "stock_total": 0,
+    "stock_minimum": 5,
+    "notes": "pendiente de confirmar stock real",
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Flauta dulce soprano de 8 orificios, fabricada en plástico resistente de buena calidad con acabado liso y ligero. Incluye boquilla desmontable y varilla de limpieza para un mantenimiento fácil y una higiene adecuada. Mide 11.8 pulgadas (30 cm aprox.) e ideal para principiantes, clases de música, ensayos grupales o como regalo para los amantes de la música.",
+    "asset_id": "0cb8a74e-fa14-46ad-aeee-a5c133509bb3"
+  },
+  {
+    "id": "huevos-maracas-percusion",
+    "name": "Par de Huevos Maracas de Percusión",
+    "slug": "huevos-maracas-percusion",
+    "subcategory_id": "percusion-mano",
+    "price_usd": 5,
+    "stock_total": 0,
+    "stock_minimum": 5,
+    "notes": "vendido en par, disponible en 5 colores (rojo, amarillo, azul, verde, rosa) — pendiente de confirmar stock real",
+    "is_active": true,
+    "featured": false,
+    "new_arrival": true,
+    "description": "Par de huevos maracas de percusión, disponibles en 5 colores vibrantes: rojo, amarillo, azul, verde y rosa. Fabricados en plástico resistente y seguro, rellenos con mini bolitas de metal para un sonido nítido y consistente. Ideales para desarrollar el ritmo y la coordinación motora en clases de música, actividades infantiles o como complemento de otros instrumentos de percusión.",
+    "asset_id": "254497b3-f458-413b-8058-c287541906fb"
   }
 ]
