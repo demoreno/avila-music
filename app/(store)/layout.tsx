@@ -184,13 +184,13 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas</p>
               </div>
               <div className="flex gap-3">
-                <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
+                <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
-                <a href="mailto:contacto@avilamusic.shop" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
+                <a href="mailto:contacto@avilamusic.shop" aria-label="Enviar correo a contacto@avilamusic.shop" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
                   <Mail className="h-5 w-5" />
                 </a>
-                <a href="tel:+584128288674" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
+                <a href="tel:+584128288674" aria-label="Llamar al +58 412-8288674" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
                   <Phone className="h-5 w-5" />
                 </a>
               </div>

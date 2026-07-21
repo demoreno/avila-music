@@ -55,6 +55,8 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
             <button
               key={img.id}
               onClick={() => setActive(idx)}
+              aria-label={`Ver imagen ${idx + 1} de ${productName}`}
+              aria-current={idx === active}
               className={`group relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 hover:shadow-lg ${
                 idx === active
                   ? 'border-[#1e4d6b] shadow-md scale-105'
