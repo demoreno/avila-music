@@ -2,12 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Guitar, Package, DollarSign, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, Guitar, Package, ClipboardList, Receipt, DollarSign, TrendingUp } from 'lucide-react'
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/productos', label: 'Productos', icon: Guitar },
   { href: '/admin/inventario', label: 'Inventario', icon: Package },
+  { href: '/admin/pedidos', label: 'Pedidos', icon: ClipboardList },
+  { href: '/admin/facturacion', label: 'Facturación', icon: Receipt },
   { href: '/admin/ventas', label: 'Ventas', icon: DollarSign },
   { href: '/admin/analytics', label: 'Analytics', icon: TrendingUp },
 ]

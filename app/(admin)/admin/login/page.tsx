@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
@@ -16,6 +16,27 @@ export default function AdminLoginPage() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
+
+  // The proxy already redirects an authenticated user away from this page,
+  // but that check only runs on a fresh request — the browser's back/forward
+  // cache can restore this exact page without one, so we re-check on the
+  // client too (both on mount and when bfcache restores the page).
+  useEffect(() => {
+    async function redirectIfLoggedIn() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) router.replace('/admin/dashboard')
+    }
+
+    redirectIfLoggedIn()
+
+    function onPageShow(event: PageTransitionEvent) {
+      if (event.persisted) redirectIfLoggedIn()
+    }
+
+    window.addEventListener('pageshow', onPageShow)
+    return () => window.removeEventListener('pageshow', onPageShow)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- supabase client is re-created per render but stable in behavior
+  }, [router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

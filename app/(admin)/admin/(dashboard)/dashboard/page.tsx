@@ -1,8 +1,14 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { parseDateOnly } from '@/lib/format-date'
 import KpiCard from '@/components/admin/KpiCard'
 import RevenueChart from './RevenueChart'
 import Link from 'next/link'
-import type { MonthlyKpi, Product } from '@/types/index'
+import type { MonthlyKpi, MonthlyKpiByChannel, Product } from '@/types/index'
+
+const CHANNEL_LABELS: Record<string, string> = {
+  mercadolibre: 'MercadoLibre',
+  directo: 'Directo / Web',
+}
 
 async function getMonthlyKpis() {
   const supabase = await createSupabaseServerClient()
@@ -12,6 +18,16 @@ async function getMonthlyKpis() {
     .order('month', { ascending: false })
     .limit(3)
   return (data as MonthlyKpi[]) ?? []
+}
+
+async function getMonthlyKpisByChannel() {
+  const supabase = await createSupabaseServerClient()
+  const { data } = await supabase
+    .from('v_monthly_kpis_by_channel')
+    .select('*')
+    .order('month', { ascending: false })
+    .limit(10)
+  return (data as MonthlyKpiByChannel[]) ?? []
 }
 
 async function getCriticalStock() {
@@ -32,11 +48,18 @@ function calcDelta(curr: number, prev: number | undefined): number | undefined {
 }
 
 export default async function DashboardPage() {
-  const [kpis, criticalStock] = await Promise.all([getMonthlyKpis(), getCriticalStock()])
+  const [kpis, criticalStock, kpisByChannel] = await Promise.all([
+    getMonthlyKpis(),
+    getCriticalStock(),
+    getMonthlyKpisByChannel(),
+  ])
 
   const currentMonth = kpis[0]
   const previousMonth = kpis[1]
   const chartData = [...kpis].reverse()
+  const currentMonthByChannel = currentMonth
+    ? kpisByChannel.filter((row) => row.month === currentMonth.month)
+    : []
 
   return (
     <div>
@@ -50,7 +73,7 @@ export default async function DashboardPage() {
             <div className="rounded-lg bg-white/10 px-4 py-3 backdrop-blur-sm">
               <p className="text-xs font-medium uppercase tracking-wider text-blue-100">Mes actual</p>
               <p className="text-lg font-semibold text-white">
-                {new Date(currentMonth.month).toLocaleDateString('es-VE', {
+                {parseDateOnly(currentMonth.month).toLocaleDateString('es-VE', {
                   month: 'long',
                   year: 'numeric',
                 })}
@@ -118,6 +141,39 @@ export default async function DashboardPage() {
           deltaLabel="vs mes anterior"
         />
       </div>
+
+      {currentMonthByChannel.length > 0 && (
+        <div className="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 font-semibold text-slate-800">Por canal — mes actual</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {currentMonthByChannel.map((row) => (
+              <div key={row.channel} className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                <p className="mb-3 text-sm font-semibold text-slate-700">
+                  {CHANNEL_LABELS[row.channel] ?? row.channel}
+                </p>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p className="text-xs text-slate-500">Ventas</p>
+                    <p className="font-bold text-slate-900">{row.total_sales}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Ingresos</p>
+                    <p className="font-bold text-slate-900">USD {Number(row.gross_revenue_usd).toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Ganancia</p>
+                    <p className="font-bold text-slate-900">USD {Number(row.gross_profit_usd).toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Margen</p>
+                    <p className="font-bold text-slate-900">{(Number(row.avg_margin_pct) * 100).toFixed(1)}%</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">

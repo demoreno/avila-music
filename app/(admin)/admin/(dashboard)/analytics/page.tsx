@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { parseDateOnly } from '@/lib/format-date'
 import AnalyticsCharts from './AnalyticsCharts'
 import type { MonthlyKpi, ProductRanking } from '@/types/index'
 
@@ -46,7 +47,7 @@ export default async function AnalyticsPage() {
   const dowCounts = new Array(7).fill(0) as number[]
   for (const row of details) {
     if (!row.sale_date) continue
-    const dow = new Date(row.sale_date).getDay()
+    const dow = parseDateOnly(row.sale_date).getDay()
     dowCounts[dow]++
   }
   const dowData = DAYS_ES.map((day, i) => ({ day, ventas: dowCounts[i] }))

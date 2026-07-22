@@ -32,11 +32,33 @@ export interface Product {
   stock_total: number
   stock_minimum: number
   notes: string | null
+  description: string | null
   is_active: boolean
+  featured: boolean
+  new_arrival: boolean
+  /** Product code/name as the supplier tracks it — for building purchase order copy-paste text. */
+  supplier_code: string | null
   created_at: string
   updated_at: string
   images?: ProductImage[]
 }
+
+export interface PurchaseOrder {
+  id: string
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface PurchaseOrderItem {
+  id: string
+  purchase_order_id: string
+  product_id: string
+  quantity: number
+  created_at: string
+}
+
+export type PaymentMethod = 'efectivo_usd' | 'efectivo_bs'
 
 export interface Sale {
   id: string
@@ -47,6 +69,8 @@ export interface Sale {
   notes: string | null
   ml_commission_rate: number
   shipping_cost_usd: number
+  payment_method: PaymentMethod | null
+  shipping_type: string | null
   created_at: string
 }
 
@@ -109,6 +133,10 @@ export interface MonthlyKpi {
   avg_margin_pct: number
 }
 
+export interface MonthlyKpiByChannel extends MonthlyKpi {
+  channel: string
+}
+
 export interface ProductRanking {
   id: string
   product_name: string
@@ -135,26 +163,25 @@ export interface CategoryTree {
   product_count: number
 }
 
+/** Mirrors v_sale_items_detail exactly — one row per sale_items line, joined with sale/product/category info. */
 export interface SaleItemDetail {
   id: string
-  sale_id: string
-  product_id: string
+  sale_date: string
+  sale_month: string
+  channel: string
+  product_name: string
+  subcategory_name: string
+  category_name: string
+  quantity: number
   unit_price_usd: number
   unit_cost_usd: number
-  quantity: number
-  ml_commission_usd: number
-  shipping_cost_usd: number
   net_income_usd: number
   gross_profit_usd: number
   margin_pct: number
-  created_at: string
-  sale_date: string
-  channel: string
-  ml_free_shipping: boolean
-  product_name: string
-  product_slug: string
-  subcategory_name: string
-  category_name: string
+  ml_commission_usd: number
+  shipping_cost_usd: number
+  sale_id: string
+  product_id: string
 }
 
 export type Database = {
@@ -201,7 +228,11 @@ export type Database = {
           stock_total: number
           stock_minimum: number
           notes: string | null
+          description: string | null
           is_active: boolean
+          featured: boolean
+          new_arrival: boolean
+          supplier_code: string | null
           created_at: string
           updated_at: string
         }
@@ -215,7 +246,11 @@ export type Database = {
           stock_total?: number
           stock_minimum?: number
           notes?: string | null
+          description?: string | null
           is_active?: boolean
+          featured?: boolean
+          new_arrival?: boolean
+          supplier_code?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -228,8 +263,49 @@ export type Database = {
           stock_total?: number
           stock_minimum?: number
           notes?: string | null
+          description?: string | null
           is_active?: boolean
+          featured?: boolean
+          new_arrival?: boolean
+          supplier_code?: string | null
           updated_at?: string
+        }
+      }
+      purchase_orders: {
+        Row: {
+          id: string
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          notes?: string | null
+          updated_at?: string
+        }
+      }
+      purchase_order_items: {
+        Row: {
+          id: string
+          purchase_order_id: string
+          product_id: string
+          quantity: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          purchase_order_id: string
+          product_id: string
+          quantity: number
+          created_at?: string
+        }
+        Update: {
+          quantity?: number
         }
       }
       product_images: {
@@ -265,6 +341,8 @@ export type Database = {
           notes: string | null
           ml_commission_rate: number
           shipping_cost_usd: number
+          payment_method: string | null
+          shipping_type: string | null
           created_at: string
         }
         Insert: {
@@ -276,6 +354,8 @@ export type Database = {
           notes?: string | null
           ml_commission_rate: number
           shipping_cost_usd?: number
+          payment_method?: string | null
+          shipping_type?: string | null
           created_at?: string
         }
         Update: {
@@ -284,6 +364,8 @@ export type Database = {
           ml_free_shipping?: boolean
           discount_usd?: number
           notes?: string | null
+          payment_method?: string | null
+          shipping_type?: string | null
         }
       }
       sale_items: {
@@ -398,6 +480,21 @@ export type Database = {
           avg_margin_pct: number
         }
       }
+      v_monthly_kpis_by_channel: {
+        Row: {
+          month: string
+          channel: string
+          total_units_sold: number
+          total_sales: number
+          gross_revenue_usd: number
+          total_ml_commissions_usd: number
+          total_shipping_usd: number
+          net_income_usd: number
+          total_cost_usd: number
+          gross_profit_usd: number
+          avg_margin_pct: number
+        }
+      }
       v_product_ranking: {
         Row: {
           id: string
@@ -429,24 +526,22 @@ export type Database = {
       v_sale_items_detail: {
         Row: {
           id: string
-          sale_id: string
-          product_id: string
+          sale_date: string
+          sale_month: string
+          channel: string
+          product_name: string
+          subcategory_name: string
+          category_name: string
+          quantity: number
           unit_price_usd: number
           unit_cost_usd: number
-          quantity: number
-          ml_commission_usd: number
-          shipping_cost_usd: number
           net_income_usd: number
           gross_profit_usd: number
           margin_pct: number
-          created_at: string
-          sale_date: string
-          channel: string
-          ml_free_shipping: boolean
-          product_name: string
-          product_slug: string
-          subcategory_name: string
-          category_name: string
+          ml_commission_usd: number
+          shipping_cost_usd: number
+          sale_id: string
+          product_id: string
         }
       }
     }

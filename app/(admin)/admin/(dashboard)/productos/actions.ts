@@ -43,7 +43,11 @@ export async function updateProduct(
     stock_total: number
     stock_minimum: number
     notes: string | null
+    description: string | null
     is_active: boolean
+    featured: boolean
+    new_arrival: boolean
+    supplier_code: string | null
   }
 ) {
   await requireAdminUser()
@@ -68,7 +72,11 @@ export async function createProduct(data: {
   stock_total: number
   stock_minimum: number
   notes: string | null
+  description: string | null
   is_active: boolean
+  featured: boolean
+  new_arrival: boolean
+  supplier_code: string | null
 }) {
   await requireAdminUser()
 
@@ -85,7 +93,11 @@ export async function createProduct(data: {
       stock_total: data.stock_total,
       stock_minimum: data.stock_minimum,
       notes: data.notes,
+      description: data.description,
       is_active: data.is_active,
+      featured: data.featured,
+      new_arrival: data.new_arrival,
+      supplier_code: data.supplier_code,
     })
     .select('id')
     .single()
@@ -118,7 +130,8 @@ export async function uploadProductImages(productId: string, formData: FormData)
 
     const { error: uploadError } = await adminClient.storage
       .from(PRODUCT_IMAGES_BUCKET)
-      .upload(objectPath, buffer, { contentType: file.type || undefined })
+      // Long cacheControl is safe: objectPath is a fresh UUID per upload, never reused.
+      .upload(objectPath, buffer, { contentType: file.type || undefined, cacheControl: '31536000' })
     if (uploadError) throw new Error(uploadError.message)
 
     const { error: insertError } = await adminClient.from('product_images').insert({

@@ -1,10 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { X, ClipboardList } from 'lucide-react'
 import type { Product } from '@/types/index'
+import PedidoBuilder, { suggestedQuantity, type PedidoProductOption } from '@/components/admin/PedidoBuilder'
 
-interface InventoryProduct extends Pick<Product, 'id' | 'name' | 'stock_total' | 'stock_minimum'> {
+interface InventoryProduct
+  extends Pick<Product, 'id' | 'name' | 'stock_total' | 'stock_minimum' | 'cost_usd' | 'supplier_code'> {
   subcategory_name: string
+  imageUrl: string | null
 }
 
 interface InventoryTableProps {
@@ -28,6 +32,8 @@ export default function InventoryTable({ products }: InventoryTableProps) {
   const [editValue, setEditValue] = useState('')
   const [saving, setSaving] = useState(false)
   const [localProducts, setLocalProducts] = useState(products)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const filtered = localProducts.filter((p) => {
     if (filter === 'critico') return p.stock_total <= p.stock_minimum
@@ -79,7 +85,40 @@ export default function InventoryTable({ products }: InventoryTableProps) {
     URL.revokeObjectURL(url)
   }
 
+  function toggleSelected(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  function toggleSelectAllFiltered() {
+    const allSelected = filtered.every((p) => selected.has(p.id))
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (allSelected) filtered.forEach((p) => next.delete(p.id))
+      else filtered.forEach((p) => next.add(p.id))
+      return next
+    })
+  }
+
   const criticalCount = localProducts.filter((p) => p.stock_total <= p.stock_minimum).length
+  const productById = new Map(localProducts.map((p) => [p.id, p]))
+  const pedidoProducts: PedidoProductOption[] = localProducts.map((p) => ({
+    id: p.id,
+    name: p.name,
+    cost_usd: p.cost_usd,
+    supplier_code: p.supplier_code,
+    stock_total: p.stock_total,
+    stock_minimum: p.stock_minimum,
+    imageUrl: p.imageUrl,
+  }))
+  const initialItems = Array.from(selected)
+    .map((id) => productById.get(id))
+    .filter((p): p is InventoryProduct => p !== undefined)
+    .map((p) => ({ productId: p.id, quantity: suggestedQuantity(p) }))
 
   return (
     <div>
@@ -113,6 +152,15 @@ export default function InventoryTable({ products }: InventoryTableProps) {
         <table className="w-full text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-left">
             <tr>
+              <th className="w-10 px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={filtered.length > 0 && filtered.every((p) => selected.has(p.id))}
+                  onChange={toggleSelectAllFiltered}
+                  className="rounded"
+                  aria-label="Seleccionar todos"
+                />
+              </th>
               <th className="px-4 py-3 font-semibold text-slate-600">Producto</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Subcategoría</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Stock</th>
@@ -127,6 +175,15 @@ export default function InventoryTable({ products }: InventoryTableProps) {
 
               return (
                 <tr key={p.id} className={`hover:bg-slate-50 ${isEmpty ? 'bg-red-50' : ''}`}>
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={selected.has(p.id)}
+                      onChange={() => toggleSelected(p.id)}
+                      className="rounded"
+                      aria-label={`Seleccionar ${p.name}`}
+                    />
+                  </td>
                   <td className="px-4 py-3 font-medium text-slate-800">{p.name}</td>
                   <td className="px-4 py-3 text-slate-500">{p.subcategory_name}</td>
                   <td className="px-4 py-3">
@@ -193,6 +250,48 @@ export default function InventoryTable({ products }: InventoryTableProps) {
           </tbody>
         </table>
       </div>
+
+      {selected.size > 0 && (
+        <div className="fixed inset-x-0 bottom-6 z-40 flex justify-center px-4">
+          <div className="flex items-center gap-4 rounded-full bg-slate-900 px-6 py-3 shadow-2xl">
+            <span className="text-sm font-medium text-white">
+              {selected.size} producto{selected.size === 1 ? '' : 's'} seleccionado{selected.size === 1 ? '' : 's'}
+            </span>
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="flex items-center gap-1.5 rounded-full bg-amber-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-amber-600"
+            >
+              <ClipboardList className="h-4 w-4" />
+              Crear pedido
+            </button>
+            <button
+              onClick={() => setSelected(new Set())}
+              className="text-slate-400 hover:text-white"
+              aria-label="Cancelar selección"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-slate-50 p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="heading-serif text-xl font-bold text-slate-900">Nuevo pedido</h2>
+              <button
+                onClick={() => setDrawerOpen(false)}
+                className="text-slate-400 hover:text-slate-700"
+                aria-label="Cerrar"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <PedidoBuilder products={pedidoProducts} initialItems={initialItems} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

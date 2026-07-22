@@ -75,7 +75,8 @@ async function main() {
 
       const { error: uploadError } = await supabase.storage
         .from(BUCKET)
-        .upload(objectPath, buffer, { contentType, upsert: true })
+        // Long cacheControl is safe: reruns overwrite these exact paths deliberately (upsert).
+        .upload(objectPath, buffer, { contentType, upsert: true, cacheControl: '31536000' })
       if (uploadError) throw new Error(`Upload failed for ${storagePath}: ${uploadError.message}`)
 
       rows.push({

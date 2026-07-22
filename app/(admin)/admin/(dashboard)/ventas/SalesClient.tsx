@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { parseDateOnly } from '@/lib/format-date'
 
 interface SaleRow {
   sale_id: string
@@ -16,9 +17,40 @@ interface SalesClientProps {
   sales: SaleRow[]
 }
 
+const MONTH_LABELS_ES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+]
+
+function pad(n: number): string {
+  return String(n).padStart(2, '0')
+}
+
+function monthRange(year: number, monthIndex: number): { start: string; end: string } {
+  const start = `${year}-${pad(monthIndex + 1)}-01`
+  const lastDay = new Date(year, monthIndex + 1, 0).getDate()
+  const end = `${year}-${pad(monthIndex + 1)}-${pad(lastDay)}`
+  return { start, end }
+}
+
+const now = new Date()
+const CURRENT_YEAR = now.getFullYear()
+const CURRENT_MONTH_INDEX = now.getMonth()
+const DEFAULT_RANGE = monthRange(CURRENT_YEAR, CURRENT_MONTH_INDEX)
+
 export default function SalesClient({ sales }: SalesClientProps) {
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
+  const [dateFrom, setDateFrom] = useState(DEFAULT_RANGE.start)
+  const [dateTo, setDateTo] = useState(DEFAULT_RANGE.end)
+
+  const monthOptions = useMemo(
+    () =>
+      Array.from({ length: CURRENT_MONTH_INDEX + 1 }, (_, i) => ({
+        index: i,
+        label: MONTH_LABELS_ES[i],
+        ...monthRange(CURRENT_YEAR, i),
+      })).reverse(),
+    []
+  )
 
   const filtered = useMemo(() => {
     return sales.filter((s) => {
@@ -41,6 +73,33 @@ export default function SalesClient({ sales }: SalesClientProps) {
 
   return (
     <div>
+      <div className="mb-3 flex flex-wrap gap-2">
+        {monthOptions.map((m) => {
+          const active = dateFrom === m.start && dateTo === m.end
+          return (
+            <button
+              key={m.index}
+              onClick={() => { setDateFrom(m.start); setDateTo(m.end) }}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                active
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {m.label}
+            </button>
+          )
+        })}
+        <button
+          onClick={() => { setDateFrom(''); setDateTo('') }}
+          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+            !dateFrom && !dateTo ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }`}
+        >
+          Todo
+        </button>
+      </div>
+
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-600">Desde:</label>
@@ -60,14 +119,6 @@ export default function SalesClient({ sales }: SalesClientProps) {
             className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-amber-400 focus:outline-none"
           />
         </div>
-        {(dateFrom || dateTo) && (
-          <button
-            onClick={() => { setDateFrom(''); setDateTo('') }}
-            className="text-xs text-slate-500 underline hover:text-slate-700"
-          >
-            Limpiar filtros
-          </button>
-        )}
       </div>
 
       <div className="mb-4 grid grid-cols-3 gap-3">
@@ -108,7 +159,7 @@ export default function SalesClient({ sales }: SalesClientProps) {
               filtered.map((s) => (
                 <tr key={s.sale_id} className="hover:bg-slate-50">
                   <td className="px-4 py-3 text-slate-700">
-                    {new Date(s.sale_date).toLocaleDateString('es-VE')}
+                    {parseDateOnly(s.sale_date).toLocaleDateString('es-VE')}
                   </td>
                   <td className="px-4 py-3 text-slate-500 capitalize">{s.channel}</td>
                   <td className="px-4 py-3 text-slate-700">{s.item_count}</td>

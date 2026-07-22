@@ -85,6 +85,8 @@ function toPublicProduct(raw: RawProduct): PublicProduct {
     notes: raw.notes,
     description: raw.description,
     is_active: raw.is_active,
+    featured: raw.featured,
+    new_arrival: raw.new_arrival,
     created_at: CATALOG_DATE,
     updated_at: CATALOG_DATE,
     images: scanProductImages(raw.id, raw.asset_id),

@@ -3,6 +3,12 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Product images live at UUID-named storage paths that are never overwritten
+    // (replaced, not mutated), so it's safe to cache the optimized output for a
+    // long time instead of Next's 60s default — Supabase's own origin sends
+    // `cache-control: no-cache`, which would otherwise force a revalidation
+    // round-trip on almost every request.
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: 'https',

@@ -15,6 +15,7 @@ import {
   Cell,
   Legend,
 } from 'recharts'
+import { parseDateOnly } from '@/lib/format-date'
 import type { MonthlyKpi, ProductRanking } from '@/types/index'
 
 const COLORS = ['#d97706', '#0f172a', '#059669', '#7c3aed', '#dc2626', '#0891b2']
@@ -36,8 +37,7 @@ export interface RestockRow {
 }
 
 function formatMonth(month: string) {
-  const d = new Date(month.substring(0, 10))
-  return d.toLocaleDateString('es-VE', { month: 'short', year: '2-digit' })
+  return parseDateOnly(month).toLocaleDateString('es-VE', { month: 'short', year: '2-digit' })
 }
 
 export default function AnalyticsCharts({

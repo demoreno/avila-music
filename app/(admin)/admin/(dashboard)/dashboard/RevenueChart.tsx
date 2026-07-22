@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
+import { parseDateOnly } from '@/lib/format-date'
 import type { MonthlyKpi } from '@/types/index'
 
 interface RevenueChartProps {
@@ -16,8 +17,7 @@ interface RevenueChartProps {
 }
 
 function formatMonth(month: string) {
-  const date = new Date(month)
-  return date.toLocaleDateString('es-VE', { month: 'short', year: '2-digit' })
+  return parseDateOnly(month).toLocaleDateString('es-VE', { month: 'short', year: '2-digit' })
 }
 
 export default function RevenueChart({ data }: RevenueChartProps) {

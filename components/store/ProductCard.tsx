@@ -8,6 +8,7 @@ import { whatsappProductLink } from '@/lib/whatsapp'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import AddToCartButton from '@/components/store/AddToCartButton'
 import type { PublicProduct } from '@/lib/catalog'
+import { getPublicImageUrl } from '@/lib/catalog/image-url'
 
 interface ProductCardProps {
   product: Omit<PublicProduct, 'price_usd'> & {
@@ -19,7 +20,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
-  const imageUrl = primaryImage ? primaryImage.storage_path : null
+  const imageUrl = primaryImage ? getPublicImageUrl(primaryImage.storage_path) : null
   const waLink = whatsappProductLink(product.name, product.price_usd ?? undefined)
 
   const isOutOfStock = product.stock_total === 0

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { ZoomIn, Music } from 'lucide-react'
 import type { ProductImage } from '@/types/index'
+import { getPublicImageUrl } from '@/lib/catalog/image-url'
 
 interface ImageGalleryProps {
   images: ProductImage[]
@@ -34,7 +35,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
       {/* Main Image */}
       <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 shadow-card group">
         <Image
-          src={sorted[active].storage_path}
+          src={getPublicImageUrl(sorted[active].storage_path)}
           alt={productName}
           fill
           className="object-contain transition-transform duration-700 group-hover:scale-105"
@@ -64,7 +65,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
               }`}
             >
               <Image
-                src={img.storage_path}
+                src={getPublicImageUrl(img.storage_path)}
                 alt={`${productName} ${idx + 1}`}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
