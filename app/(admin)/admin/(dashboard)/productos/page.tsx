@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import ProductsTable from './ProductsTable'
-import type { Product, CategoryTree } from '@/types/index'
+import type { Product, CategoryTree, ProductImage } from '@/types/index'
 
 interface ProductWithCategory extends Product {
   subcategory_name: string
@@ -10,13 +10,20 @@ interface ProductWithCategory extends Product {
 export default async function AdminProductsPage() {
   const supabase = await createSupabaseServerClient()
 
-  const [productsRes, categoryTreeRes] = await Promise.all([
+  const [productsRes, categoryTreeRes, imagesRes] = await Promise.all([
     supabase.from('products').select('*').order('name'),
     supabase.from('v_category_tree').select('*').order('category_sort_order').order('subcategory_sort_order'),
+    supabase.from('product_images').select('*').order('sort_order'),
   ])
 
   const products = (productsRes.data as Product[]) ?? []
   const categoryTree = (categoryTreeRes.data as CategoryTree[]) ?? []
+  const images = (imagesRes.data as ProductImage[]) ?? []
+
+  const imagesByProduct = images.reduce<Record<string, ProductImage[]>>((acc, img) => {
+    ;(acc[img.product_id] ??= []).push(img)
+    return acc
+  }, {})
 
   const catMap = categoryTree.reduce<Record<string, CategoryTree>>((acc, row) => {
     acc[row.subcategory_id] = row
@@ -36,7 +43,11 @@ export default async function AdminProductsPage() {
   return (
     <div>
       <h1 className="heading-serif mb-6 text-2xl font-bold text-slate-900">Productos</h1>
-      <ProductsTable products={productsWithCategory} subcategories={uniqueSubcategories} />
+      <ProductsTable
+        products={productsWithCategory}
+        subcategories={uniqueSubcategories}
+        imagesByProduct={imagesByProduct}
+      />
     </div>
   )
 }

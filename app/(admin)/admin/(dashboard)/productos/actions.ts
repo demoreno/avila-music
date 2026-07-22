@@ -1,8 +1,11 @@
 'use server'
 
+import { randomUUID } from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
+
+const PRODUCT_IMAGES_BUCKET = 'products'
 
 const adminClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,19 +74,100 @@ export async function createProduct(data: {
 
   const slug = slugify(data.name)
 
-  const { error } = await adminClient.from('products').insert({
-    name: data.name,
-    slug,
-    subcategory_id: data.subcategory_id,
-    price_usd: data.price_usd,
-    cost_usd: data.cost_usd,
-    stock_total: data.stock_total,
-    stock_minimum: data.stock_minimum,
-    notes: data.notes,
-    is_active: data.is_active,
-  })
+  const { data: inserted, error } = await adminClient
+    .from('products')
+    .insert({
+      name: data.name,
+      slug,
+      subcategory_id: data.subcategory_id,
+      price_usd: data.price_usd,
+      cost_usd: data.cost_usd,
+      stock_total: data.stock_total,
+      stock_minimum: data.stock_minimum,
+      notes: data.notes,
+      is_active: data.is_active,
+    })
+    .select('id')
+    .single()
 
   if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/productos')
+  revalidatePath('/productos')
+
+  return inserted.id as string
+}
+
+export async function uploadProductImages(productId: string, formData: FormData) {
+  await requireAdminUser()
+
+  const files = formData.getAll('images').filter((f): f is File => f instanceof File && f.size > 0)
+  if (files.length === 0) return
+
+  const { count } = await adminClient
+    .from('product_images')
+    .select('id', { count: 'exact', head: true })
+    .eq('product_id', productId)
+
+  let nextSortOrder = count ?? 0
+
+  for (const file of files) {
+    const ext = file.name.split('.').pop() ?? 'jpg'
+    const objectPath = `${randomUUID()}.${ext}`
+    const buffer = Buffer.from(await file.arrayBuffer())
+
+    const { error: uploadError } = await adminClient.storage
+      .from(PRODUCT_IMAGES_BUCKET)
+      .upload(objectPath, buffer, { contentType: file.type || undefined })
+    if (uploadError) throw new Error(uploadError.message)
+
+    const { error: insertError } = await adminClient.from('product_images').insert({
+      product_id: productId,
+      storage_path: `${PRODUCT_IMAGES_BUCKET}/${objectPath}`,
+      sort_order: nextSortOrder,
+      is_primary: nextSortOrder === 0,
+    })
+    if (insertError) throw new Error(insertError.message)
+
+    nextSortOrder++
+  }
+
+  revalidatePath('/admin/productos')
+  revalidatePath('/productos')
+}
+
+export async function deleteProductImage(imageId: string) {
+  await requireAdminUser()
+
+  const { data: image, error: fetchError } = await adminClient
+    .from('product_images')
+    .select('product_id, storage_path, is_primary')
+    .eq('id', imageId)
+    .single()
+  if (fetchError) throw new Error(fetchError.message)
+
+  const objectPath = image.storage_path.replace(`${PRODUCT_IMAGES_BUCKET}/`, '')
+  const { error: removeError } = await adminClient.storage
+    .from(PRODUCT_IMAGES_BUCKET)
+    .remove([objectPath])
+  if (removeError) throw new Error(removeError.message)
+
+  const { error: deleteError } = await adminClient.from('product_images').delete().eq('id', imageId)
+  if (deleteError) throw new Error(deleteError.message)
+
+  if (image.is_primary) {
+    const { data: next } = await adminClient
+      .from('product_images')
+      .select('id')
+      .eq('product_id', image.product_id)
+      .order('sort_order', { ascending: true })
+      .limit(1)
+      .maybeSingle()
+
+    if (next) {
+      await adminClient.from('product_images').update({ is_primary: true }).eq('id', next.id)
+    }
+  }
 
   revalidatePath('/admin/productos')
   revalidatePath('/productos')
