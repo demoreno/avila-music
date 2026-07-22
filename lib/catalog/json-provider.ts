@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import type { CategoryTree, ProductImage } from '@/types/index'
 import type { CatalogProvider, PublicProduct } from './types'
+import { matchesSearch } from '@/lib/search'
 import categoriesData from '@/data/categories.json'
 import productsData from '@/data/products.json'
 
@@ -133,6 +134,23 @@ export class JsonCatalogProvider implements CatalogProvider {
     return products
       .filter((p) => p.is_active)
       .sort((a, b) => a.name.localeCompare(b.name))
+      .map(toPublicProduct)
+  }
+
+  async searchProducts(query: string, limit = 8): Promise<PublicProduct[]> {
+    if (!query.trim()) return []
+
+    const categoryLabelBySubcategory = new Map(
+      categoryTree.map((row) => [row.subcategory_id, `${row.category_name} ${row.subcategory_name}`])
+    )
+
+    return products
+      .filter((p) => p.is_active)
+      .filter((p) => {
+        const haystack = [p.name, p.description, categoryLabelBySubcategory.get(p.subcategory_id) ?? ''].join(' ')
+        return matchesSearch(haystack, query)
+      })
+      .slice(0, limit)
       .map(toPublicProduct)
   }
 

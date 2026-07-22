@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import ProductCard from '@/components/store/ProductCard'
+import { matchesSearch } from '@/lib/search'
 import type { PublicProduct } from '@/lib/catalog'
 import type { CategoryTree } from '@/types/index'
 
@@ -19,6 +20,7 @@ interface ProductsClientProps {
   products: ProductWithMeta[]
   categoryTree: CategoryTree[]
   initialCategory?: string
+  initialSearch?: string
   title?: string
   description?: string
   showPrices: boolean
@@ -30,11 +32,12 @@ export default function ProductsClient({
   products,
   categoryTree,
   initialCategory,
+  initialSearch,
   title = 'Productos',
   description,
   showPrices,
 }: ProductsClientProps) {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(initialSearch ?? '')
   const [selectedCategory, setSelectedCategory] = useState(initialCategory ?? '')
   const [selectedSubcategory, setSelectedSubcategory] = useState('')
   const [sort, setSort] = useState<SortOption>('mas-vendido')
@@ -57,12 +60,8 @@ export default function ProductsClient({
     let result = [...products]
 
     if (search.trim()) {
-      const q = search.toLowerCase()
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.subcategory_name.toLowerCase().includes(q) ||
-          p.category_name.toLowerCase().includes(q)
+      result = result.filter((p) =>
+        matchesSearch([p.name, p.category_name, p.subcategory_name].join(' '), search)
       )
     }
 

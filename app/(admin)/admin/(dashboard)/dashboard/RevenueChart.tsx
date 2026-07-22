@@ -16,7 +16,7 @@ interface RevenueChartProps {
 }
 
 function formatMonth(month: string) {
-  const date = new Date(month + '-01')
+  const date = new Date(month)
   return date.toLocaleDateString('es-VE', { month: 'short', year: '2-digit' })
 }
 

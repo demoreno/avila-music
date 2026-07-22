@@ -3,27 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle, ShoppingCart } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import CartHydration from '@/components/store/CartHydration'
+import MiniCart from '@/components/store/MiniCart'
+import HeaderSearch from '@/components/store/HeaderSearch'
 import { useCartCount } from '@/lib/cart/store'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
-  const router = useRouter()
   const cartCount = useCartCount()
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      router.push(`/productos?search=${encodeURIComponent(searchQuery.trim())}`)
-      setSearchQuery('')
-      setSearchOpen(false)
-    }
-  }
 
   const navLinks = [
     { href: '/productos', label: 'Productos' },
@@ -89,18 +79,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <span className="hidden lg:inline">WhatsApp</span>
               </a>
 
-              <Link
-                href="/carrito"
-                aria-label={`Carrito de compras${cartCount > 0 ? `, ${cartCount} producto${cartCount === 1 ? '' : 's'}` : ''}`}
-                className="relative p-2.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
-              >
-                <ShoppingCart className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                {cartCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold text-black">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
+              <MiniCart />
 
               <button
                 onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setSearchOpen(false) }}
@@ -119,29 +98,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
           </div>
 
           {/* Search Panel */}
-          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            searchOpen ? 'max-h-20 pb-4' : 'max-h-0'
-          }`}>
-            <form onSubmit={handleSearch} className="max-w-xl mx-auto">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={1.5} />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar productos..."
-                  autoFocus
-                  className="w-full h-11 pl-10 pr-24 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500/50 focus:bg-white transition-all duration-300"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 px-4 rounded-lg bg-amber-500 text-black text-xs font-semibold hover:bg-amber-400 transition-colors"
-                >
-                  Buscar
-                </button>
-              </div>
-            </form>
-          </div>
+          <HeaderSearch open={searchOpen} onOpenChange={setSearchOpen} />
         </div>
 
         {/* Mobile Menu */}

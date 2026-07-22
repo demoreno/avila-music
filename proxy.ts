@@ -25,19 +25,21 @@ export async function proxy(request: NextRequest) {
     }
   )
 
+  // getUser() (not getSession()) — it revalidates the token against Supabase's
+  // Auth server on every request, instead of just trusting the decoded cookie.
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
   const isLoginPage = request.nextUrl.pathname === '/admin/login'
 
-  if (isAdminRoute && !isLoginPage && !session) {
+  if (isAdminRoute && !isLoginPage && !user) {
     const loginUrl = new URL('/admin/login', request.url)
     return NextResponse.redirect(loginUrl)
   }
 
-  if (isLoginPage && session) {
+  if (isLoginPage && user) {
     const dashboardUrl = new URL('/admin/dashboard', request.url)
     return NextResponse.redirect(dashboardUrl)
   }

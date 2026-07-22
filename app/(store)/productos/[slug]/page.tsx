@@ -219,6 +219,22 @@ export default async function ProductPage({
               </a>
             </div>
 
+            {/* Shipping info */}
+            <div className="rounded-2xl border border-sky-200 bg-sky-50 p-6">
+              <h3 className="font-semibold text-sky-800 mb-3 flex items-center gap-2">
+                <Truck className="h-5 w-5" />
+                Envío
+              </h3>
+              <ul className="space-y-1.5 text-sm text-sky-900/80">
+                <li>Ciudades principales: 24-48 horas</li>
+                <li>Otras ciudades: 3-5 días hábiles</li>
+                <li>Pago del envío al recibir (MRW / Zoom)</li>
+              </ul>
+              <Link href="/envios" className="inline-block mt-3 text-sm font-medium text-sky-700 hover:text-sky-900 transition-colors">
+                Ver detalles de envío →
+              </Link>
+            </div>
+
             {/* Features */}
             <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200">
               {[

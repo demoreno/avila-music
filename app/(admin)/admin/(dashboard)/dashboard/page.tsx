@@ -50,7 +50,7 @@ export default async function DashboardPage() {
             <div className="rounded-lg bg-white/10 px-4 py-3 backdrop-blur-sm">
               <p className="text-xs font-medium uppercase tracking-wider text-blue-100">Mes actual</p>
               <p className="text-lg font-semibold text-white">
-                {new Date(currentMonth.month + '-01').toLocaleDateString('es-VE', {
+                {new Date(currentMonth.month).toLocaleDateString('es-VE', {
                   month: 'long',
                   year: 'numeric',
                 })}

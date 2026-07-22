@@ -7,6 +7,7 @@ export interface CatalogProvider {
   getFeaturedProducts(limit: number): Promise<PublicProduct[]>
   getNewArrivals(limit: number): Promise<PublicProduct[]>
   getAllProducts(): Promise<PublicProduct[]>
+  searchProducts(query: string, limit?: number): Promise<PublicProduct[]>
   getProductBySlug(slug: string): Promise<PublicProduct | null>
   getRelatedProducts(subcategoryId: string, excludeId: string): Promise<PublicProduct[]>
   getCategoryTree(): Promise<CategoryTree[]>

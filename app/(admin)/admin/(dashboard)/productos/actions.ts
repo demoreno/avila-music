@@ -2,12 +2,25 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
+import { createSupabaseServerClient } from '@/lib/supabase-server'
 
 const adminClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!,
   { auth: { autoRefreshToken: false, persistSession: false } }
 )
+
+/**
+ * adminClient uses the service-role key, which bypasses RLS entirely — every
+ * action in this file MUST call this before touching adminClient, or it's an
+ * unauthenticated write path straight to the database.
+ */
+async function requireAdminUser() {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('No autorizado')
+  return user
+}
 
 function slugify(name: string): string {
   return name
@@ -30,6 +43,8 @@ export async function updateProduct(
     is_active: boolean
   }
 ) {
+  await requireAdminUser()
+
   const { error } = await adminClient
     .from('products')
     .update({ ...data, updated_at: new Date().toISOString() })
@@ -52,6 +67,8 @@ export async function createProduct(data: {
   notes: string | null
   is_active: boolean
 }) {
+  await requireAdminUser()
+
   const slug = slugify(data.name)
 
   const { error } = await adminClient.from('products').insert({

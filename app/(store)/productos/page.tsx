@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { catalog } from '@/lib/catalog'
 import { canShowPrices, withPriceVisibility } from '@/lib/geo'
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ categoria?: string }>
+  searchParams: Promise<{ categoria?: string; search?: string }>
 }) {
   const params = await searchParams
   const [products, categoryTree, showPrices] = await Promise.all([
@@ -43,12 +44,35 @@ export default async function ProductsPage({
     )
   })
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://avilamusic.shop' },
+      { '@type': 'ListItem', position: 2, name: 'Productos', item: 'https://avilamusic.shop/productos' },
+    ],
+  }
+
   return (
-    <ProductsClient
-      products={productsWithMeta}
-      categoryTree={categoryTree}
-      initialCategory={params.categoria}
-      showPrices={showPrices}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
+        <nav className="mb-2 flex flex-wrap items-center gap-2 text-sm text-text-muted">
+          <Link href="/" className="hover:text-[#1e4d6b] transition-colors">Inicio</Link>
+          <span className="text-slate-300">/</span>
+          <span className="font-medium text-text">Productos</span>
+        </nav>
+      </div>
+      <ProductsClient
+        products={productsWithMeta}
+        categoryTree={categoryTree}
+        initialCategory={params.categoria}
+        initialSearch={params.search}
+        showPrices={showPrices}
+      />
+    </>
   )
 }
