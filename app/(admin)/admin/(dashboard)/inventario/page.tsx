@@ -15,7 +15,7 @@ interface ProductRow {
 export default async function InventarioPage() {
   const supabase = await createSupabaseServerClient()
 
-  const [productsRes, categoryTreeRes, imagesRes] = await Promise.all([
+  const [productsRes, categoryTreeRes, imagesRes, pendingOrdersRes] = await Promise.all([
     supabase
       .from('products')
       .select('id, name, stock_total, stock_minimum, subcategory_id, cost_usd, supplier_code')
@@ -23,6 +23,7 @@ export default async function InventarioPage() {
       .order('name'),
     supabase.from('v_category_tree').select('subcategory_id, subcategory_name'),
     supabase.from('product_images').select('product_id, storage_path').eq('is_primary', true),
+    supabase.from('purchase_orders').select('id').not('status', 'in', '(recibido,cancelado)'),
   ])
 
   const products = (productsRes.data as ProductRow[]) ?? []
@@ -40,6 +41,25 @@ export default async function InventarioPage() {
     return acc
   }, {})
 
+  const activeOrderIds = (pendingOrdersRes.data ?? []).map((o) => o.id)
+  const pendingItemsRes = activeOrderIds.length
+    ? await supabase
+        .from('purchase_order_items')
+        .select('product_id, quantity, purchase_order_id')
+        .in('purchase_order_id', activeOrderIds)
+    : { data: [] }
+
+  const pendingByProduct = (pendingItemsRes.data ?? []).reduce<Record<string, { qty: number; orderIds: string[] }>>(
+    (acc, item) => {
+      const existing = acc[item.product_id] ?? { qty: 0, orderIds: [] }
+      existing.qty += item.quantity
+      if (!existing.orderIds.includes(item.purchase_order_id)) existing.orderIds.push(item.purchase_order_id)
+      acc[item.product_id] = existing
+      return acc
+    },
+    {}
+  )
+
   const inventoryProducts = products.map((p) => ({
     id: p.id,
     name: p.name,
@@ -49,6 +69,7 @@ export default async function InventarioPage() {
     cost_usd: p.cost_usd,
     supplier_code: p.supplier_code,
     imageUrl: imageByProduct[p.id] ?? null,
+    pendingOrder: pendingByProduct[p.id] ?? null,
   }))
 
   return (

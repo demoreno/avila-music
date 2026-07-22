@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { X, ClipboardList } from 'lucide-react'
+import Link from 'next/link'
+import { X, ClipboardList, PackageCheck } from 'lucide-react'
 import type { Product } from '@/types/index'
 import PedidoBuilder, { suggestedQuantity, type PedidoProductOption } from '@/components/admin/PedidoBuilder'
 
@@ -9,13 +10,14 @@ interface InventoryProduct
   extends Pick<Product, 'id' | 'name' | 'stock_total' | 'stock_minimum' | 'cost_usd' | 'supplier_code'> {
   subcategory_name: string
   imageUrl: string | null
+  pendingOrder: { qty: number; orderIds: string[] } | null
 }
 
 interface InventoryTableProps {
   products: InventoryProduct[]
 }
 
-type Filter = 'todos' | 'critico' | 'ok'
+type Filter = 'todos' | 'agotado' | 'critico' | 'ok'
 
 async function saveStock(id: string, stock: number) {
   const response = await fetch('/api/admin/stock', {
@@ -36,7 +38,8 @@ export default function InventoryTable({ products }: InventoryTableProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   const filtered = localProducts.filter((p) => {
-    if (filter === 'critico') return p.stock_total <= p.stock_minimum
+    if (filter === 'agotado') return p.stock_total === 0
+    if (filter === 'critico') return p.stock_total > 0 && p.stock_total <= p.stock_minimum
     if (filter === 'ok') return p.stock_total > p.stock_minimum
     return true
   })
@@ -104,7 +107,9 @@ export default function InventoryTable({ products }: InventoryTableProps) {
     })
   }
 
-  const criticalCount = localProducts.filter((p) => p.stock_total <= p.stock_minimum).length
+  const agotadoCount = localProducts.filter((p) => p.stock_total === 0).length
+  const criticalCount = localProducts.filter((p) => p.stock_total > 0 && p.stock_total <= p.stock_minimum).length
+  const okCount = localProducts.length - agotadoCount - criticalCount
   const productById = new Map(localProducts.map((p) => [p.id, p]))
   const pedidoProducts: PedidoProductOption[] = localProducts.map((p) => ({
     id: p.id,
@@ -124,21 +129,30 @@ export default function InventoryTable({ products }: InventoryTableProps) {
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="flex rounded-lg border border-slate-200 bg-white overflow-hidden">
-          {(['todos', 'critico', 'ok'] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                filter === f
-                  ? 'bg-amber-500 text-white'
-                  : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {f === 'todos' && `Todos (${localProducts.length})`}
-              {f === 'critico' && `Stock crítico (${criticalCount})`}
-              {f === 'ok' && `OK (${localProducts.length - criticalCount})`}
-            </button>
-          ))}
+          {(['todos', 'agotado', 'critico', 'ok'] as Filter[]).map((f) => {
+            const activeClass =
+              f === 'agotado'
+                ? 'bg-red-500 text-white'
+                : f === 'critico'
+                ? 'bg-amber-500 text-white'
+                : f === 'ok'
+                ? 'bg-green-500 text-white'
+                : 'bg-slate-700 text-white'
+            return (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                  filter === f ? activeClass : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {f === 'todos' && `Todos (${localProducts.length})`}
+                {f === 'agotado' && `Agotado (${agotadoCount})`}
+                {f === 'critico' && `Stock crítico (${criticalCount})`}
+                {f === 'ok' && `OK (${okCount})`}
+              </button>
+            )
+          })}
         </div>
         <button
           onClick={exportCsv}
@@ -184,7 +198,25 @@ export default function InventoryTable({ products }: InventoryTableProps) {
                       aria-label={`Seleccionar ${p.name}`}
                     />
                   </td>
-                  <td className="px-4 py-3 font-medium text-slate-800">{p.name}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800">
+                    <div className="flex items-center gap-2">
+                      <span>{p.name}</span>
+                      {p.pendingOrder && (
+                        <Link
+                          href={
+                            p.pendingOrder.orderIds.length === 1
+                              ? `/admin/pedidos/${p.pendingOrder.orderIds[0]}`
+                              : '/admin/pedidos'
+                          }
+                          title={`Ya incluido en ${p.pendingOrder.orderIds.length} pedido(s) — ${p.pendingOrder.qty} unidad(es) en camino`}
+                          className="flex flex-shrink-0 items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-200"
+                        >
+                          <PackageCheck className="h-3 w-3" />
+                          En pedido ({p.pendingOrder.qty})
+                        </Link>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-slate-500">{p.subcategory_name}</td>
                   <td className="px-4 py-3">
                     {editingId === p.id ? (

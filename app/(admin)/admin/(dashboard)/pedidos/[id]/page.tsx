@@ -2,13 +2,14 @@ import { notFound } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { getPublicImageUrl } from '@/lib/catalog/image-url'
 import PedidoBuilder from '@/components/admin/PedidoBuilder'
+import type { PurchaseOrderStatus } from '@/types/index'
 
 export default async function EditarPedidoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createSupabaseServerClient()
 
   const [{ data: order }, { data: itemsData }, { data: productsData }, { data: imagesData }] = await Promise.all([
-    supabase.from('purchase_orders').select('id, notes').eq('id', id).maybeSingle(),
+    supabase.from('purchase_orders').select('id, notes, status, estimated_arrival_date').eq('id', id).maybeSingle(),
     supabase.from('purchase_order_items').select('product_id, quantity').eq('purchase_order_id', id),
     supabase.from('products').select('id, name, cost_usd, supplier_code, stock_total, stock_minimum').order('name'),
     supabase.from('product_images').select('product_id, storage_path').eq('is_primary', true),
@@ -27,7 +28,14 @@ export default async function EditarPedidoPage({ params }: { params: Promise<{ i
   return (
     <div>
       <h1 className="heading-serif mb-6 text-2xl font-bold text-slate-900">Editar pedido</h1>
-      <PedidoBuilder products={products} initialItems={initialItems} initialNotes={order.notes ?? ''} orderId={order.id} />
+      <PedidoBuilder
+        products={products}
+        initialItems={initialItems}
+        initialNotes={order.notes ?? ''}
+        initialStatus={order.status as PurchaseOrderStatus}
+        initialEstimatedArrivalDate={order.estimated_arrival_date}
+        orderId={order.id}
+      />
     </div>
   )
 }

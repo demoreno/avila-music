@@ -3,18 +3,21 @@
 import { useMemo, useState } from 'react'
 import { parseDateOnly } from '@/lib/format-date'
 
-interface SaleRow {
+interface SaleLineRow {
+  id: string
   sale_id: string
   sale_date: string
   channel: string
-  item_count: number
-  gross_revenue: number
-  gross_profit: number
-  avg_margin: number
+  product_name: string
+  quantity: number
+  unit_price_usd: number
+  unit_cost_usd: number
+  gross_profit_usd: number
+  margin_pct: number
 }
 
 interface SalesClientProps {
-  sales: SaleRow[]
+  sales: SaleLineRow[]
 }
 
 const MONTH_LABELS_ES = [
@@ -61,12 +64,16 @@ export default function SalesClient({ sales }: SalesClientProps) {
   }, [sales, dateFrom, dateTo])
 
   const totals = useMemo(() => {
+    const salesSeen = new Set<string>()
     return filtered.reduce(
-      (acc, s) => ({
-        revenue: acc.revenue + s.gross_revenue,
-        profit: acc.profit + s.gross_profit,
-        count: acc.count + 1,
-      }),
+      (acc, row) => {
+        salesSeen.add(row.sale_id)
+        return {
+          revenue: acc.revenue + row.unit_price_usd * row.quantity,
+          profit: acc.profit + row.gross_profit_usd * row.quantity,
+          count: salesSeen.size,
+        }
+      },
       { revenue: 0, profit: 0, count: 0 }
     )
   }, [filtered])
@@ -142,8 +149,10 @@ export default function SalesClient({ sales }: SalesClientProps) {
             <tr>
               <th className="px-4 py-3 font-semibold text-slate-600">Fecha</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Canal</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Items</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Ingresos brutos</th>
+              <th className="px-4 py-3 font-semibold text-slate-600">Producto</th>
+              <th className="px-4 py-3 font-semibold text-slate-600">Cant.</th>
+              <th className="px-4 py-3 font-semibold text-slate-600">Precio unit.</th>
+              <th className="px-4 py-3 font-semibold text-slate-600">Subtotal</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Ganancia</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Margen</th>
             </tr>
@@ -151,33 +160,37 @@ export default function SalesClient({ sales }: SalesClientProps) {
           <tbody className="divide-y divide-slate-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
+                <td colSpan={8} className="px-4 py-8 text-center text-slate-400">
                   No hay ventas en el período seleccionado
                 </td>
               </tr>
             ) : (
-              filtered.map((s) => (
-                <tr key={s.sale_id} className="hover:bg-slate-50">
+              filtered.map((row) => (
+                <tr key={row.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3 text-slate-700">
-                    {parseDateOnly(s.sale_date).toLocaleDateString('es-VE')}
+                    {parseDateOnly(row.sale_date).toLocaleDateString('es-VE')}
                   </td>
-                  <td className="px-4 py-3 text-slate-500 capitalize">{s.channel}</td>
-                  <td className="px-4 py-3 text-slate-700">{s.item_count}</td>
+                  <td className="px-4 py-3 text-slate-500 capitalize">{row.channel}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800">{row.product_name}</td>
+                  <td className="px-4 py-3 text-slate-700">{row.quantity}</td>
+                  <td className="px-4 py-3 text-slate-600">USD {row.unit_price_usd.toFixed(2)}</td>
                   <td className="px-4 py-3 font-medium text-slate-800">
-                    USD {s.gross_revenue.toFixed(2)}
+                    USD {(row.unit_price_usd * row.quantity).toFixed(2)}
                   </td>
-                  <td className="px-4 py-3 text-slate-700">USD {s.gross_profit.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-slate-700">
+                    USD {(row.gross_profit_usd * row.quantity).toFixed(2)}
+                  </td>
                   <td className="px-4 py-3">
                     <span
                       className={`font-semibold ${
-                        s.avg_margin >= 0.3
+                        row.margin_pct >= 0.3
                           ? 'text-green-600'
-                          : s.avg_margin >= 0.15
+                          : row.margin_pct >= 0.15
                           ? 'text-amber-600'
                           : 'text-red-500'
                       }`}
                     >
-                      {(s.avg_margin * 100).toFixed(1)}%
+                      {(row.margin_pct * 100).toFixed(1)}%
                     </span>
                   </td>
                 </tr>

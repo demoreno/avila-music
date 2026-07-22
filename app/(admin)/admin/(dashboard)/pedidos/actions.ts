@@ -26,6 +26,7 @@ async function requireAdminUser() {
 interface SavePurchaseOrderInput {
   orderId?: string
   notes: string | null
+  estimatedArrivalDate: string | null
   items: { productId: string; quantity: number }[]
 }
 
@@ -40,9 +41,23 @@ export async function savePurchaseOrder(input: SavePurchaseOrderInput): Promise<
   let orderId = input.orderId
 
   if (orderId) {
+    const { data: existing, error: fetchError } = await adminClient
+      .from('purchase_orders')
+      .select('status')
+      .eq('id', orderId)
+      .single()
+    if (fetchError) throw new Error(fetchError.message)
+    if (existing.status === 'recibido') {
+      throw new Error('Este pedido ya fue recibido y no se puede modificar')
+    }
+
     const { error: updateError } = await adminClient
       .from('purchase_orders')
-      .update({ notes: input.notes, updated_at: new Date().toISOString() })
+      .update({
+        notes: input.notes,
+        estimated_arrival_date: input.estimatedArrivalDate,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', orderId)
     if (updateError) throw new Error(updateError.message)
 
@@ -54,7 +69,7 @@ export async function savePurchaseOrder(input: SavePurchaseOrderInput): Promise<
   } else {
     const { data: inserted, error: insertError } = await adminClient
       .from('purchase_orders')
-      .insert({ notes: input.notes })
+      .insert({ notes: input.notes, estimated_arrival_date: input.estimatedArrivalDate })
       .select('id')
       .single()
     if (insertError) throw new Error(insertError.message)
@@ -75,6 +90,30 @@ export async function savePurchaseOrder(input: SavePurchaseOrderInput): Promise<
   revalidatePath('/admin/inventario')
 
   return orderId
+}
+
+export async function updatePurchaseOrderStatus(orderId: string, status: string, estimatedArrivalDate?: string) {
+  const user = await requireAdminUser()
+
+  const { error } = await adminClient.rpc('update_purchase_order_status', {
+    p_order_id: orderId,
+    p_status: status,
+    p_created_by: user.id,
+  })
+  if (error) throw new Error(error.message)
+
+  if (estimatedArrivalDate) {
+    const { error: dateError } = await adminClient
+      .from('purchase_orders')
+      .update({ estimated_arrival_date: estimatedArrivalDate })
+      .eq('id', orderId)
+    if (dateError) throw new Error(dateError.message)
+  }
+
+  revalidatePath('/admin/pedidos')
+  revalidatePath(`/admin/pedidos/${orderId}`)
+  revalidatePath('/admin/inventario')
+  revalidatePath('/admin/productos')
 }
 
 export async function deletePurchaseOrder(orderId: string) {

@@ -43,9 +43,13 @@ export interface Product {
   images?: ProductImage[]
 }
 
+export type PurchaseOrderStatus = 'pendiente' | 'en_proceso' | 'procesado' | 'en_camino' | 'recibido' | 'cancelado'
+
 export interface PurchaseOrder {
   id: string
   notes: string | null
+  status: PurchaseOrderStatus
+  estimated_arrival_date: string | null
   created_at: string
   updated_at: string
 }
@@ -275,17 +279,23 @@ export type Database = {
         Row: {
           id: string
           notes: string | null
+          status: string
+          estimated_arrival_date: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           notes?: string | null
+          status?: string
+          estimated_arrival_date?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           notes?: string | null
+          status?: string
+          estimated_arrival_date?: string | null
           updated_at?: string
         }
       }

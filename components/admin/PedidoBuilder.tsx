@@ -5,7 +5,13 @@ import { useRouter } from 'next/navigation'
 import { Search, Trash2, Copy, Check } from 'lucide-react'
 import { matchesSearch } from '@/lib/search'
 import Thumbnail from '@/components/admin/Thumbnail'
-import { savePurchaseOrder, deletePurchaseOrder } from '@/app/(admin)/admin/(dashboard)/pedidos/actions'
+import {
+  savePurchaseOrder,
+  deletePurchaseOrder,
+  updatePurchaseOrderStatus,
+} from '@/app/(admin)/admin/(dashboard)/pedidos/actions'
+import { STATUS_OPTIONS } from '@/lib/purchase-order-status'
+import type { PurchaseOrderStatus } from '@/types/index'
 
 export interface PedidoProductOption {
   id: string
@@ -30,6 +36,8 @@ interface PedidoBuilderProps {
   products: PedidoProductOption[]
   initialItems: { productId: string; quantity: number }[]
   initialNotes?: string
+  initialStatus?: PurchaseOrderStatus
+  initialEstimatedArrivalDate?: string | null
   orderId?: string
 }
 
@@ -38,9 +46,21 @@ export function suggestedQuantity(product: Pick<PedidoProductOption, 'stock_mini
   return Math.max(product.stock_minimum * 2, 1)
 }
 
-export default function PedidoBuilder({ products, initialItems, initialNotes, orderId }: PedidoBuilderProps) {
+export default function PedidoBuilder({
+  products,
+  initialItems,
+  initialNotes,
+  initialStatus,
+  initialEstimatedArrivalDate,
+  orderId,
+}: PedidoBuilderProps) {
   const router = useRouter()
   const productById = useMemo(() => new Map(products.map((p) => [p.id, p])), [products])
+  const [status, setStatus] = useState<PurchaseOrderStatus>(initialStatus ?? 'pendiente')
+  const [changingStatus, setChangingStatus] = useState(false)
+  const [estimatedArrivalDate, setEstimatedArrivalDate] = useState(initialEstimatedArrivalDate ?? '')
+  const [arrivalPrompt, setArrivalPrompt] = useState<{ nextStatus: PurchaseOrderStatus; date: string } | null>(null)
+  const isLocked = status === 'recibido'
 
   const [query, setQuery] = useState('')
   const [lineItems, setLineItems] = useState<PedidoLineItem[]>(() =>
@@ -134,6 +154,7 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
       const savedId = await savePurchaseOrder({
         orderId,
         notes: notes.trim() || null,
+        estimatedArrivalDate: estimatedArrivalDate || null,
         items: lineItems.map((item) => ({ productId: item.productId, quantity: parseInt(item.quantity) || 0 })),
       })
       if (!orderId) router.push(`/admin/pedidos/${savedId}`)
@@ -143,6 +164,45 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
     } finally {
       setSaving(false)
     }
+  }
+
+  async function handleStatusChange(nextStatus: PurchaseOrderStatus) {
+    if (!orderId) return
+    if (nextStatus === 'recibido') {
+      const ok = confirm(
+        'Al marcarlo como recibido se va a sumar la cantidad de cada producto al stock automáticamente, y el pedido queda bloqueado para editar. ¿Confirmás?'
+      )
+      if (!ok) return
+    }
+    if (nextStatus === 'en_camino' && !estimatedArrivalDate) {
+      setArrivalPrompt({ nextStatus, date: '' })
+      return
+    }
+    await applyStatusChange(nextStatus)
+  }
+
+  async function applyStatusChange(nextStatus: PurchaseOrderStatus, dateOverride?: string) {
+    if (!orderId) return
+    setError('')
+    setChangingStatus(true)
+    try {
+      await updatePurchaseOrderStatus(orderId, nextStatus, dateOverride || undefined)
+      setStatus(nextStatus)
+      if (dateOverride) setEstimatedArrivalDate(dateOverride)
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al cambiar el estado')
+    } finally {
+      setChangingStatus(false)
+    }
+  }
+
+  async function confirmArrivalPrompt() {
+    if (!arrivalPrompt) return
+    if (!arrivalPrompt.date) return
+    const { nextStatus, date } = arrivalPrompt
+    setArrivalPrompt(null)
+    await applyStatusChange(nextStatus, date)
   }
 
   async function handleDelete() {
@@ -161,38 +221,48 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <div className="lg:col-span-2">
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <label className="mb-1 block text-sm font-medium text-slate-700">Agregar producto</label>
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Nombre del producto..."
-              className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none"
-            />
-          </div>
-
-          {matches.length > 0 && (
-            <div className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200">
-              {matches.map((product) => (
-                <button
-                  key={product.id}
-                  type="button"
-                  onClick={() => addProduct(product)}
-                  className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-slate-50"
-                >
-                  <span className="flex min-w-0 items-center gap-2.5">
-                    <Thumbnail imageUrl={product.imageUrl} name={product.name} />
-                    <span className="truncate font-medium text-slate-800">{product.name}</span>
-                  </span>
-                  <span className="flex flex-shrink-0 items-center gap-3 text-xs text-slate-500">
-                    <span>Stock: {product.stock_total}</span>
-                    <span className="font-semibold text-slate-700">USD {product.cost_usd.toFixed(2)}</span>
-                  </span>
-                </button>
-              ))}
+          {isLocked && (
+            <div className="mb-4 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700">
+              Este pedido ya fue recibido — el stock se actualizó y quedó bloqueado para editar.
             </div>
+          )}
+
+          {!isLocked && (
+            <>
+              <label className="mb-1 block text-sm font-medium text-slate-700">Agregar producto</label>
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Nombre del producto..."
+                  className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none"
+                />
+              </div>
+
+              {matches.length > 0 && (
+                <div className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                  {matches.map((product) => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      onClick={() => addProduct(product)}
+                      className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-slate-50"
+                    >
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <Thumbnail imageUrl={product.imageUrl} name={product.name} />
+                        <span className="truncate font-medium text-slate-800">{product.name}</span>
+                      </span>
+                      <span className="flex flex-shrink-0 items-center gap-3 text-xs text-slate-500">
+                        <span>Stock: {product.stock_total}</span>
+                        <span className="font-semibold text-slate-700">USD {product.cost_usd.toFixed(2)}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           )}
 
           <div className="mt-5">
@@ -233,21 +303,24 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
                               type="number"
                               min="1"
                               value={item.quantity}
+                              disabled={isLocked}
                               onChange={(e) => updateQuantity(item.productId, e.target.value)}
-                              className="w-20 rounded-lg border border-slate-300 px-2 py-1 text-sm focus:border-amber-400 focus:outline-none"
+                              className="w-20 rounded-lg border border-slate-300 px-2 py-1 text-sm focus:border-amber-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
                             />
                           </td>
                           <td className="px-3 py-2 text-slate-500">USD {item.cost_usd.toFixed(2)}</td>
                           <td className="px-3 py-2 font-semibold text-slate-700">USD {subtotal.toFixed(2)}</td>
                           <td className="px-3 py-2">
-                            <button
-                              type="button"
-                              onClick={() => removeLine(item.productId)}
-                              className="text-slate-400 hover:text-red-600"
-                              aria-label={`Quitar ${item.name}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            {!isLocked && (
+                              <button
+                                type="button"
+                                onClick={() => removeLine(item.productId)}
+                                className="text-slate-400 hover:text-red-600"
+                                aria-label={`Quitar ${item.name}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
                           </td>
                         </tr>
                       )
@@ -287,14 +360,49 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
           <h2 className="mb-4 text-base font-bold text-slate-900">Resumen</h2>
 
           <div className="space-y-3">
+            {orderId && (
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Estado</label>
+                <select
+                  value={status}
+                  disabled={isLocked || changingStatus}
+                  onChange={(e) => handleStatusChange(e.target.value as PurchaseOrderStatus)}
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none disabled:bg-slate-50"
+                >
+                  {STATUS_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <span className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_OPTIONS.find((o) => o.value === status)?.badgeClass}`}>
+                  {STATUS_OPTIONS.find((o) => o.value === status)?.label}
+                </span>
+              </div>
+            )}
+
+            {orderId && (
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Fecha estimada de llegada</label>
+                <input
+                  type="date"
+                  value={estimatedArrivalDate}
+                  disabled={isLocked}
+                  onChange={(e) => setEstimatedArrivalDate(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
+                />
+              </div>
+            )}
+
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">Notas</label>
               <textarea
                 rows={3}
                 value={notes}
+                disabled={isLocked}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Notas internas del pedido..."
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
               />
             </div>
 
@@ -305,16 +413,18 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
 
             {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
 
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={saving || lineItems.length === 0}
-              className="w-full rounded-lg bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 disabled:opacity-60"
-            >
-              {saving ? 'Guardando...' : orderId ? 'Guardar cambios' : 'Crear pedido'}
-            </button>
+            {!isLocked && (
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || lineItems.length === 0}
+                className="w-full rounded-lg bg-amber-500 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 disabled:opacity-60"
+              >
+                {saving ? 'Guardando...' : orderId ? 'Guardar cambios' : 'Crear pedido'}
+              </button>
+            )}
 
-            {orderId && (
+            {orderId && !isLocked && (
               <button
                 type="button"
                 onClick={handleDelete}
@@ -327,6 +437,41 @@ export default function PedidoBuilder({ products, initialItems, initialNotes, or
           </div>
         </div>
       </div>
+
+      {arrivalPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="mb-2 text-base font-bold text-slate-900">Fecha estimada de llegada</h3>
+            <p className="mb-4 text-sm text-slate-500">
+              Antes de marcarlo &ldquo;En camino&rdquo;, indicá cuándo esperás que llegue el pedido.
+            </p>
+            <input
+              type="date"
+              autoFocus
+              value={arrivalPrompt.date}
+              onChange={(e) => setArrivalPrompt({ ...arrivalPrompt, date: e.target.value })}
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
+            />
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setArrivalPrompt(null)}
+                className="flex-1 rounded-lg border border-slate-300 py-2 text-sm font-semibold text-slate-600 hover:border-slate-400"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmArrivalPrompt}
+                disabled={!arrivalPrompt.date}
+                className="flex-1 rounded-lg bg-amber-500 py-2 text-sm font-semibold text-white hover:bg-amber-600 disabled:opacity-60"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
