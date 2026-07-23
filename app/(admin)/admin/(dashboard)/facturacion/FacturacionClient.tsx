@@ -82,7 +82,10 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
   )
 
   const mlCommission = channel === 'mercadolibre' ? subtotal * 0.11 : 0
-  const mlShipping = channel === 'mercadolibre' && shippingType === 'gratis_ml' ? totalQty * 1.30 : 0
+  // Envío ML es un costo fijo por pedido (no por unidad) — el escalón real (0-2 gratis,
+  // 3-50 a $1.30, etc.) depende de cuántos envíos gratis ya hiciste este mes, así que esto
+  // es solo un estimado usando la tarifa más común; el monto exacto se calcula al guardar.
+  const mlShipping = channel === 'mercadolibre' && shippingType === 'gratis_ml' && totalQty > 0 ? 1.30 : 0
   const netEstimate = total - mlCommission - mlShipping
 
   function getPrice(product: ProductOption): number {
@@ -475,7 +478,7 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                   </div>
                   {shippingType === 'gratis_ml' && (
                     <div className="flex justify-between text-slate-500">
-                      <span>Envío ({totalQty} × $1.30)</span>
+                      <span>Envío estimado (1 pedido)</span>
                       <span>- USD {mlShipping.toFixed(2)}</span>
                     </div>
                   )}

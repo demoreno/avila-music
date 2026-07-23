@@ -131,7 +131,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Product Name */}
         <Link href={`/productos/${product.slug}`}>
-          <h3 className="heading-serif text-lg font-bold text-text line-clamp-2 leading-snug transition-colors hover:text-[#1e4d6b]">
+          <h3 className="text-lg font-bold text-text line-clamp-2 leading-snug transition-colors hover:text-[#1e4d6b]">
             {product.name}
           </h3>
         </Link>

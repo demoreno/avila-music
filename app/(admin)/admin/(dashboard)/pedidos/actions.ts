@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 
@@ -119,9 +118,19 @@ export async function updatePurchaseOrderStatus(orderId: string, status: string,
 export async function deletePurchaseOrder(orderId: string) {
   await requireAdminUser()
 
+  const { data: existing, error: fetchError } = await adminClient
+    .from('purchase_orders')
+    .select('status')
+    .eq('id', orderId)
+    .single()
+  if (fetchError) throw new Error(fetchError.message)
+  if (existing.status !== 'pendiente') {
+    throw new Error('Solo se pueden eliminar pedidos en estado Pendiente')
+  }
+
   const { error } = await adminClient.from('purchase_orders').delete().eq('id', orderId)
   if (error) throw new Error(error.message)
 
   revalidatePath('/admin/pedidos')
-  redirect('/admin/pedidos')
+  revalidatePath('/admin/inventario')
 }

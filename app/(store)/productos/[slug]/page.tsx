@@ -163,7 +163,7 @@ export default async function ProductPage({
             )}
 
             {/* Title */}
-            <h1 className="heading-serif text-4xl sm:text-5xl font-bold text-[#1e4d6b] leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#1e4d6b] leading-tight">
               {product.name}
             </h1>
 
@@ -191,7 +191,7 @@ export default async function ProductPage({
                   <Info className="h-5 w-5" />
                   Descripción
                 </h3>
-                <p className="text-text-muted leading-relaxed">{product.description}</p>
+                <p className="text-text-muted leading-relaxed whitespace-pre-line">{product.description}</p>
               </div>
             )}
 

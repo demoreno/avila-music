@@ -211,6 +211,7 @@ export default function PedidoBuilder({
     setDeleting(true)
     try {
       await deletePurchaseOrder(orderId)
+      router.push('/admin/pedidos')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al eliminar el pedido')
       setDeleting(false)
@@ -424,7 +425,7 @@ export default function PedidoBuilder({
               </button>
             )}
 
-            {orderId && !isLocked && (
+            {orderId && status === 'pendiente' && (
               <button
                 type="button"
                 onClick={handleDelete}

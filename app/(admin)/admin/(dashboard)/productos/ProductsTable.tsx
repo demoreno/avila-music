@@ -132,6 +132,46 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
     setError('')
   }
 
+  async function startCreateSimilar(product: ProductWithCategory) {
+    setCreating(true)
+    setEditing(null)
+    setFormData({
+      name: `${product.name} (copia)`,
+      subcategory_id: product.subcategory_id,
+      price_usd: String(product.price_usd),
+      price_ml_usd: String(product.price_ml_usd),
+      cost_usd: String(product.cost_usd),
+      stock_total: String(product.stock_total),
+      stock_minimum: String(product.stock_minimum),
+      notes: product.notes ?? '',
+      description: product.description ?? '',
+      is_active: product.is_active,
+      featured: product.featured,
+      new_arrival: product.new_arrival,
+      supplier_code: product.supplier_code ?? '',
+    })
+    setExistingImages([])
+    setNewFiles([])
+    setError('')
+
+    const sourceImages = imagesByProduct[product.id] ?? []
+    if (sourceImages.length === 0) return
+
+    try {
+      const files = await Promise.all(
+        sourceImages.map(async (img, index) => {
+          const response = await fetch(getPublicImageUrl(img.storage_path))
+          const blob = await response.blob()
+          const ext = img.storage_path.split('.').pop() ?? 'jpg'
+          return new File([blob], `imagen-${index + 1}.${ext}`, { type: blob.type })
+        })
+      )
+      setNewFiles(files)
+    } catch {
+      // Imágenes originales no se pudieron copiar — el admin puede subirlas de nuevo a mano.
+    }
+  }
+
   async function handleDeleteImage(imageId: string) {
     setDeletingImageId(imageId)
     setError('')
@@ -188,6 +228,27 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
   }
 
   const showModal = editing !== null || creating
+
+  function closeModal() {
+    setEditing(null)
+    setCreating(false)
+  }
+
+  useEffect(() => {
+    if (!showModal) return
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        closeModal()
+      } else if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+        e.preventDefault()
+        handleSave()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  })
 
   return (
     <div>
@@ -253,12 +314,20 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <button
-                    onClick={() => startEdit(p)}
-                    className="text-amber-600 hover:text-amber-700 text-xs font-medium"
-                  >
-                    Editar
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => startEdit(p)}
+                      className="text-amber-600 hover:text-amber-700 text-xs font-medium"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => startCreateSimilar(p)}
+                      className="text-slate-500 hover:text-slate-700 text-xs font-medium"
+                    >
+                      Crear similar
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -478,10 +547,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
 
             <div className="flex gap-3 border-t border-slate-100 px-6 py-4">
               <button
-                onClick={() => {
-                  setEditing(null)
-                  setCreating(false)
-                }}
+                onClick={closeModal}
                 className="flex-1 rounded-lg border border-slate-300 py-2 text-sm font-semibold text-slate-600 hover:border-slate-400"
               >
                 Cancelar

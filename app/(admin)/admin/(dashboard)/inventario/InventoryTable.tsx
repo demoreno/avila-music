@@ -112,8 +112,11 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
   const agotadoCount = localProducts.filter((p) => p.stock_total === 0).length
   const criticalCount = localProducts.filter((p) => p.stock_total > 0 && p.stock_total <= p.stock_minimum).length
   const okCount = localProducts.length - agotadoCount - criticalCount
-  const reorderNeedCount = reorderData.filter((r) =>
-    r.urgency === 'sin_stock_vende' || r.urgency === 'critico' || r.urgency === 'pedir_pronto'
+  // Igual que ReorderTab.isUrgent: bajo de stock Y todavía sin cubrir con un pedido en camino.
+  const reorderNeedCount = reorderData.filter(
+    (r) =>
+      (r.urgency === 'sin_stock_vende' || r.urgency === 'critico' || r.urgency === 'pedir_pronto') &&
+      r.suggested_order_qty > 0
   ).length
   const productById = new Map(localProducts.map((p) => [p.id, p]))
   const pedidoProducts: PedidoProductOption[] = localProducts.map((p) => ({
@@ -201,6 +204,9 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
             {filtered.map((p) => {
               const isCritical = p.stock_total <= p.stock_minimum && p.stock_total > 0
               const isEmpty = p.stock_total === 0
+              // "OK" pero a menos de 50% por encima del mínimo — un aviso temprano
+              // antes de que caiga a Crítico, para no descubrirlo tarde.
+              const isApproachingMin = !isEmpty && !isCritical && p.stock_minimum > 0 && p.stock_total <= p.stock_minimum * 1.5
 
               return (
                 <tr key={p.id} className={`hover:bg-slate-50 ${isEmpty ? 'bg-red-50' : ''}`}>
@@ -290,6 +296,14 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
                     >
                       {isEmpty ? 'Sin stock' : isCritical ? 'Crítico' : 'OK'}
                     </span>
+                    {isApproachingMin && (
+                      <span
+                        title="Todavía OK, pero se está acercando al stock mínimo"
+                        className="ml-1.5 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-600"
+                      >
+                        Acercándose al mínimo
+                      </span>
+                    )}
                   </td>
                 </tr>
               )

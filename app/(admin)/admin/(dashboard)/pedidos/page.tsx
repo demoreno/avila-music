@@ -3,6 +3,7 @@ import { Plus, Truck } from 'lucide-react'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { parseDateOnly } from '@/lib/format-date'
 import { STATUS_OPTIONS } from '@/lib/purchase-order-status'
+import DeletePedidoButton from '@/components/admin/DeletePedidoButton'
 import type { PurchaseOrderStatus } from '@/types/index'
 
 export default async function PedidosPage() {
@@ -71,9 +72,12 @@ export default async function PedidosPage() {
                   <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${statusOption?.badgeClass}`}>
                     {statusOption?.label ?? order.status}
                   </span>
-                  <span className="text-xs text-slate-400">
-                    {parseDateOnly(order.created_at).toLocaleDateString('es-VE')}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-slate-400">
+                      {parseDateOnly(order.created_at).toLocaleDateString('es-VE')}
+                    </span>
+                    {order.status === 'pendiente' && <DeletePedidoButton orderId={order.id} />}
+                  </div>
                 </div>
 
                 {order.notes && (

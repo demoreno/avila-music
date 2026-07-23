@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertTriangle, TrendingUp, Package, Clock, ClipboardList, X } from 'lucide-react'
+import { AlertTriangle, TrendingUp, Package, Clock, ClipboardList, X, CheckCircle2 } from 'lucide-react'
 import PedidoBuilder, { type PedidoProductOption } from '@/components/admin/PedidoBuilder'
 
 export interface ReorderRow {
@@ -46,9 +46,15 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [drawerOpen, setDrawerOpen] = useState(false)
 
+  // "Urgente" combina stock físico bajo con que todavía haga falta pedir algo —
+  // si ya está cubierto por un pedido en camino (suggested_order_qty = 0), no
+  // necesita más atención aunque el stock físico siga bajo.
+  const isUrgent = (r: ReorderRow) =>
+    (r.urgency === 'sin_stock_vende' || r.urgency === 'critico' || r.urgency === 'pedir_pronto') &&
+    r.suggested_order_qty > 0
+
   const filtered = data.filter((r) => {
-    if (urgencyFilter === 'urgentes')
-      return r.urgency === 'sin_stock_vende' || r.urgency === 'critico' || r.urgency === 'pedir_pronto'
+    if (urgencyFilter === 'urgentes') return isUrgent(r)
     if (urgencyFilter === 'sin_movimiento')
       return r.urgency === 'sin_movimiento' || r.urgency === 'inactivo'
     return true
@@ -58,9 +64,7 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
     .filter((r) => r.suggested_order_qty > 0)
     .reduce((sum, r) => sum + Number(r.suggested_order_cost), 0)
 
-  const urgentCount = data.filter(
-    (r) => r.urgency === 'sin_stock_vende' || r.urgency === 'critico' || r.urgency === 'pedir_pronto'
-  ).length
+  const urgentCount = data.filter(isUrgent).length
 
   return (
     <div>
@@ -157,8 +161,18 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
           <tbody className="divide-y divide-slate-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-slate-400">
-                  No hay productos en esta categoría.
+                <td colSpan={9} className="px-4 py-12 text-center">
+                  {urgencyFilter === 'urgentes' ? (
+                    <div className="flex flex-col items-center gap-2 text-slate-400">
+                      <CheckCircle2 className="h-8 w-8 text-green-500" />
+                      <p className="font-medium text-slate-600">Todo al día</p>
+                      <p className="text-sm">Ningún producto necesita reposición ahora mismo.</p>
+                    </div>
+                  ) : urgencyFilter === 'sin_movimiento' ? (
+                    <p className="text-slate-400">No hay productos sin movimiento.</p>
+                  ) : (
+                    <p className="text-slate-400">No hay productos para mostrar.</p>
+                  )}
                 </td>
               </tr>
             ) : (
@@ -188,9 +202,19 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${cfg.bg} ${cfg.color}`}>
-                        {cfg.label}
-                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${cfg.bg} ${cfg.color}`}>
+                          {cfg.label}
+                        </span>
+                        {r.pending_in_orders > 0 && (
+                          <span
+                            title={`${r.pending_in_orders} unidad(es) ya pedidas`}
+                            className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700"
+                          >
+                            Ya pedido ({r.pending_in_orders})
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-right font-medium text-slate-700">
                       {r.avg_monthly_velocity > 0 ? `${r.avg_monthly_velocity} uds/mes` : '—'}
