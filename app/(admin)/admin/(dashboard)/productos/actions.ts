@@ -34,6 +34,12 @@ function slugify(name: string): string {
     .replace(/^-|-$/g, '')
 }
 
+function revalidateStorefrontProductPaths(slug: string) {
+  revalidatePath('/productos')
+  revalidatePath(`/productos/${slug}`)
+  revalidatePath('/')
+}
+
 export async function updateProduct(
   id: string,
   data: {
@@ -53,17 +59,18 @@ export async function updateProduct(
 ) {
   await requireAdminUser()
 
-  const { error } = await adminClient
+  const { data: updatedProduct, error } = await adminClient
     .from('products')
     .update({ ...data, updated_at: new Date().toISOString() })
     .eq('id', id)
+    .select('slug')
+    .single()
 
   if (error) throw new Error(error.message)
 
   revalidatePath('/admin/productos')
   revalidatePath('/admin/inventario')
-  revalidatePath('/productos')
-  revalidatePath('/')
+  revalidateStorefrontProductPaths(updatedProduct.slug)
 }
 
 export async function createProduct(data: {
@@ -109,14 +116,20 @@ export async function createProduct(data: {
   if (error) throw new Error(error.message)
 
   revalidatePath('/admin/productos')
-  revalidatePath('/productos')
-  revalidatePath('/')
+  revalidateStorefrontProductPaths(slug)
 
   return inserted.id as string
 }
 
 export async function uploadProductImages(productId: string, formData: FormData) {
   await requireAdminUser()
+
+  const { data: productForSlug, error: productError } = await adminClient
+    .from('products')
+    .select('slug')
+    .eq('id', productId)
+    .single()
+  if (productError) throw new Error(productError.message)
 
   const files = formData.getAll('images').filter((f): f is File => f instanceof File && f.size > 0)
   if (files.length === 0) return
@@ -151,8 +164,7 @@ export async function uploadProductImages(productId: string, formData: FormData)
   }
 
   revalidatePath('/admin/productos')
-  revalidatePath('/productos')
-  revalidatePath('/')
+  revalidateStorefrontProductPaths(productForSlug.slug)
 }
 
 export async function deleteProductImage(imageId: string) {
@@ -160,7 +172,7 @@ export async function deleteProductImage(imageId: string) {
 
   const { data: image, error: fetchError } = await adminClient
     .from('product_images')
-    .select('product_id, storage_path, is_primary')
+    .select('product_id, storage_path, is_primary, products!inner(slug)')
     .eq('id', imageId)
     .single()
   if (fetchError) throw new Error(fetchError.message)
@@ -189,6 +201,5 @@ export async function deleteProductImage(imageId: string) {
   }
 
   revalidatePath('/admin/productos')
-  revalidatePath('/productos')
-  revalidatePath('/')
+  revalidateStorefrontProductPaths(image.products.slug)
 }
