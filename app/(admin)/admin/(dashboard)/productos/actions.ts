@@ -63,6 +63,7 @@ export async function updateProduct(
   revalidatePath('/admin/productos')
   revalidatePath('/admin/inventario')
   revalidatePath('/productos')
+  revalidatePath('/')
 }
 
 export async function createProduct(data: {
@@ -109,6 +110,7 @@ export async function createProduct(data: {
 
   revalidatePath('/admin/productos')
   revalidatePath('/productos')
+  revalidatePath('/')
 
   return inserted.id as string
 }
@@ -150,6 +152,7 @@ export async function uploadProductImages(productId: string, formData: FormData)
 
   revalidatePath('/admin/productos')
   revalidatePath('/productos')
+  revalidatePath('/')
 }
 
 export async function deleteProductImage(imageId: string) {
@@ -187,4 +190,5 @@ export async function deleteProductImage(imageId: string) {
 
   revalidatePath('/admin/productos')
   revalidatePath('/productos')
+  revalidatePath('/')
 }
