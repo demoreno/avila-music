@@ -172,10 +172,17 @@ export async function deleteProductImage(imageId: string) {
 
   const { data: image, error: fetchError } = await adminClient
     .from('product_images')
-    .select('product_id, storage_path, is_primary, products!inner(slug)')
+    .select('product_id, storage_path, is_primary')
     .eq('id', imageId)
     .single()
   if (fetchError) throw new Error(fetchError.message)
+
+  const { data: productForSlug, error: productError } = await adminClient
+    .from('products')
+    .select('slug')
+    .eq('id', image.product_id)
+    .single()
+  if (productError) throw new Error(productError.message)
 
   const objectPath = image.storage_path.replace(`${PRODUCT_IMAGES_BUCKET}/`, '')
   const { error: removeError } = await adminClient.storage
@@ -201,5 +208,5 @@ export async function deleteProductImage(imageId: string) {
   }
 
   revalidatePath('/admin/productos')
-  revalidateStorefrontProductPaths(image.products.slug)
+  revalidateStorefrontProductPaths(productForSlug.slug)
 }
