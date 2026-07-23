@@ -173,7 +173,7 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
       </div>
 
       {filter === 'reposicion' ? (
-        <ReorderTab data={reorderData} />
+        <ReorderTab data={reorderData} pedidoProducts={pedidoProducts} />
       ) : (
       <>
 

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { AlertTriangle, TrendingUp, Package, Clock } from 'lucide-react'
+import { AlertTriangle, TrendingUp, Package, Clock, ClipboardList, X } from 'lucide-react'
+import PedidoBuilder, { type PedidoProductOption } from '@/components/admin/PedidoBuilder'
 
 export interface ReorderRow {
   id: string
@@ -36,8 +36,15 @@ const urgencyConfig: Record<string, { label: string; color: string; bg: string }
 
 type UrgencyFilter = 'todos' | 'urgentes' | 'sin_movimiento'
 
-export default function ReorderTab({ data }: { data: ReorderRow[] }) {
+interface ReorderTabProps {
+  data: ReorderRow[]
+  pedidoProducts: PedidoProductOption[]
+}
+
+export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
   const [urgencyFilter, setUrgencyFilter] = useState<UrgencyFilter>('urgentes')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const filtered = data.filter((r) => {
     if (urgencyFilter === 'urgentes')
@@ -119,6 +126,24 @@ export default function ReorderTab({ data }: { data: ReorderRow[] }) {
         <table className="w-full text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-left">
             <tr>
+              <th className="w-10 px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={filtered.filter((r) => r.suggested_order_qty > 0).length > 0 && filtered.filter((r) => r.suggested_order_qty > 0).every((r) => selected.has(r.id))}
+                  onChange={() => {
+                    const selectable = filtered.filter((r) => r.suggested_order_qty > 0)
+                    const allSelected = selectable.every((r) => selected.has(r.id))
+                    setSelected((prev) => {
+                      const next = new Set(prev)
+                      if (allSelected) selectable.forEach((r) => next.delete(r.id))
+                      else selectable.forEach((r) => next.add(r.id))
+                      return next
+                    })
+                  }}
+                  className="rounded"
+                  aria-label="Seleccionar todos"
+                />
+              </th>
               <th className="px-4 py-3 font-semibold text-slate-600">Producto</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Urgencia</th>
               <th className="px-4 py-3 font-semibold text-slate-600 text-right">Vel. mensual</th>
@@ -132,7 +157,7 @@ export default function ReorderTab({ data }: { data: ReorderRow[] }) {
           <tbody className="divide-y divide-slate-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-slate-400">
+                <td colSpan={9} className="px-4 py-8 text-center text-slate-400">
                   No hay productos en esta categoría.
                 </td>
               </tr>
@@ -141,6 +166,21 @@ export default function ReorderTab({ data }: { data: ReorderRow[] }) {
                 const cfg = urgencyConfig[r.urgency] ?? urgencyConfig.ok
                 return (
                   <tr key={r.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selected.has(r.id)}
+                        onChange={() => setSelected((prev) => {
+                          const next = new Set(prev)
+                          if (next.has(r.id)) next.delete(r.id)
+                          else next.add(r.id)
+                          return next
+                        })}
+                        disabled={r.suggested_order_qty === 0}
+                        className="rounded disabled:opacity-30"
+                        aria-label={`Seleccionar ${r.product_name}`}
+                      />
+                    </td>
                     <td className="px-4 py-3">
                       <p className="font-medium text-slate-800">{r.product_name}</p>
                       {r.subcategory_name && (
@@ -198,14 +238,53 @@ export default function ReorderTab({ data }: { data: ReorderRow[] }) {
         </table>
       </div>
 
-      {filtered.some((r) => r.suggested_order_qty > 0) && (
-        <div className="mt-4 flex justify-end">
-          <Link
-            href="/admin/pedidos/nuevo"
-            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
-          >
-            Crear pedido con sugeridos
-          </Link>
+      {selected.size > 0 && (
+        <div className="fixed inset-x-0 bottom-6 z-40 flex justify-center px-4">
+          <div className="flex items-center gap-4 rounded-full bg-slate-900 px-6 py-3 shadow-2xl">
+            <span className="text-sm font-medium text-white">
+              {selected.size} producto{selected.size === 1 ? '' : 's'} seleccionado{selected.size === 1 ? '' : 's'}
+            </span>
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="flex items-center gap-1.5 rounded-full bg-amber-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-amber-600"
+            >
+              <ClipboardList className="h-4 w-4" />
+              Crear pedido
+            </button>
+            <button
+              onClick={() => setSelected(new Set())}
+              className="text-slate-400 hover:text-white"
+              aria-label="Cancelar selección"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-slate-50 p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="heading-serif text-xl font-bold text-slate-900">Nuevo pedido (sugerido)</h2>
+              <button
+                onClick={() => setDrawerOpen(false)}
+                className="text-slate-400 hover:text-slate-700"
+                aria-label="Cerrar"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <PedidoBuilder
+              products={pedidoProducts}
+              initialItems={Array.from(selected)
+                .map((id) => {
+                  const row = data.find((r) => r.id === id)
+                  return row ? { productId: id, quantity: row.suggested_order_qty } : null
+                })
+                .filter((item): item is { productId: string; quantity: number } => item !== null)}
+            />
+          </div>
         </div>
       )}
     </div>
