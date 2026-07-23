@@ -1,7 +1,7 @@
 import type { Product, ProductImage, CategoryTree } from '@/types/index'
 
-/** Storefront-facing product shape — never carries cost_usd (internal margin data). */
-export type PublicProduct = Omit<Product, 'cost_usd' | 'supplier_code'> & { images: ProductImage[]; description: string }
+/** Storefront-facing product shape — never carries cost_usd, price_ml_usd, or supplier_code (internal data). */
+export type PublicProduct = Omit<Product, 'cost_usd' | 'price_ml_usd' | 'supplier_code'> & { images: ProductImage[]; description: string }
 
 export interface CatalogProvider {
   getFeaturedProducts(limit: number): Promise<PublicProduct[]>
