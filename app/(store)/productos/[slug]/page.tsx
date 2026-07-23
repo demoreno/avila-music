@@ -1,14 +1,13 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Tag, Info, ArrowRight, XCircle, AlertTriangle, CheckCircle2, Truck, ShieldCheck, MessageCircle, Lock } from 'lucide-react'
+import { Tag, ArrowRight, XCircle, AlertTriangle, CheckCircle2, Truck, Smartphone, Landmark, Wallet, ShieldCheck, MessageCircle } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
 import { canShowPrices, withPriceVisibility } from '@/lib/geo'
-import { whatsappProductLink } from '@/lib/whatsapp'
 import ImageGallery from './ImageGallery'
 import ProductCard from '@/components/store/ProductCard'
-import AddToCartButton from '@/components/store/AddToCartButton'
-import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
+import ProductActions from '@/components/store/ProductActions'
+import ProductSpecs from '@/components/store/ProductSpecs'
 
 export async function generateStaticParams() {
   const products = await catalog.getAllProducts()
@@ -54,8 +53,6 @@ export default async function ProductPage({
     canShowPrices(),
   ])
   const relatedProducts = rawRelatedProducts.map((p) => withPriceVisibility(p, showPrices))
-
-  const waLink = whatsappProductLink(product.name, showPrices ? product.price_usd : undefined)
 
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
   const ogImageUrl = primaryImage ? catalog.getProductImageUrl(primaryImage.storage_path) : null
@@ -110,7 +107,13 @@ export default async function ProductPage({
     product.stock_total === 0
       ? { label: 'Sin stock', color: 'badge-out', icon: XCircle }
       : product.stock_total <= product.stock_minimum
-      ? { label: 'Últimas unidades', color: 'badge-low-stock', icon: AlertTriangle }
+      ? {
+          label: product.stock_total <= 10 ? `Solo ${product.stock_total}` : `Últimas ${product.stock_total}`,
+          color: 'badge-low-stock',
+          icon: AlertTriangle,
+        }
+      : product.stock_total <= 15
+      ? { label: `Quedan ${product.stock_total}`, color: 'badge-hot', icon: AlertTriangle }
       : { label: 'Disponible', color: 'badge-stock', icon: CheckCircle2 }
 
   return (
@@ -150,7 +153,7 @@ export default async function ProductPage({
           <ImageGallery images={product.images} productName={product.name} />
 
           {/* Product Info */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 min-w-0">
             {/* Category Badge */}
             {categoryInfo && (
               <Link
@@ -184,71 +187,104 @@ export default async function ProductPage({
               </span>
             </div>
 
-            {/* Description */}
-            {product.description && (
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <h3 className="font-semibold text-[#1e4d6b] mb-3 flex items-center gap-2">
-                  <Info className="h-5 w-5" />
-                  Descripción
-                </h3>
-                <p className="text-text-muted leading-relaxed whitespace-pre-line">{product.description}</p>
-              </div>
-            )}
+            {/* Product Actions — quantity, add to cart, WhatsApp */}
+            <ProductActions
+              product={{
+                productId: product.id,
+                slug: product.slug,
+                name: product.name,
+                imageUrl: ogImageUrl,
+                unitPriceUsd: showPrices ? product.price_usd : null,
+                stockTotal: product.stock_total,
+                stockMinimum: product.stock_minimum,
+              }}
+              showPrices={showPrices}
+            />
+          </div>
+        </div>
 
-            {/* Actions */}
-            <div className="flex flex-col gap-4 pt-4">
-              <AddToCartButton
-                product={{
-                  productId: product.id,
-                  slug: product.slug,
-                  name: product.name,
-                  imageUrl: ogImageUrl,
-                  unitPriceUsd: showPrices ? product.price_usd : null,
-                  stockTotal: product.stock_total,
-                }}
-                className="btn-primary btn-glow justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-              />
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-outline justify-center py-4"
-              >
-                <WhatsAppIcon className="h-6 w-6" />
-                Pedir por WhatsApp
-              </a>
-            </div>
+        {/* Description — full width below the fold */}
+        <div className="mt-12">
+          <ProductSpecs
+            description={product.description}
+            notes={product.notes}
+            stockTotal={product.stock_total}
+            stockMinimum={product.stock_minimum}
+          />
+        </div>
 
-            {/* Shipping info */}
-            <div className="rounded-2xl border border-sky-200 bg-sky-50 p-6">
-              <h3 className="font-semibold text-sky-800 mb-3 flex items-center gap-2">
-                <Truck className="h-5 w-5" />
-                Envío
-              </h3>
-              <ul className="space-y-1.5 text-sm text-sky-900/80">
-                <li>Ciudades principales: 24-48 horas</li>
-                <li>Otras ciudades: 3-5 días hábiles</li>
-                <li>Pago del envío al recibir (MRW / Zoom)</li>
-              </ul>
-              <Link href="/envios" className="inline-block mt-3 text-sm font-medium text-sky-700 hover:text-sky-900 transition-colors">
-                Ver detalles de envío →
-              </Link>
-            </div>
-
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200">
-              {[
-                { icon: Truck, text: 'Envío seguro' },
-                { icon: ShieldCheck, text: 'Garantía incluida' },
-                { icon: MessageCircle, text: 'Soporte rápido' },
-                { icon: Lock, text: 'Pago protegido' },
-              ].map((feature) => (
-                <div key={feature.text} className="flex items-center gap-3 text-sm text-text-muted">
-                  <feature.icon className="h-5 w-5 text-[#1e4d6b]" />
-                  <span>{feature.text}</span>
+        {/* Payment methods + Shipping — 50/50 */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Payment methods */}
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
+              Paga como prefieras
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                  <Smartphone className="h-5 w-5" />
                 </div>
-              ))}
+                <div>
+                  <p className="text-xs font-semibold text-text">Pago Móvil</p>
+                  <p className="text-[11px] text-text-muted">Disponible</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                  <Landmark className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-text">Transferencia</p>
+                  <p className="text-[11px] text-text-muted">Bancaria</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-yellow-50 text-yellow-600">
+                  <Wallet className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-text">Binance USDT</p>
+                  <p className="text-[11px] text-text-muted">Cripto</p>
+                </div>
+              </div>
             </div>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-text">Garantía</p>
+                  <p className="text-[11px] text-text-muted">Incluida siempre</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
+                  <MessageCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-text">Soporte</p>
+                  <p className="text-[11px] text-text-muted">Post-venta</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Shipping info */}
+          <div className="rounded-2xl border border-sky-200 bg-sky-50 p-6">
+            <h3 className="font-semibold text-sky-800 mb-3 flex items-center gap-2">
+              <Truck className="h-5 w-5" />
+              Envío
+            </h3>
+            <ul className="space-y-1.5 text-sm text-sky-900/80">
+              <li>Ciudades principales: 24-48 horas</li>
+              <li>Otras ciudades: 3-5 días hábiles</li>
+              <li>Pago del envío al recibir (MRW / Zoom)</li>
+            </ul>
+            <Link href="/envios" className="inline-block mt-3 text-sm font-medium text-sky-700 hover:text-sky-900 transition-colors">
+              Ver detalles de envío →
+            </Link>
           </div>
         </div>
 

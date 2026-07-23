@@ -2,11 +2,14 @@ import type { CartItem } from './cart/types'
 
 const WHATSAPP_NUMBER = '584128288674'
 
-export function whatsappProductLink(productName: string, price?: number): string {
+export function whatsappProductLink(productName: string, price?: number, quantity?: number): string {
+  const qty = quantity && quantity > 1
+  const label = qty ? `×${quantity} ${productName}` : productName
+  const total = qty && price !== undefined ? price * quantity : price
   const message =
-    price !== undefined
-      ? `Hola, me interesa el producto: *${productName}* (USD ${price.toFixed(2)}). ¿Está disponible?`
-      : `Hola, me interesa el producto: *${productName}*. ¿Podrían darme el precio y disponibilidad?`
+    total !== undefined
+      ? `Hola, me interesa: *${label}* (USD ${total.toFixed(2)}). ¿Está disponible?`
+      : `Hola, me interesa: *${label}*. ¿Podrían darme el precio y disponibilidad?`
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
 }
 

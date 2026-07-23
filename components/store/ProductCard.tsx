@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Eye, ArrowRight, CheckCircle2, Music } from 'lucide-react'
+import { CheckCircle2, Music } from 'lucide-react'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import AddToCartButton from '@/components/store/AddToCartButton'
@@ -33,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container */}
-      <div className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+      <Link href={`/productos/${product.slug}`} className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 block">
         {imageUrl ? (
           <>
             <Image
@@ -44,7 +44,6 @@ export default function ProductCard({ product }: ProductCardProps) {
               className={`object-cover transition-all duration-700 ${isHovered ? 'scale-110' : 'scale-100'}`}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
-            {/* Gradient Overlay on Hover */}
             <div className={`absolute inset-0 bg-gradient-to-t from-[#1e4d6b]/80 via-transparent to-transparent transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
           </>
         ) : (
@@ -73,7 +72,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Quick Actions - Slide in on hover */}
-        <div className={`absolute right-3 top-3 flex flex-col gap-2 transition-all duration-500 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}>
+        <div
+          className={`absolute right-3 top-3 flex flex-col gap-2 transition-all duration-500 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
+          onClick={(e) => e.stopPropagation()}
+        >
           <a
             href={waLink}
             target="_blank"
@@ -84,14 +86,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             <WhatsAppIcon className="h-5 w-5" />
           </a>
-          <Link
-            href={`/productos/${product.slug}`}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm text-[#1e4d6b] shadow-lg transition-all hover:scale-110 hover:bg-[#1e4d6b] hover:text-white"
-            title="Ver detalles"
-            aria-label={`Ver detalles de ${product.name}`}
-          >
-            <Eye className="h-5 w-5" />
-          </Link>
           <AddToCartButton
             product={{
               productId: product.id,
@@ -107,18 +101,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {''}
           </AddToCartButton>
         </div>
-
-        {/* Ver producto - Slide up on hover */}
-        <div className={`absolute bottom-0 left-0 right-0 p-3 transition-all duration-500 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-          <Link
-            href={`/productos/${product.slug}`}
-            className="flex items-center justify-center gap-2 w-full rounded-xl bg-white/95 backdrop-blur-sm py-3 text-sm font-semibold text-[#1e4d6b] shadow-lg transition-all hover:bg-[#1e4d6b] hover:text-white"
-          >
-            <ArrowRight className="h-5 w-5" />
-            Ver producto
-          </Link>
-        </div>
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
