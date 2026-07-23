@@ -4,7 +4,7 @@ import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
   title: 'Garantías',
-  description: 'Todos los productos de Ávila Music son 100% originales y cuentan con garantía. Conocé las condiciones.',
+  description: 'Todos los productos de Ávila Music son 100% originales con garantía. Compra segura de accesorios musicales en Caracas con envío a todo el país.',
   alternates: { canonical: '/garantias' },
 }
 

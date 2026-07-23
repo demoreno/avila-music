@@ -4,8 +4,8 @@ import { catalog } from '@/lib/catalog'
 import CategoryIcon from '@/components/store/CategoryIcon'
 
 export const metadata: Metadata = {
-  title: 'Categorías',
-  description: 'Explorá el catálogo de Ávila Music por categoría: guitarras, bajo, violín, batería y electrónica.',
+  title: 'Categorías | Accesorios Musicales en Caracas',
+  description: 'Explorá el catálogo de Ávila Music por categoría: cuerdas, accesorios y repuestos para guitarra, bajo, violín, batería y electrónica. Comprá online con envíos a todo el país desde Caracas.',
   alternates: { canonical: '/productos/categoria' },
 }
 

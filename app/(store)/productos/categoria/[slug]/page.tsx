@@ -35,9 +35,17 @@ export async function generateMetadata({
   const categoryName = rows[0].category_name
   const subcategoryNames = rows.map((r) => r.subcategory_name).join(', ')
 
+  const CATEGORY_DESC: Record<string, string> = {
+    'guitarras': 'Cuerdas, clavijas, capotrastes, cejillas y accesorios para guitarra clásica, eléctrica y acústica en Caracas.',
+    'bajo': 'Cuerdas, clavijas y accesorios para bajo eléctrico. Cuerdas Alice, Ernie Ball y más en Caracas.',
+    'violin-cuerdas': 'Cuerdas, hombreras, arcos y accesorios para violín y viola en Venezuela.',
+    'bateria-percusion': 'Baquetas, accesorios y repuestos para batería y percusión.',
+    'electronica-cables': 'Cables, pedales y accesorios electrónicos para músicos.',
+  }
+
   return {
-    title: categoryName,
-    description: `Comprá ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`,
+    title: `${categoryName} | Accesorios Musicales en Caracas`,
+    description: CATEGORY_DESC[slug] ?? `Comprá ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`,
     alternates: { canonical: `/productos/categoria/${slug}` },
   }
 }
@@ -53,6 +61,16 @@ export default async function CategoryPage({
 
   const categoryName = rows[0].category_name
   const subcategoryNames = rows.map((r) => r.subcategory_name).join(', ')
+
+  const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+    'guitarras': `Encontrá cuerdas, clavijas, cejillas, capotrastes y accesorios para guitarra clásica, eléctrica y acústica en Caracas. Todo lo que necesitás para mantener tu guitarra en perfecto estado. Envíos a todo el país.`,
+    'bajo': `Comprá cuerdas, clavijas y accesorios para bajo eléctrico en Ávila Music. Cuerdas Alice, Ernie Ball, clavijas y más. Envíos a todo el país desde Caracas.`,
+    'violin-cuerdas': `Cuerdas, hombreras, arcos y accesorios para violín, viola y más. Productos originales para músicos de cuerda frotada. Envíos a Venezuela.`,
+    'bateria-percusion': `B aquetas, accesorios y repuestos para batería y percusión. Todo lo que un baterista necesita. Envíos a todo el país.`,
+    'electronica-cables': 'Cables, pedales y accesorios electrónicos para músicos. Cable Hebikuo, pedales de efectos y más. Envíos nacionales.',
+  }
+
+  const categoryDescription = `${CATEGORY_DESCRIPTIONS[slug] ?? `Comprá ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`} Coordiná tu visita al showroom en Caracas o recibilo donde estés.`
 
   const [products, showPrices] = await Promise.all([catalog.getAllProducts(), canShowPrices()])
   const catMap = categoryTree.reduce<Record<string, (typeof categoryTree)[number]>>((acc, row) => {
@@ -106,7 +124,7 @@ export default async function CategoryPage({
         categoryTree={categoryTree}
         initialCategory={slug}
         title={categoryName}
-        description={`${subcategoryNames}.`}
+        description={categoryDescription}
         showPrices={showPrices}
       />
     </>

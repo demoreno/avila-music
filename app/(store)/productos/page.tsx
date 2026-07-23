@@ -5,9 +5,9 @@ import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import ProductsClient from './ProductsClient'
 
 export const metadata: Metadata = {
-  title: 'Catálogo de accesorios musicales',
+  title: 'Accesorios Musicales | Tienda Online en Caracas',
   description:
-    'Cuerdas, clavijas, correas, cables y accesorios para guitarra, bajo, violín y batería. Envíos a todo el país.',
+    'Cuerdas, clavijas, correas, cables, capotrastes y accesorios para guitarra, bajo, violín y batería. Comprá online desde Caracas con envíos a todo el país.',
   alternates: { canonical: '/productos' },
 }
 

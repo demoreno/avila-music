@@ -5,7 +5,7 @@ import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
   title: 'Envíos',
-  description: 'Conocé cómo hacemos los envíos de tus accesorios musicales a todo el país.',
+  description: 'Envíos de accesorios musicales a todo el país desde Caracas. MRW, Zoom, retiro en showroom. 24-48 horas en ciudades principales.',
   alternates: { canonical: '/envios' },
 }
 
