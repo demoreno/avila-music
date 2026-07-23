@@ -56,7 +56,7 @@ export default function EnviosPage() {
                   <h3 className="text-lg font-semibold text-text">Pago a destino</h3>
                 </div>
                 <p className="text-text-muted">
-                  Pagás el envío al recibir tu paquete, en tu puerta. Sin adelantos ni sorpresas de último momento.
+                  Pagas el envío al recibir tu paquete, en tu puerta. Sin adelantos ni sorpresas de último momento.
                 </p>
               </div>
 

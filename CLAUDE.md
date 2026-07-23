@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Avila Music** — e-commerce admin and storefront for a musical accessories store that sells primarily through MercadoLibre. Stack: Next.js (App Router) + Supabase (PostgreSQL + Auth + Storage + Edge Functions).
 
+## Language Rule (Venezuelan Spanish)
+
+All storefront copy (UI text, CTAs, descriptions, error messages) must use **Venezuelan Spanish**:
+- Use **tú** forms (tuteo), **never** vos/voseo (Rioplatense).
+- "elige" not "elegí", "pagas" not "pagás", "recibes" not "recibís", "haz clic" not "hacé clic".
+- Common regionalisms: "página web" (not "sitio"), "WhatsApp" not "WSP", "celular" not "móvil".
+- Friendly but not overly familiar tone. "Usted" for formal contexts.
+
 ## Commands
 
 ```bash

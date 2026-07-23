@@ -45,7 +45,7 @@ export async function generateMetadata({
 
   return {
     title: `${categoryName} | Accesorios Musicales en Caracas`,
-    description: CATEGORY_DESC[slug] ?? `Comprá ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`,
+    description: CATEGORY_DESC[slug] ?? `Compra ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`,
     alternates: { canonical: `/productos/categoria/${slug}` },
   }
 }
@@ -63,14 +63,14 @@ export default async function CategoryPage({
   const subcategoryNames = rows.map((r) => r.subcategory_name).join(', ')
 
   const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-    'guitarras': `Encontrá cuerdas, clavijas, cejillas, capotrastes y accesorios para guitarra clásica, eléctrica y acústica en Caracas. Todo lo que necesitás para mantener tu guitarra en perfecto estado. Envíos a todo el país.`,
-    'bajo': `Comprá cuerdas, clavijas y accesorios para bajo eléctrico en Ávila Music. Cuerdas Alice, Ernie Ball, clavijas y más. Envíos a todo el país desde Caracas.`,
+    'guitarras': `Encuentra cuerdas, clavijas, cejillas, capotrastes y accesorios para guitarra clásica, eléctrica y acústica en Caracas. Todo lo que necesitas para mantener tu guitarra en perfecto estado. Envíos a todo el país.`,
+    'bajo': `Compra cuerdas, clavijas y accesorios para bajo eléctrico en Ávila Music. Cuerdas Alice, Ernie Ball, clavijas y más. Envíos a todo el país desde Caracas.`,
     'violin-cuerdas': `Cuerdas, hombreras, arcos y accesorios para violín, viola y más. Productos originales para músicos de cuerda frotada. Envíos a Venezuela.`,
     'bateria-percusion': `B aquetas, accesorios y repuestos para batería y percusión. Todo lo que un baterista necesita. Envíos a todo el país.`,
     'electronica-cables': 'Cables, pedales y accesorios electrónicos para músicos. Cable Hebikuo, pedales de efectos y más. Envíos nacionales.',
   }
 
-  const categoryDescription = `${CATEGORY_DESCRIPTIONS[slug] ?? `Comprá ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`} Coordiná tu visita al showroom en Caracas o recibilo donde estés.`
+  const categoryDescription = `${CATEGORY_DESCRIPTIONS[slug] ?? `Compra ${categoryName.toLowerCase()} en Ávila Music: ${subcategoryNames}. Envíos a todo el país.`} Coordina tu visita al showroom en Caracas o recíbelo donde estés.`
 
   const [products, showPrices] = await Promise.all([catalog.getAllProducts(), canShowPrices()])
   const catMap = categoryTree.reduce<Record<string, (typeof categoryTree)[number]>>((acc, row) => {

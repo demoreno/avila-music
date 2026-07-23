@@ -52,24 +52,19 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {/* Badges */}
-        <div className="absolute left-3 top-3 flex flex-col gap-2">
-          {isOutOfStock && (
-            <span className="badge badge-out shadow-lg">
-              Agotado
-            </span>
-          )}
-          {isLowStock && (
+        {/* Badges on image - only when out of stock for urgency */}
+        {isOutOfStock && (
+          <div className="absolute left-3 top-3">
+            <span className="badge badge-out shadow-lg">Agotado</span>
+          </div>
+        )}
+        {isLowStock && (
+          <div className="absolute left-3 top-3">
             <span className="badge badge-low-stock shadow-lg">
-              Últimas {product.stock_total} unidades
+              Últimas {product.stock_total}
             </span>
-          )}
-          {!isOutOfStock && !isLowStock && product.stock_total < 20 && (
-            <span className="badge badge-hot shadow-lg">
-              Popular
-            </span>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Quick Actions - Slide in on hover */}
         <div
@@ -121,6 +116,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Price and Action */}
         <div className="mt-auto pt-4">
+          {!isOutOfStock && !isLowStock && product.stock_total < 20 && (
+            <span className="badge badge-hot mb-2 shadow-sm">Popular</span>
+          )}
           {product.price_usd !== null ? (
             <p className="text-2xl font-bold gradient-text">
               USD {product.price_usd.toFixed(2)}

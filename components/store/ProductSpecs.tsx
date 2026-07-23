@@ -1,10 +1,21 @@
-import { Ruler, Package, ShieldCheck } from 'lucide-react'
+import { ShieldCheck, Ruler, Weight, Palette, Cpu, Maximize2, FileText, PackageCheck } from 'lucide-react'
 
 interface ProductSpecsProps {
   description: string
   notes: string | null
-  stockTotal: number
-  stockMinimum: number
+}
+
+const SPEC_ICONS: Record<string, typeof Ruler> = {
+  material: PackageCheck,
+  medida: Ruler,
+  peso: Weight,
+  color: Palette,
+  calibre: Maximize2,
+  compatibilidad: Cpu,
+  marca: PackageCheck,
+  modelo: Cpu,
+  dimensiones: Ruler,
+  tamaño: Maximize2,
 }
 
 function isSpecLine(line: string): boolean {
@@ -13,44 +24,76 @@ function isSpecLine(line: string): boolean {
   )
 }
 
-function parseSpecLine(line: string): { label: string; value: string } | null {
+function parseSpecLine(line: string): { label: string; value: string; icon: typeof Ruler } | null {
   const match = line.trim().match(
     /^[•\-*✦]?\s*(material|medida|peso|color|calibre|compatibilidad|incluye|contenido|marca|modelo|dimensiones|tamaño):\s*(.+)/i
   )
   if (!match) return null
+  const key = match[1].toLowerCase()
   return {
-    label: match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase(),
+    label: key.charAt(0).toUpperCase() + key.slice(1),
     value: match[2].trim(),
+    icon: SPEC_ICONS[key] ?? FileText,
   }
 }
 
-export default function ProductSpecs({ description, notes, stockTotal, stockMinimum }: ProductSpecsProps) {
+export default function ProductSpecs({ description, notes }: ProductSpecsProps) {
   const lines = description.split('\n').filter(Boolean)
   const specLines = lines.filter(isSpecLine)
   const hasSpecs = specLines.length > 0
   const paragraphLines = lines.filter((l) => !isSpecLine(l))
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-      <h3 className="font-semibold text-[#1e4d6b] mb-4 flex items-center gap-2">
-        <Package className="h-5 w-5" />
-        {hasSpecs ? 'Características' : 'Descripción'}
-      </h3>
+    <div className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+      {/* Left accent bar */}
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#1e4d6b] via-[#0f7a5f] to-[#f59e0b]" />
+
+      <div className="pl-6 sm:pl-8">
+        {/* Header with serif font */}
+        <div className="pr-6 sm:pr-8 pt-6 sm:pt-7 pb-5">
+          <h3 className="heading-serif text-2xl font-bold text-[#1e4d6b]">
+            {hasSpecs ? 'Características' : 'Descripción'}
+          </h3>
+          <p className="text-xs text-text-muted mt-0.5 tracking-wide">
+            {hasSpecs
+              ? 'Especificaciones técnicas del producto'
+              : 'Información general'}
+          </p>
+        </div>
+
+        <div className="pr-6 sm:pr-8 pb-7 sm:pb-8">
 
       {hasSpecs ? (
-        <div className="space-y-3">
-          {specLines.map((line, i) => {
-            const spec = parseSpecLine(line)
-            if (!spec) return null
-            return (
-              <div key={i} className="flex items-baseline gap-2 text-sm">
-                <span className="min-w-[7rem] font-medium text-text-muted">{spec.label}</span>
-                <span className="text-text">{spec.value}</span>
-              </div>
-            )
-          })}
+        <div>
+          <div className="space-y-px">
+            {specLines.map((line, i) => {
+              const spec = parseSpecLine(line)
+              if (!spec) return null
+              const Icon = spec.icon
+              return (
+                <div
+                  key={i}
+                  className={`flex items-center gap-4 px-4 py-3 ${
+                    i % 2 === 0 ? 'bg-slate-50/60' : 'bg-white'
+                  } rounded-lg`}
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 shadow-xs">
+                    <Icon className="h-4 w-4 text-[#1e4d6b]" />
+                  </div>
+                  <div className="flex flex-1 items-baseline gap-3 min-w-0">
+                    <span className="text-[11px] font-semibold text-text-muted uppercase tracking-widest shrink-0 min-w-[5.5rem]">
+                      {spec.label}
+                    </span>
+                    <span className="text-sm font-medium text-text break-words leading-snug">
+                      {spec.value}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
           {paragraphLines.length > 0 && (
-            <div className="pt-3 border-t border-slate-100">
+            <div className="mt-5 pt-5 border-t border-slate-100">
               <p className="text-sm text-text-muted leading-relaxed whitespace-pre-line">
                 {paragraphLines.join('\n')}
               </p>
@@ -58,27 +101,31 @@ export default function ProductSpecs({ description, notes, stockTotal, stockMini
           )}
         </div>
       ) : description ? (
-        <p className="text-sm text-text-muted leading-relaxed whitespace-pre-line">{description}</p>
+        <div className="text-sm text-text-muted leading-relaxed whitespace-pre-line max-w-prose">
+          {description}
+        </div>
       ) : (
-        <div className="rounded-xl bg-slate-50 border border-dashed border-slate-200 p-4 text-center">
-          <Ruler className="h-8 w-8 mx-auto text-slate-300 mb-2" strokeWidth={1.5} />
-          <p className="text-sm text-text-muted mb-1">Contenido en preparación</p>
-          <p className="text-xs text-slate-400">
-            {stockTotal > 0
-              ? 'Escríbenos por WhatsApp y te asesoramos'
-              : 'Consúltenos disponibilidad por WhatsApp'}
+        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/40 p-8 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white border border-slate-200 shadow-sm">
+            <FileText className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
+          </div>
+          <p className="text-sm font-semibold text-text">Descripción próximamente</p>
+          <p className="text-xs text-text-muted mt-1 max-w-xs mx-auto leading-relaxed">
+            ¿Dudas sobre este producto? Escríbenos por WhatsApp y te asesoramos en minutos.
           </p>
         </div>
       )}
 
       {notes && (
-        <div className="mt-4 pt-4 border-t border-slate-100">
-          <div className="flex items-start gap-2 text-xs text-slate-500">
-            <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            <span>{notes}</span>
+        <div className="mt-5 pt-5 border-t border-slate-100">
+          <div className="flex items-start gap-3 rounded-lg bg-amber-50/60 border border-amber-200/50 p-4">
+            <ShieldCheck className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+            <p className="text-xs text-amber-800/70 leading-relaxed">{notes}</p>
           </div>
         </div>
       )}
+      </div>
+      </div>
     </div>
   )
 }

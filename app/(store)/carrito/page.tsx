@@ -16,7 +16,7 @@ export default function CarritoPage() {
       <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6">
         <ShoppingCart className="h-16 w-16 mx-auto mb-6 text-slate-300" strokeWidth={1} />
         <h1 className="heading-serif text-3xl font-bold text-text mb-3">Tu carrito está vacío</h1>
-        <p className="text-text-muted mb-8">Explorá el catálogo y agregá los productos que te interesen.</p>
+        <p className="text-text-muted mb-8">Explora el catálogo y agrega los productos que te interesen.</p>
         <Link href="/productos" className="btn-primary">
           Ver productos
           <ArrowRight className="h-4 w-4" />

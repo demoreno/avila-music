@@ -205,86 +205,124 @@ export default async function ProductPage({
 
         {/* Description — full width below the fold */}
         <div className="mt-12">
-          <ProductSpecs
-            description={product.description}
-            notes={product.notes}
-            stockTotal={product.stock_total}
-            stockMinimum={product.stock_minimum}
-          />
+            <ProductSpecs
+              description={product.description}
+              notes={product.notes}
+            />
         </div>
 
         {/* Payment methods + Shipping — 50/50 */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+
           {/* Payment methods */}
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
-              Paga como prefieras
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                  <Smartphone className="h-5 w-5" />
+          <div className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#1e4d6b] to-[#0f7a5f]" />
+            <div className="pl-6 sm:pl-8 pr-6 sm:pr-8 pt-5 sm:pt-6 pb-6 sm:pb-7">
+              <h3 className="text-lg font-bold text-[#1e4d6b] flex items-center gap-2.5 tracking-tight">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#1e4d6b]">
+                  <Wallet className="h-3.5 w-3.5 text-white" />
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-text">Pago Móvil</p>
-                  <p className="text-[11px] text-text-muted">Disponible</p>
+                Paga a tu manera
+              </h3>
+              <p className="text-xs text-text-muted mt-1 ml-9">
+                Elige el método que más te acomode
+              </p>
+
+              <div className="mt-5 space-y-2">
+                <div className="flex items-center gap-3.5 rounded-xl border border-slate-100 bg-white py-3 px-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-100">
+                    <Smartphone className="h-5 w-5 text-emerald-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-text">Pago Móvil</p>
+                    <p className="text-xs text-text-muted">Desde tu banco, al instante</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3.5 rounded-xl border border-slate-100 bg-white py-3 px-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-100">
+                    <Landmark className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-text">Transferencia</p>
+                    <p className="text-xs text-text-muted">Directa, sin comisiones</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3.5 rounded-xl border border-slate-100 bg-white py-3 px-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-50 border border-yellow-100">
+                    <Wallet className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-text">Binance USDT</p>
+                    <p className="text-xs text-text-muted">Desde tu wallet, sin efectivo</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                  <Landmark className="h-5 w-5" />
+
+              <div className="mt-4 flex items-center gap-4 pt-4 border-t border-slate-100">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-amber-500" />
+                  <span className="text-xs font-medium text-text-muted">Garantía incluida</span>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-text">Transferencia</p>
-                  <p className="text-[11px] text-text-muted">Bancaria</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-yellow-50 text-yellow-600">
-                  <Wallet className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-text">Binance USDT</p>
-                  <p className="text-[11px] text-text-muted">Cripto</p>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-text">Garantía</p>
-                  <p className="text-[11px] text-text-muted">Incluida siempre</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
-                  <MessageCircle className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-text">Soporte</p>
-                  <p className="text-[11px] text-text-muted">Post-venta</p>
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4 text-purple-500" />
+                  <span className="text-xs font-medium text-text-muted">Soporte post-venta</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Shipping info */}
-          <div className="rounded-2xl border border-sky-200 bg-sky-50 p-6">
-            <h3 className="font-semibold text-sky-800 mb-3 flex items-center gap-2">
-              <Truck className="h-5 w-5" />
-              Envío
-            </h3>
-            <ul className="space-y-1.5 text-sm text-sky-900/80">
-              <li>Ciudades principales: 24-48 horas</li>
-              <li>Otras ciudades: 3-5 días hábiles</li>
-              <li>Pago del envío al recibir (MRW / Zoom)</li>
-            </ul>
-            <Link href="/envios" className="inline-block mt-3 text-sm font-medium text-sky-700 hover:text-sky-900 transition-colors">
-              Ver detalles de envío →
-            </Link>
+          <div className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#f59e0b] to-[#fbbf24]" />
+            <div className="pl-6 sm:pl-8 pr-6 sm:pr-8 pt-5 sm:pt-6 pb-6 sm:pb-7">
+              <h3 className="text-lg font-bold text-[#1e4d6b] flex items-center gap-2.5 tracking-tight">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-500">
+                  <Truck className="h-3.5 w-3.5 text-white" />
+                </div>
+                Recibes rápido
+              </h3>
+              <p className="text-xs text-text-muted mt-1 ml-9">
+                Hacemos envíos a todo Venezuela
+              </p>
+
+              <div className="mt-5 space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 mt-0.5">
+                    <span className="text-[10px] font-bold">24h</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text">Ciudades principales</p>
+                    <p className="text-xs text-text-muted">Recibes en 24 a 48 horas hábiles</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 mt-0.5">
+                    <span className="text-[10px] font-bold">5d</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text">Resto del país</p>
+                    <p className="text-xs text-text-muted">Recibes en máximo 5 días hábiles</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-50 text-green-600 mt-0.5">
+                    <span className="text-[10px] font-bold">$</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text">Pagas al recibir</p>
+                    <p className="text-xs text-text-muted">El envío se paga contra entrega (MRW o Zoom)</p>
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                href="/envios"
+                className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-[#1e4d6b] hover:text-[#0f7a5f] transition-colors"
+              >
+                Más información sobre envíos
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
 

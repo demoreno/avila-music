@@ -499,7 +499,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                   {newFiles.length > 0 && (
                     <>
                       <p className="mb-2 mt-2 text-xs text-slate-500">
-                        Se subirán al guardar — hacé click en la × para sacar alguna antes:
+                        Se subirán al guardar — haz clic en la × para sacar alguna antes:
                       </p>
                       <div className="flex flex-wrap gap-3">
                         {newFilePreviews.map((url, index) => (
