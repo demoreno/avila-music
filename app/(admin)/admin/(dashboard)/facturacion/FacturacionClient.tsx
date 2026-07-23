@@ -11,6 +11,7 @@ interface ProductOption {
   id: string
   name: string
   price_usd: number
+  price_ml_usd: number
   stock_total: number
   imageUrl: string | null
 }
@@ -71,6 +72,20 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
   const discount = Math.min(Math.max(parseFloat(discountUsd) || 0, 0), subtotal)
   const total = subtotal - discount
 
+  const totalQty = useMemo(
+    () => lineItems.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0),
+    [lineItems]
+  )
+
+  const mlCommission = channel === 'mercadolibre' ? subtotal * 0.11 : 0
+  const mlShipping = channel === 'mercadolibre' && shippingType === 'gratis_ml' ? totalQty * 1.30 : 0
+  const netEstimate = total - mlCommission - mlShipping
+
+  function getPrice(product: ProductOption): number {
+    if (channel === 'mercadolibre' && product.price_ml_usd > 0) return product.price_ml_usd
+    return product.price_usd
+  }
+
   function addProduct(product: ProductOption) {
     setSuccess(null)
     setLineItems((prev) => {
@@ -88,12 +103,27 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
           name: product.name,
           imageUrl: product.imageUrl,
           stockAvailable: product.stock_total,
-          unitPrice: String(product.price_usd),
+          unitPrice: String(getPrice(product)),
           quantity: '1',
         },
       ]
     })
     setQuery('')
+  }
+
+  function handleChannelChange(newChannel: SaleChannel) {
+    setChannel(newChannel)
+    // Update prices for all existing line items based on new channel
+    setLineItems((prev) =>
+      prev.map((item) => {
+        const product = products.find((p) => p.id === item.productId)
+        if (!product) return item
+        const price = newChannel === 'mercadolibre' && product.price_ml_usd > 0
+          ? product.price_ml_usd
+          : product.price_usd
+        return { ...item, unitPrice: String(price) }
+      })
+    )
   }
 
   function updateLine(productId: string, patch: Partial<Pick<LineItem, 'unitPrice' | 'quantity'>>) {
@@ -315,7 +345,7 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                     type="radio"
                     name="channel"
                     checked={channel === 'directo'}
-                    onChange={() => setChannel('directo')}
+                    onChange={() => handleChannelChange('directo')}
                   />
                   Directo
                 </label>
@@ -324,7 +354,7 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                     type="radio"
                     name="channel"
                     checked={channel === 'mercadolibre'}
-                    onChange={() => setChannel('mercadolibre')}
+                    onChange={() => handleChannelChange('mercadolibre')}
                   />
                   MercadoLibre
                 </label>
@@ -432,6 +462,25 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                 <span>Total</span>
                 <span>USD {total.toFixed(2)}</span>
               </div>
+              {channel === 'mercadolibre' && (
+                <div className="mt-2 space-y-1 border-t border-dashed border-slate-200 pt-2">
+                  <p className="text-xs font-semibold text-slate-500 uppercase">Costos ML estimados</p>
+                  <div className="flex justify-between text-slate-500">
+                    <span>Comisión (11%)</span>
+                    <span>- USD {mlCommission.toFixed(2)}</span>
+                  </div>
+                  {shippingType === 'gratis_ml' && (
+                    <div className="flex justify-between text-slate-500">
+                      <span>Envío ({totalQty} × $1.30)</span>
+                      <span>- USD {mlShipping.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-semibold text-slate-800">
+                    <span>Ingreso neto estimado</span>
+                    <span>USD {netEstimate.toFixed(2)}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}

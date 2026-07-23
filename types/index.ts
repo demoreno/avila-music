@@ -29,6 +29,7 @@ export interface Product {
   subcategory_id: string
   cost_usd: number
   price_usd: number
+  price_ml_usd: number
   stock_total: number
   stock_minimum: number
   notes: string | null

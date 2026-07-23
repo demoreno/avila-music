@@ -39,6 +39,7 @@ export async function updateProduct(
   data: {
     name: string
     price_usd: number
+    price_ml_usd: number
     cost_usd: number
     stock_total: number
     stock_minimum: number
@@ -68,6 +69,7 @@ export async function createProduct(data: {
   name: string
   subcategory_id: string
   price_usd: number
+  price_ml_usd: number
   cost_usd: number
   stock_total: number
   stock_minimum: number
@@ -89,6 +91,7 @@ export async function createProduct(data: {
       slug,
       subcategory_id: data.subcategory_id,
       price_usd: data.price_usd,
+      price_ml_usd: data.price_ml_usd,
       cost_usd: data.cost_usd,
       stock_total: data.stock_total,
       stock_minimum: data.stock_minimum,

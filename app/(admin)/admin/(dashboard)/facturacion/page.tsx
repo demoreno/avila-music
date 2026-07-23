@@ -6,7 +6,7 @@ export default async function FacturacionPage() {
   const supabase = await createSupabaseServerClient()
 
   const [{ data, error }, { data: imagesData }] = await Promise.all([
-    supabase.from('products').select('id, name, price_usd, stock_total').order('name'),
+    supabase.from('products').select('id, name, price_usd, price_ml_usd, stock_total').order('name'),
     supabase.from('product_images').select('product_id, storage_path').eq('is_primary', true),
   ])
 

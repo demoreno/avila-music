@@ -54,6 +54,7 @@ interface FormData {
   name: string
   subcategory_id: string
   price_usd: string
+  price_ml_usd: string
   cost_usd: string
   stock_total: string
   stock_minimum: string
@@ -69,6 +70,7 @@ const emptyForm: FormData = {
   name: '',
   subcategory_id: '',
   price_usd: '',
+  price_ml_usd: '0',
   cost_usd: '',
   stock_total: '0',
   stock_minimum: '0',
@@ -106,6 +108,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
       name: product.name,
       subcategory_id: product.subcategory_id,
       price_usd: String(product.price_usd),
+      price_ml_usd: String(product.price_ml_usd),
       cost_usd: String(product.cost_usd),
       stock_total: String(product.stock_total),
       stock_minimum: String(product.stock_minimum),
@@ -149,6 +152,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
       const data = {
         name: formData.name,
         price_usd: parseFloat(formData.price_usd),
+        price_ml_usd: parseFloat(formData.price_ml_usd) || 0,
         cost_usd: parseFloat(formData.cost_usd),
         stock_total: parseInt(formData.stock_total),
         stock_minimum: parseInt(formData.stock_minimum),
@@ -203,6 +207,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
               <th className="px-4 py-3 font-semibold text-slate-600">Nombre</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Categoría</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Precio</th>
+              <th className="px-4 py-3 font-semibold text-slate-600">Precio ML</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Costo</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Stock</th>
               <th className="px-4 py-3 font-semibold text-slate-600">Estado</th>
@@ -221,6 +226,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                   <span>{p.subcategory_name}</span>
                 </td>
                 <td className="px-4 py-3 text-slate-700">USD {Number(p.price_usd).toFixed(2)}</td>
+                <td className="px-4 py-3 text-slate-700">{Number(p.price_ml_usd) > 0 ? `USD ${Number(p.price_ml_usd).toFixed(2)}` : <span className="text-slate-400">—</span>}</td>
                 <td className="px-4 py-3 text-slate-500">USD {Number(p.cost_usd).toFixed(2)}</td>
                 <td className="px-4 py-3">
                   <span
@@ -299,7 +305,7 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                 )}
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">Precio USD</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Precio USD (página)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -307,6 +313,21 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                     onChange={(e) => setFormData({ ...formData, price_usd: e.target.value })}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
                   />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Precio ML (USD)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.price_ml_usd}
+                    onChange={(e) => setFormData({ ...formData, price_ml_usd: e.target.value })}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
+                  />
+                  {formData.price_usd && parseFloat(formData.price_usd) > 0 && (
+                    <p className="mt-1 text-xs text-slate-400">
+                      Sugerido: USD {((parseFloat(formData.price_usd) + 1.30) / (1 - 0.11)).toFixed(2)}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-slate-700">Costo USD</label>
