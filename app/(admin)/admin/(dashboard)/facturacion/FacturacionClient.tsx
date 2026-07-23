@@ -41,9 +41,9 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
   const [query, setQuery] = useState('')
   const [lineItems, setLineItems] = useState<LineItem[]>([])
   const [discountUsd, setDiscountUsd] = useState('0')
-  const [channel, setChannel] = useState<SaleChannel | ''>('')
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>('')
-  const [shippingType, setShippingType] = useState<ShippingTypeOption | ''>('')
+  const [channel, setChannel] = useState<SaleChannel | ''>('mercadolibre')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>('efectivo_bs')
+  const [shippingType, setShippingType] = useState<ShippingTypeOption | ''>('gratis_ml')
   const [shippingTypeOther, setShippingTypeOther] = useState('')
   const [saleDate, setSaleDate] = useState(todayIso())
   const [notes, setNotes] = useState(emptyNotes)
@@ -137,9 +137,9 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
   function resetForm() {
     setLineItems([])
     setDiscountUsd('0')
-    setChannel('')
-    setPaymentMethod('')
-    setShippingType('')
+    setChannel('mercadolibre')
+    setPaymentMethod('efectivo_bs')
+    setShippingType('gratis_ml')
     setShippingTypeOther('')
     setSaleDate(todayIso())
     setNotes(emptyNotes)
@@ -371,7 +371,7 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                     checked={paymentMethod === 'efectivo_usd'}
                     onChange={() => setPaymentMethod('efectivo_usd')}
                   />
-                  Efectivo USD
+                  Dólares
                 </label>
                 <label className="flex flex-1 items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm has-[:checked]:border-amber-400 has-[:checked]:bg-amber-50">
                   <input
@@ -380,7 +380,7 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                     checked={paymentMethod === 'efectivo_bs'}
                     onChange={() => setPaymentMethod('efectivo_bs')}
                   />
-                  Efectivo Bs
+                  Bolívares
                 </label>
               </div>
             </div>
