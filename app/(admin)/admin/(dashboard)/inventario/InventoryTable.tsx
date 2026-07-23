@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { X, ClipboardList, PackageCheck } from 'lucide-react'
 import type { Product } from '@/types/index'
 import PedidoBuilder, { suggestedQuantity, type PedidoProductOption } from '@/components/admin/PedidoBuilder'
+import ReorderTab, { type ReorderRow } from './ReorderTab'
 
 interface InventoryProduct
   extends Pick<Product, 'id' | 'name' | 'stock_total' | 'stock_minimum' | 'cost_usd' | 'supplier_code'> {
@@ -15,9 +16,10 @@ interface InventoryProduct
 
 interface InventoryTableProps {
   products: InventoryProduct[]
+  reorderData: ReorderRow[]
 }
 
-type Filter = 'todos' | 'agotado' | 'critico' | 'ok'
+type Filter = 'todos' | 'agotado' | 'critico' | 'ok' | 'reposicion'
 
 async function saveStock(id: string, stock: number) {
   const response = await fetch('/api/admin/stock', {
@@ -28,7 +30,7 @@ async function saveStock(id: string, stock: number) {
   if (!response.ok) throw new Error('Error al actualizar stock')
 }
 
-export default function InventoryTable({ products }: InventoryTableProps) {
+export default function InventoryTable({ products, reorderData }: InventoryTableProps) {
   const [filter, setFilter] = useState<Filter>('todos')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
@@ -110,6 +112,9 @@ export default function InventoryTable({ products }: InventoryTableProps) {
   const agotadoCount = localProducts.filter((p) => p.stock_total === 0).length
   const criticalCount = localProducts.filter((p) => p.stock_total > 0 && p.stock_total <= p.stock_minimum).length
   const okCount = localProducts.length - agotadoCount - criticalCount
+  const reorderNeedCount = reorderData.filter((r) =>
+    r.urgency === 'sin_stock_vende' || r.urgency === 'critico' || r.urgency === 'pedir_pronto'
+  ).length
   const productById = new Map(localProducts.map((p) => [p.id, p]))
   const pedidoProducts: PedidoProductOption[] = localProducts.map((p) => ({
     id: p.id,
@@ -129,7 +134,7 @@ export default function InventoryTable({ products }: InventoryTableProps) {
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="flex rounded-lg border border-slate-200 bg-white overflow-hidden">
-          {(['todos', 'agotado', 'critico', 'ok'] as Filter[]).map((f) => {
+          {(['todos', 'agotado', 'critico', 'ok', 'reposicion'] as Filter[]).map((f) => {
             const activeClass =
               f === 'agotado'
                 ? 'bg-red-500 text-white'
@@ -137,6 +142,8 @@ export default function InventoryTable({ products }: InventoryTableProps) {
                 ? 'bg-amber-500 text-white'
                 : f === 'ok'
                 ? 'bg-green-500 text-white'
+                : f === 'reposicion'
+                ? 'bg-blue-500 text-white'
                 : 'bg-slate-700 text-white'
             return (
               <button
@@ -150,17 +157,25 @@ export default function InventoryTable({ products }: InventoryTableProps) {
                 {f === 'agotado' && `Agotado (${agotadoCount})`}
                 {f === 'critico' && `Stock crítico (${criticalCount})`}
                 {f === 'ok' && `OK (${okCount})`}
+                {f === 'reposicion' && `Reposición (${reorderNeedCount})`}
               </button>
             )
           })}
         </div>
-        <button
-          onClick={exportCsv}
-          className="ml-auto rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
-        >
-          Exportar CSV
-        </button>
+        {filter !== 'reposicion' && (
+          <button
+            onClick={exportCsv}
+            className="ml-auto rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+          >
+            Exportar CSV
+          </button>
+        )}
       </div>
+
+      {filter === 'reposicion' ? (
+        <ReorderTab data={reorderData} />
+      ) : (
+      <>
 
       <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-sm">
@@ -323,6 +338,8 @@ export default function InventoryTable({ products }: InventoryTableProps) {
             <PedidoBuilder products={pedidoProducts} initialItems={initialItems} />
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   )

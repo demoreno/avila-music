@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { getPublicImageUrl } from '@/lib/catalog/image-url'
 import InventoryTable from './InventoryTable'
+import ReorderTab from './ReorderTab'
 
 interface ProductRow {
   id: string
@@ -15,7 +16,7 @@ interface ProductRow {
 export default async function InventarioPage() {
   const supabase = await createSupabaseServerClient()
 
-  const [productsRes, categoryTreeRes, imagesRes, pendingOrdersRes] = await Promise.all([
+  const [productsRes, categoryTreeRes, imagesRes, pendingOrdersRes, reorderRes] = await Promise.all([
     supabase
       .from('products')
       .select('id, name, stock_total, stock_minimum, subcategory_id, cost_usd, supplier_code')
@@ -24,6 +25,7 @@ export default async function InventarioPage() {
     supabase.from('v_category_tree').select('subcategory_id, subcategory_name'),
     supabase.from('product_images').select('product_id, storage_path').eq('is_primary', true),
     supabase.from('purchase_orders').select('id').not('status', 'in', '(recibido,cancelado)'),
+    supabase.from('v_reorder_intelligence').select('*'),
   ])
 
   const products = (productsRes.data as ProductRow[]) ?? []
@@ -75,7 +77,7 @@ export default async function InventarioPage() {
   return (
     <div>
       <h1 className="heading-serif mb-6 text-2xl font-bold text-slate-900">Inventario</h1>
-      <InventoryTable products={inventoryProducts} />
+      <InventoryTable products={inventoryProducts} reorderData={reorderRes.data ?? []} />
     </div>
   )
 }
