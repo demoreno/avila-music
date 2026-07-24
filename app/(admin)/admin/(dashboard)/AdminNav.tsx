@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Guitar, Package, ClipboardList, Receipt, DollarSign, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, Guitar, Package, ClipboardList, Receipt, DollarSign, TrendingUp, Newspaper } from 'lucide-react'
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -12,6 +12,7 @@ const navItems = [
   { href: '/admin/facturacion', label: 'Facturación', icon: Receipt },
   { href: '/admin/ventas', label: 'Ventas', icon: DollarSign },
   { href: '/admin/analytics', label: 'Analytics', icon: TrendingUp },
+  { href: '/admin/blog', label: 'Blog', icon: Newspaper },
 ]
 
 export default function AdminNav() {

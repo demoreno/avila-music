@@ -165,6 +165,26 @@ Audit log of price/cost changes.
 
 ---
 
+### `blog_posts`
+
+SEO-driven articles. See [`blog.md`](./blog.md) for the full feature writeup.
+
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | auto-generated |
+| title | text NOT NULL | |
+| slug | text NOT NULL UNIQUE | Set once at creation, never edited afterward |
+| excerpt | text NOT NULL | Shown in the blog listing; meta description fallback |
+| content | text NOT NULL | Markdown |
+| cover_image_url | text nullable | Arbitrary pasted URL, not a storage upload |
+| meta_description | text nullable | SEO override; falls back to `excerpt` |
+| is_published | bool NOT NULL DEFAULT false | |
+| published_at | timestamptz nullable | Set on first publish, kept stable after |
+| created_at | timestamptz | Auto-set on insert |
+| updated_at | timestamptz | Auto-updated via trigger |
+
+---
+
 ## Views
 
 ### `v_monthly_kpis`

@@ -162,6 +162,20 @@ export class SupabaseCatalogProvider implements CatalogProvider {
     return attachImages(data ?? [])
   }
 
+  async getProductsByIds(ids: string[]): Promise<PublicProduct[]> {
+    if (ids.length === 0) return []
+
+    const { data } = await supabase
+      .from('products')
+      .select(PRODUCT_COLUMNS)
+      .in('id', ids)
+      .eq('is_active', true)
+
+    const withImages = await attachImages(data ?? [])
+    const byId = new Map(withImages.map((p) => [p.id, p]))
+    return ids.map((id) => byId.get(id)).filter((p): p is PublicProduct => !!p)
+  }
+
   async getCategoryTree(): Promise<CategoryTree[]> {
     const { data } = await supabase
       .from('v_category_tree')

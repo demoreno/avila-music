@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import AdminNav from './AdminNav'
 import AdminLogout from './AdminLogout'
@@ -6,6 +7,14 @@ import AdminLogout from './AdminLogout'
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/admin/login')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+  if (profile?.role !== 'admin') redirect('/admin/login')
 
   return (
     <div className="flex min-h-screen bg-bg-alt">
