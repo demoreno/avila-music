@@ -33,43 +33,44 @@ export default function ProductCard({ product }: ProductCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container */}
-      <Link href={`/productos/${product.slug}`} className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 block">
-        {imageUrl ? (
-          <>
-            <Image
-              src={imageUrl}
-              alt={product.name}
-              fill
-              loading="lazy"
-              className={`object-cover transition-all duration-700 ${isHovered ? 'scale-110' : 'scale-100'}`}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-            <div className={`absolute inset-0 bg-gradient-to-t from-[#1e4d6b]/80 via-transparent to-transparent transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
-          </>
-        ) : (
-          <div className="flex h-full items-center justify-center text-slate-300">
-            <Music className="h-16 w-16" strokeWidth={1} />
-          </div>
-        )}
+      <div className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+        <Link href={`/productos/${product.slug}`} className="absolute inset-0 z-0 block">
+          {imageUrl ? (
+            <>
+              <Image
+                src={imageUrl}
+                alt={product.name}
+                fill
+                loading="lazy"
+                className={`object-cover transition-all duration-700 ${isHovered ? 'scale-110' : 'scale-100'}`}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+              <div className={`absolute inset-0 bg-gradient-to-t from-[#1e4d6b]/80 via-transparent to-transparent transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+            </>
+          ) : (
+            <div className="flex h-full items-center justify-center text-slate-300">
+              <Music className="h-16 w-16" strokeWidth={1} />
+            </div>
+          )}
 
-        {/* Badges on image - only when out of stock for urgency */}
-        {isOutOfStock && (
-          <div className="absolute left-3 top-3">
-            <span className="badge badge-out shadow-lg">Agotado</span>
-          </div>
-        )}
-        {isLowStock && (
-          <div className="absolute left-3 top-3">
-            <span className="badge badge-low-stock shadow-lg">
-              Últimas {product.stock_total}
-            </span>
-          </div>
-        )}
+          {/* Badges on image - only when out of stock for urgency */}
+          {isOutOfStock && (
+            <div className="absolute left-3 top-3">
+              <span className="badge badge-out shadow-lg">Agotado</span>
+            </div>
+          )}
+          {isLowStock && (
+            <div className="absolute left-3 top-3">
+              <span className="badge badge-low-stock shadow-lg">
+                Últimas {product.stock_total}
+              </span>
+            </div>
+          )}
+        </Link>
 
-        {/* Quick Actions - Slide in on hover */}
+        {/* Quick Actions - Slide in on hover. Sibling of the Link (not nested inside it) — an <a> inside a <Link> is invalid HTML and breaks hydration. */}
         <div
-          className={`absolute right-3 top-3 flex flex-col gap-2 transition-all duration-500 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
-          onClick={(e) => e.stopPropagation()}
+          className={`absolute right-3 top-3 z-10 flex flex-col gap-2 transition-all duration-500 ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
         >
           <a
             href={waLink}
@@ -96,7 +97,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {''}
           </AddToCartButton>
         </div>
-      </Link>
+      </div>
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
@@ -116,9 +117,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Price and Action */}
         <div className="mt-auto pt-4">
-          {!isOutOfStock && !isLowStock && product.stock_total < 20 && (
-            <span className="badge badge-hot mb-2 shadow-sm">Popular</span>
-          )}
+          {/* Fixed-height slot so cards without the badge stay the same size as cards with it.
+              "Más vendido" is automatic (real sales data); "Destacado" is the manual `featured`
+              flag admins can use to promote a product regardless of how it's selling. */}
+          <div className="mb-2 flex h-6 items-center">
+            {!isOutOfStock && product.isBestseller ? (
+              <span className="badge badge-hot shadow-sm">Más vendido</span>
+            ) : !isOutOfStock && product.featured ? (
+              <span className="badge badge-sale shadow-sm">Destacado</span>
+            ) : null}
+          </div>
           {product.price_usd !== null ? (
             <p className="text-2xl font-bold gradient-text">
               USD {product.price_usd.toFixed(2)}

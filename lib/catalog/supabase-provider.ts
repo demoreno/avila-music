@@ -31,14 +31,31 @@ interface ProductRow {
   updated_at: string
 }
 
+// "Más vendido" is honest social proof: the top N products in the whole active catalog
+// by real units sold (v_public_bestsellers — narrow, no financial data). Not a manual flag.
+const BESTSELLER_LIMIT = 3
+
+async function getBestsellerIds(): Promise<Set<string>> {
+  const { data } = await supabase
+    .from('v_public_bestsellers')
+    .select('product_id, units_sold')
+    .order('units_sold', { ascending: false })
+    .limit(BESTSELLER_LIMIT)
+
+  return new Set((data ?? []).filter((row) => row.units_sold > 0).map((row) => row.product_id))
+}
+
 async function attachImages(rows: ProductRow[]): Promise<PublicProduct[]> {
   if (rows.length === 0) return []
 
-  const { data: images } = await supabase
-    .from('product_images')
-    .select('*')
-    .in('product_id', rows.map((r) => r.id))
-    .order('sort_order')
+  const [{ data: images }, bestsellerIds] = await Promise.all([
+    supabase
+      .from('product_images')
+      .select('*')
+      .in('product_id', rows.map((r) => r.id))
+      .order('sort_order'),
+    getBestsellerIds(),
+  ])
 
   const imagesByProduct = ((images ?? []) as ProductImage[]).reduce<Record<string, ProductImage[]>>(
     (acc, img) => {
@@ -52,6 +69,7 @@ async function attachImages(rows: ProductRow[]): Promise<PublicProduct[]> {
     ...row,
     description: row.description ?? '',
     images: imagesByProduct[row.id] ?? [],
+    isBestseller: bestsellerIds.has(row.id),
   }))
 }
 

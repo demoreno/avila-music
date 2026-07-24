@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Tag, ArrowRight, XCircle, AlertTriangle, CheckCircle2, Truck, Smartphone, Landmark, Wallet, ShieldCheck, MessageCircle } from 'lucide-react'
+import { Tag, ArrowRight, XCircle, AlertTriangle, CheckCircle2, Truck, Smartphone, Landmark, Wallet, ShieldCheck, MessageCircle, Flame } from 'lucide-react'
 import { catalog } from '@/lib/catalog'
 import { canShowPrices, withPriceVisibility } from '@/lib/geo'
 import ImageGallery from './ImageGallery'
@@ -185,6 +185,17 @@ export default async function ProductPage({
                 <stockStatus.icon className="h-3.5 w-3.5" />
                 {stockStatus.label}
               </span>
+              {product.isBestseller ? (
+                <span className="badge badge-hot shadow-lg">
+                  <Flame className="h-3.5 w-3.5" />
+                  Más vendido
+                </span>
+              ) : product.featured ? (
+                <span className="badge badge-sale shadow-lg">
+                  <Flame className="h-3.5 w-3.5" />
+                  Destacado
+                </span>
+              ) : null}
             </div>
 
             {/* Product Actions — quantity, add to cart, WhatsApp */}

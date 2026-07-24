@@ -14,6 +14,17 @@ All storefront copy (UI text, CTAs, descriptions, error messages) must use **Ven
 - Common regionalisms: "página web" (not "sitio"), "WhatsApp" not "WSP", "celular" not "móvil".
 - Friendly but not overly familiar tone. "Usted" for formal contexts.
 
+## Frontend Patterns
+
+### Never nest an `<a>` inside a `next/link` `<Link>`
+
+`<Link>` renders as an `<a>`. Putting another `<a>` (or anything that renders one — e.g. a WhatsApp link, another `<Link>`) inside it produces invalid HTML (`<a><a>…</a></a>`). The browser silently restructures that on parse, so the client DOM no longer matches what React rendered — this causes a hydration error ("`<a> cannot contain a nested <a>`").
+
+If a card/row needs a full-area `Link` **and** its own separately-clickable actions inside the same visual area (e.g. a product card image linking to the detail page, with a WhatsApp button and an "add to cart" button floating on top of it):
+- Make the `Link` an `absolute inset-0` **sibling** of the action buttons, both inside a shared `relative` container — never wrap one inside the other.
+- `stopPropagation()` does not fix this; the invalid HTML nesting happens regardless of click handlers.
+- See `components/store/ProductCard.tsx` for the working pattern.
+
 ## Commands
 
 ```bash
