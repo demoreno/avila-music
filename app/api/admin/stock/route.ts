@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { createClient } from '@supabase/supabase-js'
+import { requireAdminUser } from '@/lib/require-admin'
 
 const adminClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,12 +9,9 @@ const adminClient = createClient(
 )
 
 export async function PATCH(request: Request) {
-  const supabase = await createSupabaseServerClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
+  try {
+    await requireAdminUser()
+  } catch {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 

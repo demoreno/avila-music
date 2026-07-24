@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle, ShoppingCart } from 'lucide-react'
+import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle, ShoppingCart, User } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import CartHydration from '@/components/store/CartHydration'
 import MiniCart from '@/components/store/MiniCart'
 import HeaderSearch from '@/components/store/HeaderSearch'
+import AccountMenu from '@/components/store/AccountMenu'
 import { useCartCount } from '@/lib/cart/store'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -79,6 +80,8 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <span className="hidden lg:inline">WhatsApp</span>
               </a>
 
+              <AccountMenu />
+
               <MiniCart />
 
               <button
@@ -125,6 +128,14 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               >
                 <ShoppingCart className="h-4 w-4" />
                 Carrito{cartCount > 0 ? ` (${cartCount})` : ''}
+              </Link>
+              <Link
+                href="/cuenta"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 py-2.5 px-3 text-sm text-slate-600 hover:text-amber-600 transition-colors rounded-lg"
+              >
+                <User className="h-4 w-4" />
+                Mi cuenta
               </Link>
               <a
                 href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
