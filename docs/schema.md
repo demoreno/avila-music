@@ -255,10 +255,14 @@ Contains all columns from sale_items, plus sale header fields, product name/slug
 
 All tables use Row Level Security (RLS).
 
-**Admin access (authenticated users):** Full read/write access on all tables via `auth.role() = 'authenticated'`.
+**Admin access:** Full read/write access on all admin tables (`app_config`, `categories`, `inventory_movements`, `price_history`, `products`, `product_images`, `purchase_order_items`, `purchase_orders`, `sale_items`, `sales`) is scoped to `is_admin()`, **not** just `auth.role() = 'authenticated'`. This was changed once customer accounts were introduced — previously *any* logged-in Supabase user (customers included) had full access to sales, costs, and inventory. See [`user-accounts.md`](./user-accounts.md) for why.
+
+**Customer accounts:** Each user can read/update only their own `profiles` row (`auth.uid() = id`); `role` cannot be self-escalated (see `profiles` above).
 
 **Public storefront (anonymous users):** Read-only access limited to:
 - `categories` where `is_active = TRUE`
 - `products` where `is_active = TRUE`
+- `product_images` where the parent product is active
+- `v_public_bestsellers` (narrow view: `product_id` + `units_sold` only, no financial data)
 
-All other tables (sales, sale_items, inventory_movements, price_history, app_config) are admin-only — no public read access.
+All other tables are admin-only — no public read access.
