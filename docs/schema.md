@@ -148,6 +148,25 @@ Audit log of stock changes.
 
 ---
 
+### `profiles`
+
+One row per Supabase Auth user (`auth.users`), created automatically via the `handle_new_user()` trigger on signup. Distinguishes admin (store owner) from customer accounts — this is what the RLS split below depends on.
+
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | = `auth.users.id` |
+| email | text nullable | Copied from `auth.users` at signup |
+| full_name | text nullable | Set by the user, e.g. on the storefront registration form |
+| role | text NOT NULL DEFAULT 'customer' | `'admin'` or `'customer'`, CHECK constrained |
+| created_at | timestamptz | Auto-set on insert |
+
+**Rules:**
+- A user can `SELECT`/`UPDATE` only their own row (`auth.uid() = id`).
+- `role` cannot be self-escalated — a `BEFORE UPDATE` trigger (`prevent_role_escalation()`) silently reverts any change to `role` unless the request comes from `service_role`.
+- `is_admin()` (SQL function, `STABLE`, no `SECURITY DEFINER`) checks `role = 'admin'` for `auth.uid()` and is what every admin-only RLS policy calls.
+
+---
+
 ### `price_history`
 
 Audit log of price/cost changes.
