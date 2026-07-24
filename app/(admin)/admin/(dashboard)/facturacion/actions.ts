@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { requireAdminUser } from '@/lib/require-admin'
 import type { PaymentMethod } from '@/types/index'
 
 export type SaleChannel = 'directo' | 'mercadolibre'
@@ -13,17 +13,8 @@ const adminClient = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 )
 
-/**
- * adminClient uses the service-role key, which bypasses RLS entirely — every
- * action in this file MUST call this before touching adminClient, or it's an
- * unauthenticated write path straight to the database.
- */
-async function requireAdminUser() {
-  const supabase = await createSupabaseServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('No autorizado')
-  return user
-}
+// adminClient uses the service-role key, which bypasses RLS entirely — every
+// action in this file MUST call requireAdminUser() before touching adminClient.
 
 interface ManualSaleItemInput {
   productId: string

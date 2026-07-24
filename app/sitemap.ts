@@ -1,15 +1,24 @@
 import type { MetadataRoute } from 'next'
 import { catalog } from '@/lib/catalog'
+import { getPublishedPosts } from '@/lib/blog'
 
 const BASE_URL = 'https://avilamusic.shop'
 
 const STATIC_PAGES = ['nosotros', 'faq', 'contacto', 'envios', 'garantias', 'terminos', 'politica-privacidad']
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, categoryTree] = await Promise.all([
+  const [products, categoryTree, posts] = await Promise.all([
     catalog.getAllProducts(),
     catalog.getCategoryTree(),
+    getPublishedPosts(),
   ])
+
+  const postUrls: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.updated_at),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }))
 
   const productUrls: MetadataRoute.Sitemap = products.map((p) => ({
     url: `${BASE_URL}/productos/${p.slug}`,
@@ -52,8 +61,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.7,
     },
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
     ...productUrls,
     ...categoryUrls,
+    ...postUrls,
     ...staticUrls,
   ]
 }

@@ -14,6 +14,8 @@ export interface CatalogProvider {
   searchProducts(query: string, limit?: number): Promise<PublicProduct[]>
   getProductBySlug(slug: string): Promise<PublicProduct | null>
   getRelatedProducts(subcategoryId: string, excludeId: string): Promise<PublicProduct[]>
+  /** Preserves the order of `ids` and silently drops inactive/deleted ones. */
+  getProductsByIds(ids: string[]): Promise<PublicProduct[]>
   getCategoryTree(): Promise<CategoryTree[]>
   getCategoryBySubcategoryId(subcategoryId: string): Promise<CategoryTree | null>
   getProductImageUrl(path: string): string

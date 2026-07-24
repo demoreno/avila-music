@@ -3,7 +3,8 @@
 import { randomUUID } from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { requireAdminUser } from '@/lib/require-admin'
+import { slugify } from '@/lib/slugify'
 
 const PRODUCT_IMAGES_BUCKET = 'products'
 
@@ -13,26 +14,8 @@ const adminClient = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 )
 
-/**
- * adminClient uses the service-role key, which bypasses RLS entirely — every
- * action in this file MUST call this before touching adminClient, or it's an
- * unauthenticated write path straight to the database.
- */
-async function requireAdminUser() {
-  const supabase = await createSupabaseServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('No autorizado')
-  return user
-}
-
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
+// adminClient uses the service-role key, which bypasses RLS entirely — every
+// action in this file MUST call requireAdminUser() before touching adminClient.
 
 function revalidateStorefrontProductPaths(slug: string) {
   revalidatePath('/productos')

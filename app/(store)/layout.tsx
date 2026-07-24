@@ -18,6 +18,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
   const navLinks = [
     { href: '/productos', label: 'Productos' },
     { href: '/productos/categoria', label: 'Categorías' },
+    { href: '/blog', label: 'Blog' },
     { href: '/nosotros', label: 'Nosotros' },
     { href: '/envios', label: 'Envíos' },
     { href: '/contacto', label: 'Contacto' },
@@ -196,6 +197,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Información
               </h4>
               <ul className="space-y-3">
+                <li><Link href="/blog" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Blog</Link></li>
                 <li><Link href="/nosotros" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Nosotros</Link></li>
                 <li><Link href="/envios" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Envíos y entregas</Link></li>
                 <li><Link href="/garantias" className="text-slate-400 hover:text-[#f59e0b] transition-colors flex items-center gap-2 group"><ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />Garantías</Link></li>

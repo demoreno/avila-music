@@ -189,6 +189,21 @@ export interface SaleItemDetail {
   product_id: string
 }
 
+export interface BlogPost {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  content: string
+  cover_image_url: string | null
+  meta_description: string | null
+  is_published: boolean
+  published_at: string | null
+  related_product_ids: string[]
+  created_at: string
+  updated_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
