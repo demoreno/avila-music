@@ -1,6 +1,13 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // Default Server Action body limit is 1MB — too small for photo uploads (product
+  // images, blog cover images) that go through a Server Action instead of a route handler.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     // Product images live at UUID-named storage paths that are never overwritten

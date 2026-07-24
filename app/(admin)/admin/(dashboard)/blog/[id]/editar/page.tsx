@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { getPickerProducts } from '../../get-picker-products'
 import BlogPostForm from '@/components/admin/BlogPostForm'
 import type { BlogPost } from '@/types/index'
 
@@ -10,9 +11,9 @@ export default async function EditarBlogPostPage({
 }) {
   const { id } = await params
   const supabase = await createSupabaseServerClient()
-  const [{ data: post }, { data: products }] = await Promise.all([
+  const [{ data: post }, products] = await Promise.all([
     supabase.from('blog_posts').select('*').eq('id', id).single(),
-    supabase.from('products').select('id, name').eq('is_active', true).order('name'),
+    getPickerProducts(supabase),
   ])
 
   if (!post) notFound()
@@ -22,7 +23,7 @@ export default async function EditarBlogPostPage({
       <div className="mb-6">
         <h1 className="heading-serif text-2xl font-bold text-[#1e4d6b]">Editar artículo</h1>
       </div>
-      <BlogPostForm post={post as BlogPost} products={products ?? []} />
+      <BlogPostForm post={post as BlogPost} products={products} />
     </div>
   )
 }

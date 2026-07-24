@@ -4,15 +4,16 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Trash2, Upload, X } from 'lucide-react'
+import { Trash2, Upload, X, Music } from 'lucide-react'
 import type { BlogPost } from '@/types/index'
 import { createBlogPost, updateBlogPost, deleteBlogPost, uploadBlogCoverImage } from '@/app/(admin)/admin/(dashboard)/blog/actions'
 import { extractYouTubeId } from '@/lib/youtube'
 import YouTubeEmbed from '@/components/shared/YouTubeEmbed'
+import ProductPickerModal, { type PickerProduct } from '@/components/admin/ProductPickerModal'
 
 interface BlogPostFormProps {
   post?: BlogPost
-  products: { id: string; name: string }[]
+  products: PickerProduct[]
 }
 
 function MarkdownLink({ href, children }: { href?: string; children?: React.ReactNode }) {
@@ -58,15 +59,14 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
   const [metaDescription, setMetaDescription] = useState(post?.meta_description ?? '')
   const [isPublished, setIsPublished] = useState(post?.is_published ?? false)
   const [relatedProductIds, setRelatedProductIds] = useState<string[]>(post?.related_product_ids ?? [])
-  const [productSearch, setProductSearch] = useState('')
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [saving, setSaving] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
   const [error, setError] = useState('')
 
-  const filteredProducts = productSearch.trim()
-    ? products.filter((p) => p.name.toLowerCase().includes(productSearch.trim().toLowerCase()))
-    : products
+  const productById = new Map(products.map((p) => [p.id, p]))
+  const selectedProducts = relatedProductIds.map((id) => productById.get(id)).filter((p): p is PickerProduct => !!p)
 
   async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -211,36 +211,51 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <h3 className="mb-1 text-sm font-semibold text-slate-700">Productos relacionados</h3>
             <p className="mb-3 text-xs text-slate-400">Se muestran como carrusel al final del artículo. Si no elegís ninguno, esa sección no aparece.</p>
-            {relatedProductIds.length > 0 && (
-              <p className="mb-2 text-xs font-medium text-[#1e4d6b]">{relatedProductIds.length} seleccionado(s)</p>
-            )}
-            <input
-              type="text"
-              value={productSearch}
-              onChange={(e) => setProductSearch(e.target.value)}
-              placeholder="Buscar producto..."
-              className="mb-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
-            />
-            {filteredProducts.length === 0 ? (
-              <p className="text-xs text-slate-400">Sin resultados.</p>
-            ) : (
-              <div className="max-h-56 space-y-2 overflow-y-auto">
-                {filteredProducts.map((product) => (
-                  <label key={product.id} className="flex items-start gap-2.5 text-sm text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={relatedProductIds.includes(product.id)}
-                      onChange={(e) =>
-                        setRelatedProductIds((ids) =>
-                          e.target.checked ? [...ids, product.id] : ids.filter((id) => id !== product.id)
-                        )
-                      }
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#1e4d6b] focus:ring-amber-400"
-                    />
-                    {product.name}
-                  </label>
+
+            {selectedProducts.length > 0 && (
+              <div className="mb-3 space-y-2">
+                {selectedProducts.map((product) => (
+                  <div key={product.id} className="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-white">
+                      {product.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- small thumbnail chip, next/image overhead isn't worth it here
+                        <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <Music className="h-3.5 w-3.5 text-slate-300" />
+                      )}
+                    </div>
+                    <p className="min-w-0 flex-1 truncate text-sm text-slate-700">{product.name}</p>
+                    <button
+                      type="button"
+                      onClick={() => setRelatedProductIds((ids) => ids.filter((id) => id !== product.id))}
+                      className="flex-shrink-0 text-slate-400 hover:text-red-600"
+                      aria-label={`Quitar ${product.name}`}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
                 ))}
               </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              className="w-full rounded-lg border border-dashed border-slate-300 py-2.5 text-sm font-medium text-slate-500 hover:border-amber-400 hover:text-amber-600 transition-colors"
+            >
+              {selectedProducts.length > 0 ? 'Editar selección' : 'Elegir productos'}
+            </button>
+
+            {pickerOpen && (
+              <ProductPickerModal
+                products={products}
+                initialSelected={relatedProductIds}
+                onClose={() => setPickerOpen(false)}
+                onConfirm={(ids) => {
+                  setRelatedProductIds(ids)
+                  setPickerOpen(false)
+                }}
+              />
             )}
           </div>
 
