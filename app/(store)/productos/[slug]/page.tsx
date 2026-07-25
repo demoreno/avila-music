@@ -8,6 +8,7 @@ import ImageGallery from './ImageGallery'
 import ProductCard from '@/components/store/ProductCard'
 import ProductActions from '@/components/store/ProductActions'
 import ProductSpecs from '@/components/store/ProductSpecs'
+import BsPrice from '@/components/shared/BsPrice'
 
 export async function generateStaticParams() {
   const products = await catalog.getAllProducts()
@@ -173,9 +174,12 @@ export default async function ProductPage({
             {/* Price and Stock */}
             <div className="flex items-center gap-4 flex-wrap">
               {showPrices ? (
-                <span className="text-5xl font-bold gradient-text">
-                  USD {Number(product.price_usd).toFixed(2)}
-                </span>
+                <div>
+                  <span className="text-5xl font-bold gradient-text">
+                    USD {Number(product.price_usd).toFixed(2)}
+                  </span>
+                  <BsPrice usd={Number(product.price_usd)} className="mt-1 block text-base text-text-muted" />
+                </div>
               ) : (
                 <span className="text-2xl font-semibold gradient-text">
                   Consulta el precio por WhatsApp

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
+import { ADMIN_EMAIL } from '@/lib/admin-email'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -17,14 +18,21 @@ export default function AdminLoginPage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  // The proxy already redirects an authenticated user away from this page,
+  // The proxy already redirects an authenticated ADMIN away from this page,
   // but that check only runs on a fresh request — the browser's back/forward
   // cache can restore this exact page without one, so we re-check on the
-  // client too (both on mount and when bfcache restores the page).
+  // client too (both on mount and when bfcache restores the page). Must also
+  // check role here: a logged-in customer (not admin) landing on this page
+  // (bounced here by the dashboard layout) is NOT an admin — sending them
+  // back to /admin/dashboard would just bounce them back here again, looping
+  // forever. Only redirect to the dashboard if they're actually an admin.
   useEffect(() => {
     async function redirectIfLoggedIn() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) router.replace('/admin/dashboard')
+      if (!user) return
+
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+      router.replace(profile?.role === 'admin' && user.email === ADMIN_EMAIL ? '/admin/dashboard' : '/')
     }
 
     redirectIfLoggedIn()

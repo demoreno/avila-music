@@ -204,6 +204,45 @@ export interface BlogPost {
   updated_at: string
 }
 
+export type OrderStatus = 'pendiente' | 'confirmado' | 'en_camino' | 'completado' | 'cancelado'
+export type PaymentStatus = 'pendiente' | 'confirmado' | 'rechazado'
+export type OrderPaymentMethod = 'pago_movil' | 'transferencia' | 'binance'
+
+export interface Order {
+  id: string
+  customer_id: string
+  status: OrderStatus
+  shipping_address: string
+  notes: string | null
+  cancellation_reason: string | null
+  shipping_carrier: string | null
+  tracking_number: string | null
+  preferred_carrier: string | null
+  shipping_proof_path: string | null
+  sale_id: string | null
+  payment_status: PaymentStatus
+  payment_method: OrderPaymentMethod | null
+  payment_reference: string | null
+  payment_date: string | null
+  payment_proof_path: string | null
+  total_usd: number
+  bcv_rate_usd: number | null
+  created_at: string
+  updated_at: string
+}
+
+export interface OrderItem {
+  id: string
+  order_id: string
+  product_id: string | null
+  /** Snapshot of the product name at order time — survives the product being renamed/deleted later. */
+  product_name: string
+  quantity: number
+  /** Frozen at order time, same principle as sale_items.unit_price_usd — never updated afterward. */
+  unit_price_usd: number
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {

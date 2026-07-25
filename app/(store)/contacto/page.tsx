@@ -143,7 +143,7 @@ export default function ContactoPage() {
                   <p className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
                     <span>
-                      <strong className="text-text">Centro de Operaciones y Despacho:</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Distrito Capital, Venezuela
+                      <strong className="text-text">Oficina Comercial (Previa Cita):</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Distrito Capital, Venezuela
                     </span>
                   </p>
                   <p className="flex items-start gap-3">
@@ -185,7 +185,7 @@ export default function ContactoPage() {
               },
               {
                 q: '¿Aceptan pagos en divisas?',
-                a: 'Sí, aceptamos pagos en USD (efectivo, Zelle, PayPal) y bolívares a la tasa del día.',
+                a: 'Sí, aceptamos pagos en USD (Facebank, Binance USDT) y bolívares a la tasa del día.',
               },
               {
                 q: '¿Los productos tienen garantía?',

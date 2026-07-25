@@ -3,17 +3,21 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle, ShoppingCart } from 'lucide-react'
+import { Search, Menu, X, Mail, Phone, Clock, ChevronRight, CirclePlus, Info, MessageCircle, ShoppingCart, User } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import CartHydration from '@/components/store/CartHydration'
 import MiniCart from '@/components/store/MiniCart'
 import HeaderSearch from '@/components/store/HeaderSearch'
+import AccountMenu from '@/components/store/AccountMenu'
 import { useCartCount } from '@/lib/cart/store'
+import { useBcvRate } from '@/lib/bcv/context'
+import { formatBcvRate } from '@/lib/bcv/format'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const cartCount = useCartCount()
+  const bcvRate = useBcvRate()
 
   const navLinks = [
     { href: '/productos', label: 'Productos' },
@@ -80,6 +84,8 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <span className="hidden lg:inline">WhatsApp</span>
               </a>
 
+              <AccountMenu />
+
               <MiniCart />
 
               <button
@@ -127,6 +133,14 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <ShoppingCart className="h-4 w-4" />
                 Carrito{cartCount > 0 ? ` (${cartCount})` : ''}
               </Link>
+              <Link
+                href="/cuenta"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 py-2.5 px-3 text-sm text-slate-600 hover:text-amber-600 transition-colors rounded-lg"
+              >
+                <User className="h-4 w-4" />
+                Mi cuenta
+              </Link>
               <a
                 href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 mt-3 py-3 px-4 bg-whatsapp/10 text-whatsapp rounded-xl text-sm font-medium"
@@ -164,7 +178,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Envíos seguros a todo el país.
               </p>
               <div className="text-sm text-slate-500 leading-relaxed mb-6 space-y-1">
-                <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas, Distrito Capital, Venezuela</p>
+                <p>Oficina Comercial (Previa Cita) — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas, Distrito Capital, Venezuela</p>
               </div>
               <div className="flex gap-3">
                 <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
@@ -244,6 +258,11 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <Link href="/politica-privacidad" className="text-sm text-slate-400 hover:text-white transition-colors">Política de privacidad</Link>
               </div>
             </div>
+            <p className="mt-4 text-center text-xs text-slate-500 md:text-right">
+              Precios en USD, referenciados a la tasa oficial del BCV
+              {bcvRate ? ` (Bs. ${formatBcvRate(bcvRate)} por USD)` : ''}
+              .
+            </p>
           </div>
         </div>
       </footer>

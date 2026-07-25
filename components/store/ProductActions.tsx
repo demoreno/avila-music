@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ShoppingCart } from 'lucide-react'
 import { whatsappProductLink } from '@/lib/whatsapp'
+import { useCartStore } from '@/lib/cart/store'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import AddToCartButton from './AddToCartButton'
 import QuantityInput from './QuantityInput'
@@ -21,6 +24,8 @@ interface ProductActionsProps {
 
 export default function ProductActions({ product, showPrices }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1)
+  const addItem = useCartStore((state) => state.addItem)
+  const router = useRouter()
   const maxQty = product.stockTotal > 0 ? product.stockTotal : 99
 
   const isOutOfStock = product.stockTotal === 0
@@ -32,10 +37,19 @@ export default function ProductActions({ product, showPrices }: ProductActionsPr
     quantity
   )
 
-  function getWhatsAppLabel(): string {
-    if (isOutOfStock) return 'Consultar disponibilidad'
-    if (!showPrices) return 'Consultar precio'
-    return 'Pedir por WhatsApp'
+  function handleBuyNow() {
+    addItem(
+      {
+        productId: product.productId,
+        slug: product.slug,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        unitPriceUsd: product.unitPriceUsd,
+        stockTotal: product.stockTotal,
+      },
+      quantity
+    )
+    router.push('/checkout')
   }
 
   return (
@@ -70,19 +84,26 @@ export default function ProductActions({ product, showPrices }: ProductActionsPr
             />
           )}
 
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-flex items-center justify-center gap-3 rounded-xl font-semibold transition-all duration-300 py-4 w-full ${
-              isOutOfStock
-                ? 'bg-gradient-to-r from-whatsapp to-whatsapp-hover text-white shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-[1.02]'
-                : 'border-2 border-whatsapp text-whatsapp hover:bg-whatsapp hover:text-white hover:scale-[1.02]'
-            }`}
-          >
-            <WhatsAppIcon className="h-5 w-5" />
-            {getWhatsAppLabel()}
-          </a>
+          {isOutOfStock ? (
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-3 rounded-xl font-semibold transition-all duration-300 py-4 w-full bg-gradient-to-r from-whatsapp to-whatsapp-hover text-white shadow-xl shadow-whatsapp/30 hover:shadow-2xl hover:shadow-whatsapp/40 hover:scale-[1.02]"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+              Consultar disponibilidad
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              className="inline-flex items-center justify-center gap-3 rounded-xl font-semibold transition-all duration-300 py-4 w-full border-2 border-accent text-accent hover:bg-accent hover:text-white hover:scale-[1.02]"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              Comprar
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { CheckCircle2, Music } from 'lucide-react'
 import { whatsappProductLink } from '@/lib/whatsapp'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 import AddToCartButton from '@/components/store/AddToCartButton'
+import BsPrice from '@/components/shared/BsPrice'
 import type { PublicProduct } from '@/lib/catalog'
 import { getPublicImageUrl } from '@/lib/catalog/image-url'
 
@@ -15,9 +16,10 @@ interface ProductCardProps {
     price_usd: number | null
     subcategory_name?: string
   }
+  showBcv?: boolean
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, showBcv = true }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0]
   const imageUrl = primaryImage ? getPublicImageUrl(primaryImage.storage_path) : null
@@ -128,9 +130,12 @@ export default function ProductCard({ product }: ProductCardProps) {
             ) : null}
           </div>
           {product.price_usd !== null ? (
-            <p className="text-2xl font-bold gradient-text">
-              USD {product.price_usd.toFixed(2)}
-            </p>
+            <>
+              <p className="text-2xl font-bold gradient-text">
+                USD {product.price_usd.toFixed(2)}
+              </p>
+              {showBcv && <BsPrice usd={product.price_usd} className="text-sm text-text-muted" />}
+            </>
           ) : (
             <p className="text-lg font-semibold gradient-text">
               Cotizar por WhatsApp
