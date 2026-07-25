@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import Script from 'next/script'
+import { getBcvRate } from '@/lib/bcv/get-rate'
+import { BcvRateProvider } from '@/lib/bcv/context'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -100,11 +102,13 @@ const organizationJsonLd = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const bcvRate = await getBcvRate()
+
   return (
     <html lang="es" className={`${dmSans.variable} ${cormorant.variable}`}>
       <body className="transition-opacity duration-300" suppressHydrationWarning>
@@ -124,7 +128,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        {children}
+        <BcvRateProvider rate={bcvRate?.rate ?? null}>
+          {children}
+        </BcvRateProvider>
       </body>
     </html>
   )

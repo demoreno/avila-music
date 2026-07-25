@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import PasswordInput from '@/components/store/PasswordInput'
 
-export default function RegistroPage() {
+function RegistroForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/cuenta'
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -66,7 +68,7 @@ export default function RegistroPage() {
       await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', data.user.id)
     }
 
-    router.push('/cuenta')
+    router.push(redirectTo)
     router.refresh()
   }
 
@@ -147,5 +149,13 @@ export default function RegistroPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function RegistroPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegistroForm />
+    </Suspense>
   )
 }

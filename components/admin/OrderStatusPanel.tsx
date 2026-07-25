@@ -106,6 +106,12 @@ export default function OrderStatusPanel({ order, shippingProofUrl }: { order: O
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <h3 className="mb-3 text-sm font-semibold text-slate-700">Estado de la orden</h3>
 
+      {order.preferred_carrier && (
+        <p className="mb-3 text-xs text-slate-500">
+          Transportista preferido por el cliente: <span className="font-medium text-slate-700">{order.preferred_carrier}</span>
+        </p>
+      )}
+
       {isFinal ? (
         <p className="text-sm text-slate-500">
           Esta orden ya está {order.status === 'completado' ? 'completada' : 'cancelada'} — no admite más cambios.
@@ -122,10 +128,6 @@ export default function OrderStatusPanel({ order, shippingProofUrl }: { order: O
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
-
-          {order.preferred_carrier && !order.shipping_carrier && (
-            <p className="mt-1.5 text-xs text-slate-400">El cliente prefiere: {order.preferred_carrier}</p>
-          )}
 
           {shippingPrompt && (
             <div className="mt-3 rounded-lg border border-blue-100 bg-blue-50 p-3">

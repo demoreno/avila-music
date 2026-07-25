@@ -7,6 +7,32 @@ import type { OrderPaymentMethod } from '@/types/index'
 
 const PAYMENT_PROOFS_BUCKET = 'payment-proofs'
 
+const ALLOWED_IMAGE_TYPES: Record<string, { ext: string; matches: (bytes: Uint8Array) => boolean }> = {
+  jpeg: { ext: 'jpg', matches: (b) => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
+  png: {
+    ext: 'png',
+    matches: (b) => b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47,
+  },
+  webp: {
+    ext: 'webp',
+    matches: (b) =>
+      b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+      b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50,
+  },
+}
+
+/**
+ * Sniffs the real file signature instead of trusting the client's filename or
+ * declared MIME type — both are attacker-controlled and were previously used
+ * as-is to name the stored object and its Content-Type.
+ */
+function detectImageType(bytes: Uint8Array): { ext: string; contentType: string } | null {
+  for (const [type, { ext, matches }] of Object.entries(ALLOWED_IMAGE_TYPES)) {
+    if (matches(bytes)) return { ext, contentType: `image/${type}` }
+  }
+  return null
+}
+
 /**
  * Goes through the cancel_order() DB function (SECURITY DEFINER, enforces
  * ownership + "only while pendiente/confirmado" + reason required) rather than
@@ -37,13 +63,15 @@ export async function uploadPaymentProof(orderId: string, formData: FormData): P
   const file = formData.get('proof')
   if (!(file instanceof File) || file.size === 0) throw new Error('Selecciona una imagen del comprobante')
 
-  const ext = file.name.split('.').pop() ?? 'jpg'
-  const objectPath = `${orderId}/${randomUUID()}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
+  const detected = detectImageType(buffer)
+  if (!detected) throw new Error('El comprobante debe ser una imagen JPG, PNG o WEBP')
+
+  const objectPath = `${orderId}/${randomUUID()}.${detected.ext}`
 
   const { error } = await supabase.storage
     .from(PAYMENT_PROOFS_BUCKET)
-    .upload(objectPath, buffer, { contentType: file.type || undefined })
+    .upload(objectPath, buffer, { contentType: detected.contentType })
   if (error) throw new Error(error.message)
 
   return objectPath

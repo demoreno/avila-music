@@ -226,6 +226,7 @@ export interface Order {
   payment_date: string | null
   payment_proof_path: string | null
   total_usd: number
+  bcv_rate_usd: number | null
   created_at: string
   updated_at: string
 }

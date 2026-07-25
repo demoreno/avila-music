@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation'
 import { Upload } from 'lucide-react'
 import type { OrderPaymentMethod } from '@/types/index'
 import { uploadPaymentProof, submitPaymentProof } from '@/app/(store)/cuenta/actions'
+import { PAGO_MOVIL_INFO } from '@/lib/payment-methods'
 
-const METHOD_OPTIONS: { value: OrderPaymentMethod; label: string }[] = [
+// Transferencia todavía no tiene cuenta asignada y Binance está pendiente de
+// activar — solo Pago Móvil es seleccionable por ahora.
+const METHOD_OPTIONS: { value: OrderPaymentMethod; label: string; disabled?: boolean }[] = [
   { value: 'pago_movil', label: 'Pago Móvil' },
-  { value: 'transferencia', label: 'Transferencia' },
-  { value: 'binance', label: 'Binance' },
+  { value: 'binance', label: 'Binance (próximamente)', disabled: true },
 ]
 
 export default function PaymentProofForm({ orderId }: { orderId: string }) {
@@ -61,10 +63,19 @@ export default function PaymentProofForm({ orderId }: { orderId: string }) {
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
         >
           {METHOD_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value} disabled={opt.disabled}>{opt.label}</option>
           ))}
         </select>
       </div>
+
+      {method === 'pago_movil' && (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-slate-700">
+          <p className="font-semibold text-emerald-800">Datos para tu Pago Móvil</p>
+          <p>Banco: {PAGO_MOVIL_INFO.bancos.join(' o ')}</p>
+          <p>Teléfono: {PAGO_MOVIL_INFO.telefono}</p>
+          <p>C.I.: {PAGO_MOVIL_INFO.cedula}</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-2">
         <div>

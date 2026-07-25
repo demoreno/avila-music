@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { ADMIN_EMAIL } from '@/lib/require-admin'
 import AdminNav from './AdminNav'
 import AdminLogout from './AdminLogout'
 
@@ -14,7 +15,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .select('role')
     .eq('id', user.id)
     .single()
-  if (profile?.role !== 'admin') redirect('/admin/login')
+  // A logged-in customer (not an admin) must NOT bounce back to /admin/login —
+  // that page redirects any logged-in user straight back to /admin/dashboard,
+  // which would land here again and loop forever. Send them home instead.
+  // ADMIN_EMAIL check is a deliberate hardcoded belt-and-suspenders gate on top
+  // of profiles.role — see lib/require-admin.ts.
+  if (profile?.role !== 'admin' || user.email !== ADMIN_EMAIL) redirect('/')
 
   return (
     <div className="flex min-h-screen bg-bg-alt">

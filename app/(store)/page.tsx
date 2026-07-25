@@ -169,7 +169,7 @@ export default async function HomePage() {
               <p className="text-text-muted text-lg">Próximamente nuevos productos</p>
             </div>
           ) : (
-            <ProductCarousel products={featuredProducts} />
+            <ProductCarousel products={featuredProducts} showBcv={false} />
           )}
 
           <div className="mt-10 text-center sm:hidden">
@@ -264,7 +264,7 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <ProductCarousel products={newArrivals} />
+            <ProductCarousel products={newArrivals} showBcv={false} />
           </div>
         </section>
       )}

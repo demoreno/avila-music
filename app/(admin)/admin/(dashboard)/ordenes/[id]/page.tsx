@@ -42,7 +42,10 @@ export default async function OrdenDetallePage({
         <h1 className="heading-serif text-2xl font-bold text-[#1e4d6b]">
           Orden #{(order as Order).id.slice(0, 8).toUpperCase()}
         </h1>
-        <p className="text-sm text-slate-500">{customer?.full_name || customer?.email || 'Cliente'}</p>
+        <p className="text-sm text-slate-500">
+          {customer?.full_name || 'Cliente'}
+          {customer?.email && <span className="text-slate-400"> — {customer.email}</span>}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

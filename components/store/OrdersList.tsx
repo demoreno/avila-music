@@ -55,7 +55,7 @@ export default function OrdersList({ orders }: OrdersListProps) {
 
   if (orders.length === 0) {
     return (
-      <p className="text-sm text-text-muted">
+      <p className="text-base text-text-muted">
         Todavía no tienes pedidos registrados. Cuando confirmes una compra por WhatsApp, va a aparecer acá.
       </p>
     )
@@ -73,11 +73,11 @@ export default function OrdersList({ orders }: OrdersListProps) {
           <div key={order.id} className="rounded-xl border border-slate-200 p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                <p className="flex items-center gap-2 text-base font-semibold text-slate-800">
                   <Package className="h-4 w-4 text-slate-400" />
                   Pedido #{reference}
                 </p>
-                <p className="mt-0.5 text-xs text-text-muted">
+                <p className="mt-0.5 text-sm text-text-muted">
                   {new Date(order.created_at).toLocaleDateString('es-VE', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
               </div>
@@ -91,14 +91,14 @@ export default function OrdersList({ orders }: OrdersListProps) {
 
             <div className="mt-3 space-y-1">
               {order.items.map((item) => (
-                <p key={item.id} className="text-sm text-slate-600">
+                <p key={item.id} className="text-base text-slate-600">
                   {item.quantity}x {item.product_name}
                 </p>
               ))}
             </div>
 
             {order.shipping_carrier && order.tracking_number && (
-              <p className="mt-2 flex items-center gap-1.5 text-xs text-blue-700">
+              <p className="mt-2 flex items-center gap-1.5 text-sm text-blue-700">
                 <Truck className="h-3.5 w-3.5" />
                 Enviado por {order.shipping_carrier} — Guía: {order.tracking_number}
               </p>
@@ -109,7 +109,7 @@ export default function OrdersList({ orders }: OrdersListProps) {
                 href={order.paymentProofUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 flex items-center gap-1.5 text-xs font-medium text-[#1e4d6b] hover:text-[#0f7a5f]"
+                className="mt-2 flex items-center gap-1.5 text-sm font-medium text-[#1e4d6b] hover:text-[#0f7a5f]"
               >
                 <FileText className="h-3.5 w-3.5" />
                 Ver comprobante enviado
@@ -117,12 +117,12 @@ export default function OrdersList({ orders }: OrdersListProps) {
             )}
 
             <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
-              <span className="text-sm font-bold text-slate-800">USD {order.total_usd.toFixed(2)}</span>
-              {CANCELABLE.includes(order.status) && (
+              <span className="text-lg font-bold text-slate-800">USD {order.total_usd.toFixed(2)}</span>
+              {CANCELABLE.includes(order.status) && !order.payment_method && (
                 <button
                   type="button"
                   onClick={() => { setCancelingId(order.id); setReason(''); setError('') }}
-                  className="text-xs font-medium text-red-600 hover:text-red-700"
+                  className="text-sm font-medium text-red-600 hover:text-red-700"
                 >
                   Cancelar pedido
                 </button>
@@ -130,14 +130,14 @@ export default function OrdersList({ orders }: OrdersListProps) {
             </div>
 
             {order.status === 'cancelado' && order.cancellation_reason && (
-              <p className="mt-2 text-xs text-slate-400">Motivo: {order.cancellation_reason}</p>
+              <p className="mt-2 text-sm text-slate-400">Motivo: {order.cancellation_reason}</p>
             )}
 
             {isOpenOrder && (!order.payment_method || order.payment_status === 'rechazado') && (
               <PaymentProofForm orderId={order.id} />
             )}
             {isOpenOrder && order.payment_method && order.payment_status === 'pendiente' && (
-              <p className="mt-3 text-xs text-slate-400">Tu comprobante está en revisión.</p>
+              <p className="mt-3 text-sm text-slate-400">Tu comprobante está en revisión.</p>
             )}
 
             {cancelingId === order.id && (

@@ -7,9 +7,10 @@ import type { PublicProduct } from '@/lib/catalog'
 
 interface ProductCarouselProps {
   products: (Omit<PublicProduct, 'price_usd'> & { price_usd: number | null })[]
+  showBcv?: boolean
 }
 
-export default function ProductCarousel({ products }: ProductCarouselProps) {
+export default function ProductCarousel({ products, showBcv = true }: ProductCarouselProps) {
   const scrollerRef = useRef<HTMLDivElement>(null)
 
   function scrollByCard(direction: 'left' | 'right') {
@@ -32,7 +33,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
             data-carousel-item
             className="snap-start flex-shrink-0 w-[260px] sm:w-[280px]"
           >
-            <ProductCard product={product} />
+            <ProductCard product={product} showBcv={showBcv} />
           </div>
         ))}
       </div>

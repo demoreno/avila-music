@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Search, ShoppingBag } from 'lucide-react'
-import type { Order, OrderStatus } from '@/types/index'
+import type { Order, OrderStatus, PaymentStatus } from '@/types/index'
 
 interface OrderRow extends Order {
   customer: { full_name: string | null; email: string | null } | null
@@ -19,6 +19,12 @@ const STATUS_LABELS: Record<OrderStatus, { label: string; className: string }> =
   en_camino: { label: 'En camino', className: 'bg-blue-50 text-blue-700' },
   completado: { label: 'Completado', className: 'bg-emerald-50 text-emerald-700' },
   cancelado: { label: 'Cancelado', className: 'bg-slate-100 text-slate-500' },
+}
+
+const PAYMENT_STATUS_LABELS: Record<PaymentStatus, { label: string; className: string }> = {
+  pendiente: { label: 'Pago pendiente', className: 'bg-amber-50 text-amber-700' },
+  confirmado: { label: 'Pago confirmado', className: 'bg-emerald-50 text-emerald-700' },
+  rechazado: { label: 'Pago rechazado', className: 'bg-red-50 text-red-700' },
 }
 
 const MONTH_LABELS_ES = [
@@ -126,6 +132,7 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
                 <th className="px-4 py-3">Orden</th>
                 <th className="px-4 py-3">Cliente</th>
                 <th className="px-4 py-3">Estado</th>
+                <th className="px-4 py-3">Pago</th>
                 <th className="px-4 py-3">Total</th>
                 <th className="px-4 py-3">Fecha</th>
               </tr>
@@ -133,6 +140,7 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
             <tbody className="divide-y divide-slate-100">
               {filtered.map((order) => {
                 const status = STATUS_LABELS[order.status]
+                const paymentStatus = PAYMENT_STATUS_LABELS[order.payment_status]
                 return (
                   <tr key={order.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3">
@@ -141,10 +149,20 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-slate-600">
-                      {order.customer?.full_name || order.customer?.email || '—'}
+                      {order.customer?.full_name || order.customer?.email ? (
+                        <>
+                          <p className="font-medium text-slate-700">{order.customer?.full_name || '—'}</p>
+                          {order.customer?.email && <p className="text-xs text-slate-400">{order.customer.email}</p>}
+                        </>
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${status.className}`}>{status.label}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${paymentStatus.className}`}>{paymentStatus.label}</span>
                     </td>
                     <td className="px-4 py-3 font-medium text-slate-800">USD {order.total_usd.toFixed(2)}</td>
                     <td className="px-4 py-3 text-slate-500">

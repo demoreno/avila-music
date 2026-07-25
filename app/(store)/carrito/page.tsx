@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ShoppingCart, Minus, Plus, Trash2, ArrowRight, Music } from 'lucide-react'
 import { useCartStore, useCartSubtotal } from '@/lib/cart/store'
+import BsPrice from '@/components/shared/BsPrice'
 
 export default function CarritoPage() {
   const items = useCartStore((state) => state.items)
@@ -84,8 +85,13 @@ export default function CarritoPage() {
                     </button>
                   </div>
 
-                  <span className="font-semibold text-text">
-                    {item.unitPriceUsd !== null ? `USD ${(item.unitPriceUsd * item.quantity).toFixed(2)}` : 'Precio a consultar'}
+                  <span className="text-right">
+                    <span className="block font-semibold text-text">
+                      {item.unitPriceUsd !== null ? `USD ${(item.unitPriceUsd * item.quantity).toFixed(2)}` : 'Precio a consultar'}
+                    </span>
+                    {item.unitPriceUsd !== null && (
+                      <BsPrice usd={item.unitPriceUsd * item.quantity} className="block text-sm text-text-muted" />
+                    )}
                   </span>
                 </div>
               </div>
@@ -100,10 +106,15 @@ export default function CarritoPage() {
             <div className="flex items-center justify-between text-text-muted mb-2">
               <span>{items.reduce((sum, i) => sum + i.quantity, 0)} producto(s)</span>
             </div>
-            <div className="flex items-center justify-between text-xl font-bold text-text pt-3 border-t border-border mb-6">
+            <div className="flex items-center justify-between text-xl font-bold text-text pt-3 border-t border-border mb-1">
               <span>Total</span>
               <span>{subtotal !== null ? `USD ${subtotal.toFixed(2)}` : 'A confirmar'}</span>
             </div>
+            {subtotal !== null && (
+              <div className="flex items-center justify-end mb-6">
+                <BsPrice usd={subtotal} className="text-base text-text-muted" />
+              </div>
+            )}
             <Link href="/checkout" className="btn-primary w-full justify-center">
               Continuar
               <ArrowRight className="h-4 w-4" />

@@ -1,13 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import PasswordInput from '@/components/store/PasswordInput'
 
-export default function CuentaLoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/cuenta'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -21,7 +23,7 @@ export default function CuentaLoginPage() {
   useEffect(() => {
     async function redirectIfLoggedIn() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) router.replace('/cuenta')
+      if (user) router.replace(redirectTo)
     }
 
     redirectIfLoggedIn()
@@ -33,7 +35,7 @@ export default function CuentaLoginPage() {
     window.addEventListener('pageshow', onPageShow)
     return () => window.removeEventListener('pageshow', onPageShow)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- supabase client is re-created per render but stable in behavior
-  }, [router])
+  }, [router, redirectTo])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -48,7 +50,7 @@ export default function CuentaLoginPage() {
       return
     }
 
-    router.push('/cuenta')
+    router.push(redirectTo)
     router.refresh()
   }
 
@@ -96,5 +98,13 @@ export default function CuentaLoginPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function CuentaLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   )
 }

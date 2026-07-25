@@ -10,11 +10,14 @@ import MiniCart from '@/components/store/MiniCart'
 import HeaderSearch from '@/components/store/HeaderSearch'
 import AccountMenu from '@/components/store/AccountMenu'
 import { useCartCount } from '@/lib/cart/store'
+import { useBcvRate } from '@/lib/bcv/context'
+import { formatBcvRate } from '@/lib/bcv/format'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const cartCount = useCartCount()
+  const bcvRate = useBcvRate()
 
   const navLinks = [
     { href: '/productos', label: 'Productos' },
@@ -175,7 +178,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 Envíos seguros a todo el país.
               </p>
               <div className="text-sm text-slate-500 leading-relaxed mb-6 space-y-1">
-                <p>Centro de Operaciones y Despacho — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas, Distrito Capital, Venezuela</p>
+                <p>Oficina Comercial (Previa Cita) — Av. Urdaneta, Torre Alfa, Of. 8A, Caracas, Distrito Capital, Venezuela</p>
               </div>
               <div className="flex gap-3">
                 <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
@@ -255,6 +258,11 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
                 <Link href="/politica-privacidad" className="text-sm text-slate-400 hover:text-white transition-colors">Política de privacidad</Link>
               </div>
             </div>
+            <p className="mt-4 text-center text-xs text-slate-500 md:text-right">
+              Precios en USD, referenciados a la tasa oficial del BCV
+              {bcvRate ? ` (Bs. ${formatBcvRate(bcvRate)} por USD)` : ''}
+              .
+            </p>
           </div>
         </div>
       </footer>

@@ -1,68 +1,121 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { CheckCircle2, ArrowLeft, ArrowRight, ShoppingCart, Music } from 'lucide-react'
+import { createBrowserClient } from '@supabase/ssr'
+import { CheckCircle2, ArrowLeft, ArrowRight, ShoppingCart, Music, LogIn } from 'lucide-react'
 import type { CartItem } from '@/lib/cart/types'
 import { useCartStore, useCartSubtotal } from '@/lib/cart/store'
-import { generateOrderNumber } from '@/lib/cart/order'
 import { whatsappOrderLink } from '@/lib/whatsapp'
 import { createOrder } from './actions'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
+import BsPrice from '@/components/shared/BsPrice'
 
 interface ConfirmedOrder {
   reference: string
-  saved: boolean
   items: CartItem[]
 }
+
+const CARRIER_OPTIONS = [
+  { name: 'MRW', logo: '/logos/mrw-logo.png' },
+  { name: 'Zoom', logo: '/logos/zoom-logo.png' },
+]
 
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items)
   const clearCart = useCartStore((state) => state.clearCart)
   const subtotal = useCartSubtotal()
 
+  const [authChecked, setAuthChecked] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [shippingAddress, setShippingAddress] = useState('')
+  const [recipientFirstName, setRecipientFirstName] = useState('')
+  const [recipientLastName, setRecipientLastName] = useState('')
+  const [recipientPhone, setRecipientPhone] = useState('')
+  const [recipientCedula, setRecipientCedula] = useState('')
   const [notes, setNotes] = useState('')
   const [preferredCarrier, setPreferredCarrier] = useState('')
   const [addressError, setAddressError] = useState('')
+  const [recipientError, setRecipientError] = useState('')
+  const [carrierError, setCarrierError] = useState('')
+  const [submitError, setSubmitError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [confirmed, setConfirmed] = useState<ConfirmedOrder | null>(null)
   const [whatsappSent, setWhatsappSent] = useState(false)
 
+  // Checkout requires an account — this used to be optional and let anyone persist
+  // an order without logging in, which was flagged as a real security gap. Checked
+  // client-side (same pattern as AccountMenu) so we can show a login prompt instead
+  // of the form; createOrder() also enforces this server-side as the real boundary.
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsLoggedIn(!!user)
+      setAuthChecked(true)
+    })
+  }, [])
+
+  // The confirmation screen replaces a much taller form, so the browser keeps
+  // whatever scroll position the visitor had while filling it out — jump back to
+  // the top so the order number is actually visible instead of off-screen above.
+  useEffect(() => {
+    if (confirmed) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [confirmed])
+
   async function handleConfirm() {
+    let hasError = false
     if (!shippingAddress.trim()) {
       setAddressError('Falta la dirección de envío.')
-      return
+      hasError = true
+    } else {
+      setAddressError('')
     }
-    setAddressError('')
-    setSubmitting(true)
+    if (!recipientFirstName.trim() || !recipientLastName.trim() || !recipientPhone.trim() || !recipientCedula.trim()) {
+      setRecipientError('Completa nombre, apellido, teléfono y cédula de quien recibe.')
+      hasError = true
+    } else {
+      setRecipientError('')
+    }
+    if (!preferredCarrier) {
+      setCarrierError('Elige un transportista.')
+      hasError = true
+    } else {
+      setCarrierError('')
+    }
+    if (hasError) return
 
-    // Persisting the order is best-effort — if the visitor isn't logged in, or
-    // something fails, checkout still completes via WhatsApp either way. This step
-    // only saves the order; sending the WhatsApp message is a separate, explicit
-    // action below (also avoids window.open() being blocked as a popup when it
-    // follows an awaited call instead of a direct click).
-    let reference = generateOrderNumber()
-    let saved = false
+    setSubmitError('')
+    setSubmitting(true)
     try {
+      // No hay columnas propias para estos datos — se concatenan al final de la
+      // dirección de envío para no tener que tocar el esquema de `orders`.
+      const fullShippingAddress = [
+        shippingAddress.trim(),
+        '',
+        `Recibe: ${recipientFirstName.trim()} ${recipientLastName.trim()}`,
+        `Teléfono: ${recipientPhone.trim()}`,
+        `Cédula: ${recipientCedula.trim()}`,
+      ].join('\n')
+
       const result = await createOrder({
-        shippingAddress,
+        shippingAddress: fullShippingAddress,
         notes: notes || null,
-        preferredCarrier: preferredCarrier || null,
+        preferredCarrier,
         items,
       })
-      if (result) {
-        reference = result.reference
-        saved = true
-      }
-    } catch {
-      // fall through — still let them send the WhatsApp message
+      setConfirmed({ reference: result.reference, items: [...items] })
+      clearCart()
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'No se pudo registrar el pedido. Intenta de nuevo.')
+    } finally {
+      setSubmitting(false)
     }
-
-    setConfirmed({ reference, saved, items: [...items] })
-    clearCart()
-    setSubmitting(false)
   }
 
   function handleSendWhatsapp() {
@@ -77,12 +130,10 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
         <CheckCircle2 className="h-16 w-16 mx-auto mb-6 text-success" strokeWidth={1.5} />
         <h1 className="heading-serif text-3xl font-bold text-text mb-3">
-          Pedido {confirmed.saved ? 'registrado' : 'listo'} #{confirmed.reference}
+          Pedido registrado #{confirmed.reference}
         </h1>
         <p className="text-text-muted mb-8">
-          {confirmed.saved
-            ? 'Ya puedes ver el estado en "Mi cuenta". Para que lo recibamos, envíanos el resumen por WhatsApp.'
-            : 'Para que lo recibamos y te contactemos, envíanos el resumen por WhatsApp.'}
+          Ya registramos tu pedido — puedes hacer todo el proceso desde &quot;Mi cuenta&quot;. Si prefieres, también puedes escribirnos por WhatsApp.
         </p>
 
         <button
@@ -91,7 +142,7 @@ export default function CheckoutPage() {
           className="btn-primary btn-glow w-full justify-center py-4 sm:w-auto sm:px-10"
         >
           <WhatsAppIcon className="h-6 w-6" />
-          {whatsappSent ? 'Enviar de nuevo por WhatsApp' : 'Enviar por WhatsApp'}
+          {whatsappSent ? 'Enviar de nuevo por WhatsApp' : 'Escribir por WhatsApp (opcional)'}
         </button>
 
         {whatsappSent && (
@@ -99,6 +150,28 @@ export default function CheckoutPage() {
             Se abrió WhatsApp en otra pestaña — confirma el mensaje ahí para completar tu pedido.
           </p>
         )}
+
+        <div className="mt-10 rounded-2xl border border-border bg-bg-alt p-6 text-left">
+          <h2 className="mb-3 text-sm font-semibold text-text">¿Qué sigue ahora?</h2>
+          <ol className="space-y-2.5 text-sm text-text-muted">
+            <li className="flex gap-2.5">
+              <span className="font-semibold text-accent">1.</span>
+              Ya quedó registrado — no necesitas escribirnos para que lo recibamos, aunque puedes hacerlo si quieres que te contactemos más rápido.
+            </li>
+            <li className="flex gap-2.5">
+              <span className="font-semibold text-accent">2.</span>
+              Entra a &quot;Mi cuenta&quot; → Mis pedidos y elige cómo vas a pagar (Pago Móvil, transferencia o Binance) — ahí te mostramos los datos.
+            </li>
+            <li className="flex gap-2.5">
+              <span className="font-semibold text-accent">3.</span>
+              Realizas el pago y subes tu comprobante en la misma sección para que lo confirmemos.
+            </li>
+            <li className="flex gap-2.5">
+              <span className="font-semibold text-accent">4.</span>
+              Una vez confirmado el pago, coordinamos el envío a cobro a destino.
+            </li>
+          </ol>
+        </div>
 
         <div className="mt-8">
           <Link href="/productos" className="text-sm font-medium text-text-muted hover:text-text transition-colors inline-flex items-center gap-2">
@@ -124,6 +197,33 @@ export default function CheckoutPage() {
     )
   }
 
+  if (!authChecked) {
+    return <div className="mx-auto max-w-2xl px-4 py-24 sm:px-6" />
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-24 text-center sm:px-6">
+        <LogIn className="h-16 w-16 mx-auto mb-6 text-slate-300" strokeWidth={1} />
+        <h1 className="heading-serif text-3xl font-bold text-text mb-3">Necesitas una cuenta</h1>
+        <p className="text-text-muted mb-8">
+          Para completar tu pedido desde la web, primero crea una cuenta o inicia sesión — así puedes ver el estado de tus pedidos y subir el comprobante de pago.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Link href="/cuenta/login?redirect=/checkout" className="btn-primary justify-center">
+            Iniciar sesión
+          </Link>
+          <Link
+            href="/cuenta/registro?redirect=/checkout"
+            className="inline-flex items-center justify-center rounded-xl border-2 border-accent px-6 py-3 font-semibold text-accent transition-colors hover:bg-accent hover:text-white"
+          >
+            Crear cuenta
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <Link href="/carrito" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text transition-colors mb-6">
@@ -132,7 +232,7 @@ export default function CheckoutPage() {
       </Link>
 
       <h1 className="heading-serif text-3xl sm:text-4xl font-bold text-text mb-2">Confirmar pedido</h1>
-      <p className="text-text-muted mb-8">Revisa tu orden — el siguiente paso es enviarla por WhatsApp.</p>
+      <p className="text-text-muted mb-8">Revisa los datos de tu pedido antes de confirmarlo.</p>
 
       <div className="rounded-2xl border border-border bg-white shadow-card overflow-hidden mb-6">
         {items.map((item, index) => (
@@ -153,23 +253,31 @@ export default function CheckoutPage() {
               <p className="font-medium text-text truncate">{item.name}</p>
               <p className="text-sm text-text-muted">Cantidad: {item.quantity}</p>
             </div>
-            <span className="font-semibold text-text flex-shrink-0">
-              {item.unitPriceUsd !== null ? `USD ${(item.unitPriceUsd * item.quantity).toFixed(2)}` : 'A consultar'}
+            <span className="text-right flex-shrink-0">
+              <span className="block font-semibold text-text">
+                {item.unitPriceUsd !== null ? `USD ${(item.unitPriceUsd * item.quantity).toFixed(2)}` : 'A consultar'}
+              </span>
+              {item.unitPriceUsd !== null && (
+                <BsPrice usd={item.unitPriceUsd * item.quantity} className="block text-sm text-text-muted" />
+              )}
             </span>
           </div>
         ))}
 
         <div className="flex items-center justify-between p-4 border-t border-border bg-bg-alt">
           <span className="text-lg font-bold text-text">Total</span>
-          <span className="text-lg font-bold text-text">
-            {subtotal !== null ? `USD ${subtotal.toFixed(2)}` : 'A confirmar'}
+          <span className="text-right">
+            <span className="block text-lg font-bold text-text">
+              {subtotal !== null ? `USD ${subtotal.toFixed(2)}` : 'A confirmar'}
+            </span>
+            {subtotal !== null && <BsPrice usd={subtotal} className="block text-base text-text-muted" />}
           </span>
         </div>
       </div>
 
       <div className="rounded-2xl border border-border bg-white shadow-card p-5 mb-8 space-y-4">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-text">Dirección de envío</label>
+          <label className="mb-1.5 block text-base font-medium text-text">Dirección de envío</label>
           <textarea
             value={shippingAddress}
             onChange={(e) => setShippingAddress(e.target.value)}
@@ -180,16 +288,77 @@ export default function CheckoutPage() {
           {addressError && <p className="mt-1 text-xs text-error">{addressError}</p>}
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-text">Transportista preferido (opcional)</label>
-          <select
-            value={preferredCarrier}
-            onChange={(e) => setPreferredCarrier(e.target.value)}
-            className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
-          >
-            <option value="">Sin preferencia</option>
-            <option value="MRW">MRW</option>
-            <option value="Zoom">Zoom</option>
-          </select>
+          <label className="mb-1.5 block text-base font-medium text-text">Datos de quien recibe</label>
+          <p className="mb-2.5 text-sm text-text-muted">Necesarios para que la empresa de mensajería pueda entregar el paquete.</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <input
+              type="text"
+              value={recipientFirstName}
+              onChange={(e) => setRecipientFirstName(e.target.value)}
+              placeholder="Nombre"
+              className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+            <input
+              type="text"
+              value={recipientLastName}
+              onChange={(e) => setRecipientLastName(e.target.value)}
+              placeholder="Apellido"
+              className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+            <input
+              type="tel"
+              value={recipientPhone}
+              onChange={(e) => setRecipientPhone(e.target.value)}
+              placeholder="Teléfono"
+              className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+            <input
+              type="text"
+              value={recipientCedula}
+              onChange={(e) => setRecipientCedula(e.target.value)}
+              placeholder="Cédula"
+              className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            />
+          </div>
+          {recipientError && <p className="mt-1 text-xs text-error">{recipientError}</p>}
+        </div>
+        <div>
+          <label className="mb-1.5 block text-base font-medium text-text">Transportista de envío</label>
+          <p className="mb-2.5 text-sm text-text-muted">
+            El envío es a cobro a destino: lo pagas directo a la empresa de mensajería al recibir tu paquete.{' '}
+            <Link
+              href="/envios"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-accent underline hover:text-accent-hover"
+            >
+              Más información sobre envíos
+            </Link>
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {CARRIER_OPTIONS.map((option) => (
+              <label
+                key={option.name}
+                className={`flex cursor-pointer items-center justify-center gap-3 rounded-lg border px-4 py-4 text-base font-medium transition-colors ${
+                  preferredCarrier === option.name
+                    ? 'border-accent bg-primary-light/40 text-text'
+                    : 'border-border text-text-muted hover:border-accent/50'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="preferredCarrier"
+                  value={option.name}
+                  checked={preferredCarrier === option.name}
+                  onChange={() => setPreferredCarrier(option.name)}
+                  className="sr-only"
+                />
+                <Image src={option.logo} alt={option.name} width={36} height={36} className="h-9 w-9 object-contain" />
+                {option.name}
+              </label>
+            ))}
+          </div>
+          {carrierError && <p className="mt-1 text-xs text-error">{carrierError}</p>}
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-medium text-text">Notas (opcional)</label>
@@ -202,6 +371,8 @@ export default function CheckoutPage() {
           />
         </div>
       </div>
+
+      {submitError && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{submitError}</p>}
 
       <button
         type="button"

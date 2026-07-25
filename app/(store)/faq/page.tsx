@@ -15,7 +15,7 @@ const COMPRAS_FAQ = [
   },
   {
     q: '¿Qué métodos de pago aceptan?',
-    a: 'Aceptamos pagos en USD (efectivo, Zelle, PayPal, Binance Pay) y bolívares a la tasa del BCV. También transferencias bancarias nacionales.',
+    a: 'Aceptamos pagos en USD (Facebank, Binance Pay) y bolívares a la tasa del BCV. También transferencias bancarias nacionales.',
   },
   {
     q: '¿Los precios incluyen IVA?',
@@ -88,7 +88,7 @@ const ATENCION_FAQ = [
   },
   {
     q: '¿Tienen tienda física?',
-    a: 'Operamos principalmente en línea para ofrecerte los mejores precios, pero contamos con un showroom en Caracas (Centro de Operaciones y Despacho) para retiro y atención presencial, exclusivamente bajo previa cita.',
+    a: 'Operamos principalmente en línea para ofrecerte los mejores precios, pero contamos con un showroom en Caracas (Oficina Comercial) para retiro y atención presencial, exclusivamente bajo previa cita.',
   },
   {
     q: '¿Hacen envíos internacionales?',
