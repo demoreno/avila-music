@@ -8,7 +8,10 @@ import type { MonthlyKpi, MonthlyKpiByChannel } from '@/types/index'
 
 const CHANNEL_LABELS: Record<string, string> = {
   mercadolibre: 'MercadoLibre',
-  directo: 'Directo / Web',
+  directo: 'Directo',
+  // Generated automatically when a customer order is marked "completado" — never
+  // selectable from the manual Facturación form.
+  web: 'Tienda Online',
 }
 
 interface UrgentStockRow {
