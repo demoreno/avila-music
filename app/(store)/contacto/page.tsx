@@ -66,7 +66,7 @@ async function ContactAddressSection() {
         <div className="rounded-xl bg-white border border-amber-100 p-4">
           <p className="text-sm text-text-muted flex items-start gap-2">
             <ShoppingCart className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
-            Toda nuestra tienda está disponible en línea. Hace tu pedido por la web o escríbenos por WhatsApp y te lo enviamos a donde estés.
+            Toda nuestra tienda está disponible en línea. Haz tu pedido por la web o escríbenos por WhatsApp y te lo enviamos a donde estés.
           </p>
         </div>
       </div>
