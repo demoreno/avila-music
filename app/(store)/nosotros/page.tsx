@@ -17,11 +17,11 @@ export default function NosotrosPage() {
       <section className="relative min-h-[300px] flex items-center bg-gradient-to-r from-primary-light/30 via-white to-primary-light/30">
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
           <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider rounded-full mb-4">
-            Nuestra historia
+            Desde 2020
           </span>
           <h1 className="heading-serif text-4xl sm:text-5xl font-bold text-text">
-            Más que música,<br />
-            <span className="text-primary">somos pasión</span>
+            De músicos para músicos:<br />
+            <span className="text-primary">accesorios de verdad</span>
           </h1>
         </div>
       </section>
@@ -35,25 +35,24 @@ export default function NosotrosPage() {
                 Desde 2020
               </span>
               <h2 className="heading-serif text-3xl sm:text-4xl font-bold text-text mb-6">
-                Nacimos músicos,<br />crecimos sirviendo
+                Una historia que empezó<br />con una cuerda rota
               </h2>
               <p className="text-text-muted text-lg leading-relaxed mb-4">
-                Ávila Music nació en 2020 con una misión clara: ofrecer a los músicos venezolanos
-                instrumentos y accesorios de calidad, con un servicio que entienda sus necesidades reales.
-                Desde entonces evolucionamos de un catálogo pequeño a una estructura de retail digital
-                formal, con procesos definidos de cotización, despacho y postventa.
+                Ávila Music nació en 2020 porque conseguir un juego de cuerdas en Caracas era una odisea.
+                No encontrabas lo que buscabas, o pagabas sobreprecio por productos que no merecían la pena.
+                Así que decidimos hacerlo nosotros: buscar los mejores proveedores, traer productos originales
+                y ofrecerlos a un precio justo.
               </p>
               <p className="text-text-muted text-lg leading-relaxed mb-4">
-                Contamos con capacidad de distribución a nivel nacional a través de alianzas logísticas
-                con MRW y Zoom, lo que nos permite llevar pedidos a cualquier ciudad de Venezuela con
-                tiempos de entrega predecibles. Cada producto que comercializamos es 100% original,
-                adquirido directamente con marcas y proveedores autorizados — sin intermediarios que
-                comprometan la calidad o la garantía.
+                Empezamos desde casa, con un inventario que cabía en un estante. Los primeros pedidos
+                llegaban por WhatsApp, de músicos que conocían a músicos. Hoy despachamos a cualquier
+                ciudad de Venezuela con MRW y Zoom, y trabajamos con marcas como Ernie Ball, D'Addario,
+                Yamaha y Alice, entre otras.
               </p>
               <p className="text-text-muted text-lg leading-relaxed">
-                Hoy somos una tienda de referencia para guitarristas, bajistas, bateristas y músicos de
-                cuerdas en todo el país, y una operación pensada para escalar: desde cotizaciones
-                individuales hasta alianzas comerciales con nuevos proveedores y distribuidores.
+                Cada producto que vendemos es 100% original, comprado directo a fabricantes y distribuidores
+                autorizados. Sin intermediarios. Sin sorpresas. Porque si hay algo que entendemos, es que un
+                músico no puede darse el lujo de un instrumento que falla.
               </p>
             </div>
             
@@ -75,33 +74,33 @@ export default function NosotrosPage() {
       <section className="py-16 bg-bg-alt">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center mb-12">
-            <h2 className="heading-serif text-3xl font-bold text-text mb-3">Nuestros valores</h2>
-            <p className="text-text-muted">Lo que nos define</p>
+            <h2 className="heading-serif text-3xl font-bold text-text mb-3">Cómo trabajamos</h2>
+            <p className="text-text-muted">Esto es lo que nos diferencia</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: Target,
-                title: 'Calidad primero',
-                description: 'Cada producto pasa por nuestro filtro de calidad. Solo ofrecemos lo que usaríamos nosotros.',
-              },
-              {
-                icon: Handshake,
-                title: 'Servicio cercano',
-                description: 'Atención personalizada por WhatsApp. Hablas con personas que entienden de música.',
-              },
-              {
-                icon: Truck,
-                title: 'Envíos confiables',
-                description: 'Despachos a todo el país con MRW y Zoom. Tu instrumento llega seguro.',
-              },
-              {
-                icon: Percent,
-                title: 'Transparencia',
-                description: 'Precios claros, sin sorpresas. Lo que ves es lo que pagas.',
-              },
-            ].map((value) => (
+              {[
+                {
+                  icon: Target,
+                  title: 'Calidad que puedes sentir',
+                  description: 'Probamos cada producto antes de ofrecerlo. Si no pasa nuestro filtro, no llega a tus manos.',
+                },
+                {
+                  icon: Handshake,
+                  title: 'Humanos al otro lado',
+                  description: 'Cuando escribes por WhatsApp, responden músicos que saben lo que vendemos. Sin guiones, sin robos.',
+                },
+                {
+                  icon: Truck,
+                  title: 'Llegamos donde estés',
+                  description: 'Despachamos a cualquier ciudad de Venezuela con MRW y Zoom. Tu pedido llega seguro y en tiempo.',
+                },
+                {
+                  icon: Percent,
+                  title: 'Sin letra chica',
+                  description: 'El precio que ves es el precio que pagas. Sin cargos ocultos ni sorpresas al pagar.',
+                },
+              ].map((value) => (
               <div
                 key={value.title}
                 className="rounded-xl border border-border bg-white p-6 transition-all hover:border-primary/30 hover:shadow-md"
@@ -132,23 +131,23 @@ export default function NosotrosPage() {
               {[
                 {
                   year: '2020',
-                  title: 'El comienzo',
-                  description: 'Iniciamos operaciones desde casa, con un pequeño inventario de cuerdas y accesorios básicos.',
+                  title: 'Un estante y un WhatsApp',
+                  description: 'Empezamos desde casa con cuerdas y accesorios básicos. Los primeros clientes llegaron porque un músico le dijo a otro.',
                 },
                 {
                   year: '2022',
-                  title: 'Crecimiento',
-                  description: 'Ampliamos nuestro catálogo con guitarras, bajos y equipos electrónicos. Primeros envíos nacionales.',
+                  title: 'De Caracas para el país',
+                  description: 'Cerramos nuestras primeras alianzas con MRW y Zoom. Por primera vez, un músico en Maracaibo o Puerto Ordaz podía comprarnos sin moverse de su casa.',
                 },
                 {
                   year: '2024',
-                  title: 'Expansión',
-                  description: 'Alianzas con proveedores internacionales. Llegamos a músicos en todo el territorio venezolano.',
+                  title: 'Marcas que suman',
+                  description: 'Incorporamos líneas completas de Ernie Ball, D\'Addario, Yamaha y Alice. Pasamos de tener productos a tener catálogo.',
                 },
                 {
                   year: '2026',
-                  title: 'Innovación',
-                  description: 'Nueva plataforma online. Seguimos creciendo, siempre cerca de la comunidad musical.',
+                  title: 'La tienda en tu bolsillo',
+                  description: 'Lanzamos nuestra plataforma web para que puedas comprar desde donde estés, con envíos a tu ciudad y precios en tiempo real.',
                 },
               ].map((milestone, index) => (
                 <div key={milestone.year} className="relative flex gap-6">
@@ -186,16 +185,13 @@ export default function NosotrosPage() {
                 Nuestro compromiso
               </span>
               <h2 className="heading-serif text-3xl font-bold text-text mb-6">
-                La mejor relación calidad-precio
+                Calidad sin pagar de más
               </h2>
               <p className="text-text-muted text-lg leading-relaxed mb-4">
-                Creemos que cada músico merece acceder a productos de calidad sin pagar de más. 
-                Por eso trabajamos directamente con fabricantes reconocidos, eliminando intermediarios 
-                innecesarios.
+                Comprar directo a fabricantes reconocidos tiene una ventaja clara: pagas lo que el producto vale, no lo que un intermediario decide marcar. Por eso trabajamos con Ernie Ball, D'Addario, Yamaha y otras marcas sin cadenas de distribución infladas.
               </p>
               <p className="text-text-muted text-lg leading-relaxed mb-8">
-                Nuestro equipo prueba y selecciona cada producto considerando tres factores: 
-                durabilidad, sonido y precio. Solo lo que aprueba nuestros estándares llega a tu manos.
+                Antes de ofrecer un producto, lo probamos. Si no pasa la prueba de durabilidad, sonido y precio justo, no llega al catálogo. Así de simple.
               </p>
               
               <div className="grid sm:grid-cols-2 gap-4">
@@ -230,10 +226,10 @@ export default function NosotrosPage() {
             <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider rounded-full mb-4">
               Marcas que distribuimos
             </span>
-            <h2 className="heading-serif text-3xl font-bold text-text mb-3">Calidad que respalda tu música</h2>
+            <h2 className="heading-serif text-3xl font-bold text-text mb-3">Las marcas que tocas</h2>
             <p className="text-text-muted max-w-2xl mx-auto">
-              Trabajamos con las marcas más reconocidas del mercado, aquellas que los músicos 
-              profesionales confían para su sonido.
+              Trabajamos con fabricantes que cualquier músico conoce. Originales, directo de fábrica, 
+              sin réplicas ni imitaciones.
             </p>
           </div>
 
@@ -272,17 +268,17 @@ export default function NosotrosPage() {
       <section className="py-16 bg-primary/5">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
           <h2 className="heading-serif text-3xl sm:text-4xl font-bold text-text mb-4">
-            ¿Listo para encontrar tu sonido ideal?
+            ¿Buscas algo puntual?
           </h2>
           <p className="text-text-muted text-lg mb-8">
-            Explora nuestro catálogo o escríbenos. Estamos aquí para ayudarte.
+            Escríbenos por WhatsApp y te respondemos al instante. O recorre nuestro catálogo completo.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/productos"
               className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-8 py-3.5 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg"
             >
-              Ver productos
+              Ver catálogo completo
             </Link>
             <a
               href="https://wa.me/584128288674"
@@ -291,7 +287,7 @@ export default function NosotrosPage() {
               className="inline-flex items-center gap-2 border-2 border-whatsapp text-whatsapp hover:bg-whatsapp hover:text-white px-8 py-3.5 rounded-lg font-semibold transition-all"
             >
               <WhatsAppIcon className="h-5 w-5" />
-              Hablar con un asesor
+              Preguntar por WhatsApp
             </a>
           </div>
         </div>

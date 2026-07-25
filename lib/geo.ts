@@ -1,5 +1,10 @@
 import { headers } from 'next/headers'
 
+async function getCountry(): Promise<string | null> {
+  const headersList = await headers()
+  return headersList.get('x-vercel-ip-country')
+}
+
 /**
  * Master switch — geo-blocking is OFF by default. Set PRICE_GEOFENCE_ENABLED=true
  * (in Vercel's env vars) to turn it back on without touching any code.
@@ -13,8 +18,7 @@ export async function canShowPrices(): Promise<boolean> {
 
   if (process.env.ALWAYS_SHOW_PRICES === 'true') return true
 
-  const headersList = await headers()
-  const country = headersList.get('x-vercel-ip-country')
+  const country = await getCountry()
   if (!country) return true
   return country === 'VE'
 }
@@ -25,4 +29,15 @@ export function withPriceVisibility<T extends { price_usd: number }>(
   showPrices: boolean
 ): Omit<T, 'price_usd'> & { price_usd: number | null } {
   return { ...product, price_usd: showPrices ? product.price_usd : null }
+}
+
+/**
+ * Whether to show the physical store address in the UI.
+ * Venezuelan visitors see a "tienda online" message instead,
+ * so they don't default to walking in — the business is appointment-only.
+ * Non-Venezuelan visitors see the real address as a trust signal.
+ */
+export async function showPhysicalAddress(): Promise<boolean> {
+  const country = await getCountry()
+  return country !== 'VE'
 }

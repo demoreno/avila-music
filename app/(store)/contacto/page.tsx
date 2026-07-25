@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Mail, MapPin, ShoppingCart, LifeBuoy, Handshake, CalendarCheck, ChevronDown } from 'lucide-react'
 import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
+import { showPhysicalAddress } from '@/lib/geo'
 
 export const metadata: Metadata = {
   title: 'Contacto',
@@ -9,7 +10,71 @@ export const metadata: Metadata = {
   alternates: { canonical: '/contacto' },
 }
 
-export default function ContactoPage() {
+async function ContactAddressSection() {
+  const showAddress = await showPhysicalAddress()
+
+  if (showAddress) {
+    return (
+      <div>
+        <h2 className="heading-serif text-3xl font-bold text-text mb-8">
+          Oficina Comercial
+        </h2>
+
+        <div className="rounded-2xl border border-sky-200 bg-sky-50 p-8 shadow-card">
+          <div className="space-y-4 text-text-muted mb-6">
+            <p className="flex items-start gap-3">
+              <MapPin className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
+              <span>
+                <strong className="text-text">Oficina Comercial (Previa Cita):</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Distrito Capital, Venezuela
+              </span>
+            </p>
+            <p className="flex items-start gap-3">
+              <Mail className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
+              <span>
+                <strong className="text-text">Tienda online:</strong> Operamos en todo el territorio venezolano
+              </span>
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-white border border-sky-100 p-4">
+            <p className="text-sm text-text-muted flex items-start gap-2">
+              <CalendarCheck className="h-4 w-4 text-sky-600 mt-0.5 flex-shrink-0" />
+              Atención presencial y retiro de mercancía exclusivamente bajo previa cita. Coordina la tuya por WhatsApp o el correo de ventas.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <h2 className="heading-serif text-3xl font-bold text-text mb-8">
+        Tienda Online
+      </h2>
+
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-8 shadow-card">
+        <div className="space-y-4 text-text-muted mb-6">
+          <p className="flex items-start gap-3">
+            <Mail className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <span>
+              <strong className="text-text">Venta online:</strong> Operamos en todo el territorio venezolano con envíos seguros
+            </span>
+          </p>
+        </div>
+
+        <div className="rounded-xl bg-white border border-amber-100 p-4">
+          <p className="text-sm text-text-muted flex items-start gap-2">
+            <ShoppingCart className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+            Toda nuestra tienda está disponible en línea. Hace tu pedido por la web o escríbenos por WhatsApp y te lo enviamos a donde estés.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default async function ContactoPage() {
   return (
     <>
       {/* Hero */}
@@ -133,35 +198,7 @@ export default function ContactoPage() {
               </div>
             </div>
 
-            <div>
-              <h2 className="heading-serif text-3xl font-bold text-text mb-8">
-                Oficina Comercial
-              </h2>
-
-              <div className="rounded-2xl border border-sky-200 bg-sky-50 p-8 shadow-card">
-                <div className="space-y-4 text-text-muted mb-6">
-                  <p className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
-                    <span>
-                      <strong className="text-text">Oficina Comercial (Previa Cita):</strong> Av. Urdaneta, Torre Alfa, Oficina 8A, Caracas, Distrito Capital, Venezuela
-                    </span>
-                  </p>
-                  <p className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
-                    <span>
-                      <strong className="text-text">Tienda online:</strong> Operamos en todo el territorio venezolano
-                    </span>
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-white border border-sky-100 p-4">
-                  <p className="text-sm text-text-muted flex items-start gap-2">
-                    <CalendarCheck className="h-4 w-4 text-sky-600 mt-0.5 flex-shrink-0" />
-                    Atención presencial y retiro de mercancía exclusivamente bajo previa cita. Coordina la tuya por WhatsApp o el correo de ventas.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ContactAddressSection />
           </div>
         </div>
       </section>
