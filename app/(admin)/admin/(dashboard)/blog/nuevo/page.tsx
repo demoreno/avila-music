@@ -10,7 +10,7 @@ export default async function NuevoBlogPostPage() {
     <div>
       <div className="mb-6">
         <h1 className="heading-serif text-2xl font-bold text-[#1e4d6b]">Nuevo artículo</h1>
-        <p className="text-sm text-slate-500">Se le asigna la URL apenas lo creás, así que no hace falta escribir el slug.</p>
+        <p className="text-sm text-slate-500">Se le asigna la URL apenas lo creas, así que no hace falta escribir el slug.</p>
       </div>
       <BlogPostForm products={products} />
     </div>

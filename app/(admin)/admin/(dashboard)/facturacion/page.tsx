@@ -29,7 +29,7 @@ export default async function FacturacionPage() {
     <div>
       <h1 className="heading-serif mb-2 text-2xl font-bold text-slate-900">Facturación</h1>
       <p className="mb-6 text-sm text-slate-500">
-        Registrá ventas directas (fuera de MercadoLibre) — descuenta stock automáticamente.
+        Registra ventas directas (fuera de MercadoLibre) — descuenta stock automáticamente.
       </p>
       <FacturacionClient products={products} />
     </div>

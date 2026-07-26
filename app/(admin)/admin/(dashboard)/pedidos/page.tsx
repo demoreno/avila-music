@@ -52,7 +52,7 @@ export default async function PedidosPage() {
 
       {rows.length === 0 ? (
         <p className="rounded-xl border border-dashed border-slate-300 py-12 text-center text-sm text-slate-400">
-          Todavía no creaste ningún pedido. Podés armar uno desde acá o seleccionando productos en Inventario.
+          Todavía no creaste ningún pedido. Puedes armar uno desde aquí o seleccionando productos en Inventario.
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

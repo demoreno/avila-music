@@ -139,7 +139,7 @@ export default function PedidoBuilder({
   async function handleSave() {
     setError('')
     if (lineItems.length === 0) {
-      setError('Agregá al menos un producto.')
+      setError('Agrega al menos un producto.')
       return
     }
     for (const item of lineItems) {
@@ -170,7 +170,7 @@ export default function PedidoBuilder({
     if (!orderId) return
     if (nextStatus === 'recibido') {
       const ok = confirm(
-        'Al marcarlo como recibido se va a sumar la cantidad de cada producto al stock automáticamente, y el pedido queda bloqueado para editar. ¿Confirmás?'
+        'Al marcarlo como recibido se va a sumar la cantidad de cada producto al stock automáticamente, y el pedido queda bloqueado para editar. ¿Confirmas?'
       )
       if (!ok) return
     }
@@ -444,7 +444,7 @@ export default function PedidoBuilder({
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
             <h3 className="mb-2 text-base font-bold text-slate-900">Fecha estimada de llegada</h3>
             <p className="mb-4 text-sm text-slate-500">
-              Antes de marcarlo &ldquo;En camino&rdquo;, indicá cuándo esperás que llegue el pedido.
+              Antes de marcarlo &ldquo;En camino&rdquo;, indica cuándo esperas que llegue el pedido.
             </p>
             <input
               type="date"

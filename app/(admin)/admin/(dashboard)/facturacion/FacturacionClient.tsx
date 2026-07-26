@@ -157,23 +157,23 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
     setSuccess(null)
 
     if (lineItems.length === 0) {
-      setError('Agregá al menos un producto.')
+      setError('Agrega al menos un producto.')
       return
     }
     if (!channel) {
-      setError('Seleccioná el canal de la venta.')
+      setError('Selecciona el canal de la venta.')
       return
     }
     if (!paymentMethod) {
-      setError('Seleccioná el método de pago.')
+      setError('Selecciona el método de pago.')
       return
     }
     if (!shippingType) {
-      setError('Seleccioná el tipo de envío.')
+      setError('Selecciona el tipo de envío.')
       return
     }
     if (shippingType === 'otro' && !shippingTypeOther.trim()) {
-      setError('Especificá el tipo de envío en el campo de texto.')
+      setError('Especifica el tipo de envío en el campo de texto.')
       return
     }
     for (const item of lineItems) {
@@ -427,7 +427,7 @@ export default function FacturacionClient({ products }: FacturacionClientProps) 
                     type="text"
                     value={shippingTypeOther}
                     onChange={(e) => setShippingTypeOther(e.target.value)}
-                    placeholder="Especificá el tipo de envío..."
+                    placeholder="Especifica el tipo de envío..."
                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
                   />
                 )}

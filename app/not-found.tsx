@@ -52,7 +52,7 @@ export default function NotFound() {
         <p className="text-text-muted text-base sm:text-lg mb-10 max-w-md animate-fade-in-up stagger-4 leading-relaxed">
           Parece que la página que buscas no está en nuestro repertorio.
           Pero no te preocupes — la tienda sigue sonando.
-          Vuelve al inicio o explorá nuestros productos.
+          Vuelve al inicio o explora nuestros productos.
         </p>
 
         {/* CTAs */}

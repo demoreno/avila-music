@@ -34,7 +34,7 @@ export default async function BlogAdminPage() {
       {posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white py-16 text-center">
           <FileText className="h-10 w-10 text-slate-300" />
-          <p className="mt-3 text-sm text-slate-500">Todavía no hay artículos. Creá el primero.</p>
+          <p className="mt-3 text-sm text-slate-500">Todavía no hay artículos. Crea el primero.</p>
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">

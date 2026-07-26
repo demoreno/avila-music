@@ -158,7 +158,7 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
 
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Resumen</label>
-            <p className="mb-2 text-xs text-slate-400">Se muestra en el listado del blog y como respaldo si no cargás una meta description.</p>
+            <p className="mb-2 text-xs text-slate-400">Se muestra en el listado del blog y como respaldo si no cargas una meta description.</p>
             <textarea
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
@@ -210,7 +210,7 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
 
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <h3 className="mb-1 text-sm font-semibold text-slate-700">Productos relacionados</h3>
-            <p className="mb-3 text-xs text-slate-400">Se muestran como carrusel al final del artículo. Si no elegís ninguno, esa sección no aparece.</p>
+            <p className="mb-3 text-xs text-slate-400">Se muestran como carrusel al final del artículo. Si no eliges ninguno, esa sección no aparece.</p>
 
             {selectedProducts.length > 0 && (
               <div className="mb-3 space-y-2">
@@ -306,7 +306,7 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
 
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <h3 className="mb-1 text-sm font-semibold text-slate-700">SEO — Meta description</h3>
-            <p className="mb-2 text-xs text-slate-400">Si lo dejás vacío, se usa el resumen.</p>
+            <p className="mb-2 text-xs text-slate-400">Si lo dejas vacío, se usa el resumen.</p>
             <textarea
               value={metaDescription}
               onChange={(e) => setMetaDescription(e.target.value)}
