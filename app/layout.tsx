@@ -20,13 +20,13 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://avilamusic.shop'),
+  metadataBase: new URL('https://avilamusic.store'),
   title: {
     default: 'Ávila Music | Tienda de Accesorios Musicales en Caracas',
     template: '%s | Ávila Music',
   },
   description:
-    'Tienda de accesorios musicales en Caracas: guitarras, bajos, violines, baterías y equipos electrónicos. Comprá online con envíos a todo el país.',
+    'Tienda de accesorios musicales en Caracas: guitarras, bajos, violines, baterías y equipos electrónicos. Compra online con envíos a todo el país.',
   manifest: '/manifest.json',
   openGraph: {
     siteName: 'Ávila Music',
@@ -38,13 +38,13 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'MusicStore',
-  '@id': 'https://avilamusic.shop/#store',
+  '@id': 'https://avilamusic.store/#store',
   name: 'Ávila Music',
-  url: 'https://avilamusic.shop',
-  logo: 'https://avilamusic.shop/avila-logo.jpeg',
-  image: 'https://avilamusic.shop/avila-logo.jpeg',
+  url: 'https://avilamusic.store',
+  logo: 'https://avilamusic.store/avila-logo.jpeg',
+  image: 'https://avilamusic.store/avila-logo.jpeg',
   telephone: '+58-412-8288674',
-  email: 'contacto@avilamusic.shop',
+  email: 'contacto@avilamusic.store',
   priceRange: '$',
   description: 'Tienda de accesorios musicales en Caracas — cuerdas, guitarras, bajos, violines, batería y más. Envíos a todo el país.',
   sameAs: [

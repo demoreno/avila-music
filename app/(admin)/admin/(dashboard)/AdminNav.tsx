@@ -16,17 +16,18 @@ const navItems = [
   { href: '/admin/blog', label: 'Blog', icon: Newspaper },
 ]
 
-export default function AdminNav() {
+export default function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
 
   return (
-    <nav className="flex-1 px-3 py-4">
+    <nav className="flex-1 overflow-y-auto px-3 py-4">
       {navItems.map((item) => {
         const isActive = pathname?.startsWith(item.href)
         return (
           <Link
             key={item.href}
             href={item.href}
+            onClick={onNavigate}
             className={`mb-1 flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm font-medium transition-colors ${
               isActive
                 ? 'border-amber-500 bg-[#1e4d6b]/10 text-[#1e4d6b]'

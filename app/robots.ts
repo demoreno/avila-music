@@ -28,6 +28,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/admin/',
       })),
     ],
-    sitemap: 'https://avilamusic.shop/sitemap.xml',
+    sitemap: 'https://avilamusic.store/sitemap.xml',
   }
 }

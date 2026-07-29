@@ -1,6 +1,6 @@
 import { catalog } from '@/lib/catalog'
 
-const BASE_URL = 'https://avilamusic.shop'
+const BASE_URL = 'https://avilamusic.store'
 
 export async function GET() {
   const categoryTree = await catalog.getCategoryTree()

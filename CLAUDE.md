@@ -8,11 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Language Rule (Venezuelan Spanish)
 
-All storefront copy (UI text, CTAs, descriptions, error messages) must use **Venezuelan Spanish**:
-- Use **tú** forms (tuteo), **never** vos/voseo (Rioplatense).
-- "elige" not "elegí", "pagas" not "pagás", "recibes" not "recibís", "haz clic" not "hacé clic".
+**ALL Spanish text in this codebase** — not just the storefront, this includes the admin-only panel too — must use **Venezuelan Spanish**:
+- Use **tú** forms (tuteo), **never** vos/voseo (Rioplatense). Zero tolerance — this has slipped in repeatedly (storefront copy, admin error messages, `<meta>` descriptions, the 404 page) and each time required a manual audit to catch.
+- "elige" not "elegí", "pagas" not "pagás", "recibes" not "recibís", "haz clic" not "hacé clic", "agrega" not "agregá", "selecciona" not "seleccioná".
 - Common regionalisms: "página web" (not "sitio"), "WhatsApp" not "WSP", "celular" not "móvil".
 - Friendly but not overly familiar tone. "Usted" for formal contexts.
+- **Automated check**: `npm run check:voseo` (`scripts/check-voseo.mjs`) scans `app/`, `components/`, `lib/` for a curated list of voseo words and fails if any are found. It's chained into `npm run lint`. Run it directly after writing or editing ANY Spanish copy — including `<meta description>` fields and Server Action error strings, both easy to forget since they're not visible in the rendered page. If a new voseo word slips through the check itself, add it to the `VOSEO_WORDS` list in the script rather than special-casing it elsewhere.
 
 ## Frontend Patterns
 

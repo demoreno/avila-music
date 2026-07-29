@@ -190,7 +190,7 @@ export default function StoreShell({
                 <a href="https://wa.me/584128288674" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-whatsapp transition-colors">
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
-                <a href="mailto:contacto@avilamusic.shop" aria-label="Enviar correo a contacto@avilamusic.shop" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
+                <a href="mailto:contacto@avilamusic.store" aria-label="Enviar correo a contacto@avilamusic.store" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
                   <Mail className="h-5 w-5" />
                 </a>
                 <a href="tel:+584128288674" aria-label="Llamar al +58 412-8288674" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-[#1e4d6b] transition-colors">
@@ -241,7 +241,7 @@ export default function StoreShell({
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">
                     <Mail className="h-4 w-4 text-[#f59e0b]" />
                   </div>
-                  <div><a href="mailto:contacto@avilamusic.shop" className="text-slate-400 hover:text-white transition-colors">contacto@avilamusic.shop</a></div>
+                  <div><a href="mailto:contacto@avilamusic.store" className="text-slate-400 hover:text-white transition-colors">contacto@avilamusic.store</a></div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 flex-shrink-0">

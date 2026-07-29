@@ -3,7 +3,7 @@ import { parseDateOnly } from '@/lib/format-date'
 import KpiCard from '@/components/admin/KpiCard'
 import RevenueChart from './RevenueChart'
 import Link from 'next/link'
-import { Truck, PiggyBank, Wallet, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Truck, PiggyBank, Wallet, ChevronLeft, ChevronRight, Banknote } from 'lucide-react'
 import type { MonthlyKpi, MonthlyKpiByChannel } from '@/types/index'
 
 const CHANNEL_LABELS: Record<string, string> = {
@@ -12,6 +12,11 @@ const CHANNEL_LABELS: Record<string, string> = {
   // Generated automatically when a customer order is marked "completado" — never
   // selectable from the manual Facturación form.
   web: 'Tienda Online',
+}
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  efectivo_usd: 'Efectivo USD',
+  efectivo_bs: 'Efectivo Bs',
 }
 
 interface UrgentStockRow {
@@ -45,6 +50,49 @@ async function getMonthlyKpisByChannel(month: string) {
     .select('*')
     .eq('month', month)
   return (data as MonthlyKpiByChannel[]) ?? []
+}
+
+interface PaymentMethodBreakdown {
+  paymentMethod: string
+  netIncomeUsd: number
+  salesCount: number
+}
+
+/**
+ * Cuánto del ingreso del mes se cobró en efectivo USD vs. efectivo Bs (ambos
+ * montos en su equivalente USD — `sales` no guarda la tasa BCV del día de cada
+ * venta manual, así que no hay forma exacta de mostrar el monto real en
+ * bolívares; ver memoria `pending_bcv_rate_facturacion`).
+ */
+async function getPaymentMethodBreakdown(monthStart: string): Promise<PaymentMethodBreakdown[]> {
+  const supabase = await createSupabaseServerClient()
+  const start = new Date(monthStart)
+  const rangeStart = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-01`
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 1)
+  const rangeEnd = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-01`
+
+  const { data } = await supabase
+    .from('sale_items')
+    .select('sale_id, net_income_usd, sales!inner(payment_method, sale_date)')
+    .gte('sales.sale_date', rangeStart)
+    .lt('sales.sale_date', rangeEnd)
+
+  const rows = (data ?? []) as unknown as { sale_id: string; net_income_usd: number; sales: { payment_method: string } }[]
+  const bySaleMethod = new Map<string, { netIncomeUsd: number; saleIds: Set<string> }>()
+
+  for (const row of rows) {
+    const method = row.sales.payment_method
+    const entry = bySaleMethod.get(method) ?? { netIncomeUsd: 0, saleIds: new Set<string>() }
+    entry.netIncomeUsd += Number(row.net_income_usd)
+    entry.saleIds.add(row.sale_id)
+    bySaleMethod.set(method, entry)
+  }
+
+  return Array.from(bySaleMethod.entries()).map(([paymentMethod, { netIncomeUsd, saleIds }]) => ({
+    paymentMethod,
+    netIncomeUsd,
+    salesCount: saleIds.size,
+  }))
 }
 
 /**
@@ -142,8 +190,11 @@ export default async function DashboardPage({
   const canGoOlder = selectedIndex < kpis.length - 1
 
   const chartData = kpis.slice(selectedIndex, selectedIndex + 3).reverse()
-  const kpisByChannel = currentMonth ? await getMonthlyKpisByChannel(currentMonth.month) : []
+  const [kpisByChannel, paymentMethodBreakdown] = currentMonth
+    ? await Promise.all([getMonthlyKpisByChannel(currentMonth.month), getPaymentMethodBreakdown(currentMonth.month)])
+    : [[], []]
   const currentMonthByChannel = kpisByChannel
+  const totalCollected = paymentMethodBreakdown.reduce((sum, row) => sum + row.netIncomeUsd, 0)
 
   const netProfit = currentMonth ? Number(currentMonth.gross_profit_usd) : 0
   const reinvestmentAmount = netProfit * profitConfig.reinvestmentPct
@@ -383,6 +434,33 @@ export default async function DashboardPage({
             </div>
           )}
         </div>
+      </div>
+
+      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="mb-4 font-semibold text-slate-800">
+          Cobrado por método de pago — {selectedIndex === 0 ? 'mes actual' : 'mes seleccionado'}
+        </h2>
+        {paymentMethodBreakdown.length === 0 ? (
+          <p className="py-8 text-center text-sm text-slate-400">Sin datos disponibles</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {paymentMethodBreakdown.map((row) => {
+              const pct = totalCollected > 0 ? (row.netIncomeUsd / totalCollected) * 100 : 0
+              return (
+                <div key={row.paymentMethod} className="rounded-lg border border-slate-100 px-4 py-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                    <Banknote className="h-4 w-4 text-[#1e4d6b]" />
+                    {PAYMENT_METHOD_LABELS[row.paymentMethod] ?? row.paymentMethod}
+                  </div>
+                  <p className="mt-1 text-lg font-bold text-slate-900">USD {row.netIncomeUsd.toFixed(2)}</p>
+                  <p className="text-xs text-slate-400">
+                    {row.salesCount} venta{row.salesCount === 1 ? '' : 's'} · {pct.toFixed(0)}% del total
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

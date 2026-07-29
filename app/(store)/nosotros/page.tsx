@@ -6,7 +6,7 @@ import WhatsAppIcon from '@/components/shared/WhatsAppIcon'
 
 export const metadata: Metadata = {
   title: 'Nosotros',
-  description: 'Conocé la historia de Ávila Music, tienda de accesorios musicales en Caracas. Calidad y confianza para músicos en toda Venezuela.',
+  description: 'Conoce la historia de Ávila Music, tienda de accesorios musicales en Caracas. Calidad y confianza para músicos en toda Venezuela.',
   alternates: { canonical: '/nosotros' },
 }
 

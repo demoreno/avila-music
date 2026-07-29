@@ -51,7 +51,7 @@ function MarkdownImage({ src, alt }: { src?: string | Blob; alt?: string }) {
   )
 }
 
-const BASE_URL = 'https://avilamusic.shop'
+const BASE_URL = 'https://avilamusic.store'
 
 export async function generateStaticParams() {
   const posts = await getPublishedPosts()

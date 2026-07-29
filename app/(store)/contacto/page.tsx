@@ -6,7 +6,7 @@ import { showPhysicalAddress } from '@/lib/geo'
 
 export const metadata: Metadata = {
   title: 'Contacto',
-  description: 'Contactanos por WhatsApp, correo o visitanos en Caracas. Departamentos de ventas, soporte y compras de Ávila Music, tu tienda de accesorios musicales.',
+  description: 'Contáctanos por WhatsApp, correo o visítanos en Caracas. Departamentos de ventas, soporte y compras de Ávila Music, tu tienda de accesorios musicales.',
   alternates: { canonical: '/contacto' },
 }
 
