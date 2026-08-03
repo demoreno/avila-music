@@ -1,20 +1,123 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type DragEvent } from 'react'
 import Image from 'next/image'
+import { Search, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react'
 import { updateProduct, createProduct, uploadProductImages, deleteProductImage } from './actions'
 import { getPublicImageUrl } from '@/lib/catalog/image-url'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { Product, CategoryTree, ProductImage } from '@/types/index'
 
 interface ProductWithCategory extends Product {
   subcategory_name: string
   category_name: string
+  avg_margin_pct: number | null
 }
 
 interface ProductsTableProps {
   products: ProductWithCategory[]
   subcategories: CategoryTree[]
   imagesByProduct: Record<string, ProductImage[]>
+}
+
+/** MercadoLibre commission alone is 11% — anything below this is barely profitable once shipping is absorbed. */
+const LOW_MARGIN_THRESHOLD = 0.15
+
+type ColumnKey =
+  | 'name'
+  | 'category'
+  | 'price'
+  | 'priceMl'
+  | 'cost'
+  | 'stock'
+  | 'status'
+  | 'margin'
+
+const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
+  'name',
+  'category',
+  'price',
+  'priceMl',
+  'cost',
+  'stock',
+  'status',
+  'margin',
+]
+
+const COLUMN_LABELS: Record<ColumnKey, string> = {
+  name: 'Nombre',
+  category: 'Categoría',
+  price: 'Precio',
+  priceMl: 'Precio ML',
+  cost: 'Costo',
+  stock: 'Stock',
+  status: 'Estado',
+  margin: 'Margen',
+}
+
+const COLUMN_ORDER_STORAGE_KEY = 'avila-admin-productos-column-order'
+const COLUMN_ORDER_EVENT = 'avila-admin-productos-column-order-changed'
+
+function isValidColumnOrder(value: unknown): value is ColumnKey[] {
+  return (
+    Array.isArray(value) &&
+    value.length === DEFAULT_COLUMN_ORDER.length &&
+    DEFAULT_COLUMN_ORDER.every((key) => value.includes(key))
+  )
+}
+
+// Cached so useSyncExternalStore's getSnapshot returns a stable reference when
+// localStorage hasn't changed (required to avoid an infinite re-render loop).
+let cachedRawOrder: string | null = null
+let cachedColumnOrder: ColumnKey[] = DEFAULT_COLUMN_ORDER
+
+function readColumnOrder(): ColumnKey[] {
+  const stored = window.localStorage.getItem(COLUMN_ORDER_STORAGE_KEY)
+  if (stored === cachedRawOrder) return cachedColumnOrder
+  cachedRawOrder = stored
+  try {
+    const parsed = stored ? JSON.parse(stored) : null
+    cachedColumnOrder = isValidColumnOrder(parsed) ? parsed : DEFAULT_COLUMN_ORDER
+  } catch {
+    cachedColumnOrder = DEFAULT_COLUMN_ORDER
+  }
+  return cachedColumnOrder
+}
+
+function writeColumnOrder(order: ColumnKey[]) {
+  window.localStorage.setItem(COLUMN_ORDER_STORAGE_KEY, JSON.stringify(order))
+  window.dispatchEvent(new Event(COLUMN_ORDER_EVENT))
+}
+
+function subscribeToColumnOrder(callback: () => void) {
+  window.addEventListener(COLUMN_ORDER_EVENT, callback)
+  return () => window.removeEventListener(COLUMN_ORDER_EVENT, callback)
+}
+
+function getServerColumnOrder() {
+  return DEFAULT_COLUMN_ORDER
+}
+
+function MarginBadge({ marginPct }: { marginPct: number | null }) {
+  if (marginPct === null) {
+    return (
+      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">
+        Sin ventas
+      </span>
+    )
+  }
+
+  const isLow = marginPct < LOW_MARGIN_THRESHOLD
+
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+        isLow ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+      }`}
+    >
+      {(marginPct * 100).toFixed(1)}%
+    </span>
+  )
 }
 
 interface ToggleProps {
@@ -91,6 +194,85 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
   const [existingImages, setExistingImages] = useState<ProductImage[]>([])
   const [newFiles, setNewFiles] = useState<File[]>([])
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const columnOrder = useSyncExternalStore(subscribeToColumnOrder, readColumnOrder, getServerColumnOrder)
+  const [draggedColumn, setDraggedColumn] = useState<ColumnKey | null>(null)
+  const [sortColumn, setSortColumn] = useState<ColumnKey | null>(null)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+
+  function getSortValue(p: ProductWithCategory, key: ColumnKey): string | number {
+    switch (key) {
+      case 'name':
+        return p.name.toLowerCase()
+      case 'category':
+        return `${p.category_name} ${p.subcategory_name}`.toLowerCase()
+      case 'price':
+        return Number(p.price_usd)
+      case 'priceMl':
+        return Number(p.price_ml_usd)
+      case 'cost':
+        return Number(p.cost_usd)
+      case 'stock':
+        return p.stock_total
+      case 'status':
+        return p.is_active ? 1 : 0
+      case 'margin':
+        return p.avg_margin_pct ?? -Infinity
+    }
+  }
+
+  function handleSortClick(key: ColumnKey) {
+    if (sortColumn !== key) {
+      setSortColumn(key)
+      setSortDirection('asc')
+    } else if (sortDirection === 'asc') {
+      setSortDirection('desc')
+    } else {
+      setSortColumn(null)
+    }
+  }
+
+  const filteredProducts = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    const base = !term
+      ? products
+      : products.filter(
+          (p) =>
+            p.name.toLowerCase().includes(term) ||
+            p.category_name.toLowerCase().includes(term) ||
+            p.subcategory_name.toLowerCase().includes(term)
+        )
+
+    if (!sortColumn) return base
+
+    return [...base].sort((a, b) => {
+      const va = getSortValue(a, sortColumn)
+      const vb = getSortValue(b, sortColumn)
+      if (va < vb) return sortDirection === 'asc' ? -1 : 1
+      if (va > vb) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [products, search, sortColumn, sortDirection])
+
+  function handleColumnDragStart(key: ColumnKey) {
+    setDraggedColumn(key)
+  }
+
+  function handleColumnDragOver(e: DragEvent<HTMLTableCellElement>) {
+    e.preventDefault()
+  }
+
+  function handleColumnDrop(targetKey: ColumnKey) {
+    if (!draggedColumn || draggedColumn === targetKey) {
+      setDraggedColumn(null)
+      return
+    }
+    const next = columnOrder.filter((key) => key !== draggedColumn)
+    const targetIndex = next.indexOf(targetKey)
+    next.splice(targetIndex, 0, draggedColumn)
+    writeColumnOrder(next)
+    setDraggedColumn(null)
+  }
 
   const newFilePreviews = useMemo(() => newFiles.map((file) => URL.createObjectURL(file)), [newFiles])
 
@@ -228,34 +410,120 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
   }
 
   const showModal = editing !== null || creating
+  const modalDialogRef = useRef<HTMLDivElement>(null)
 
   function closeModal() {
     setEditing(null)
     setCreating(false)
   }
 
+  const { onKeyDown: handleModalKeyDown } = useFocusTrap(modalDialogRef, closeModal, showModal)
+
   useEffect(() => {
     if (!showModal) return
 
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        closeModal()
-      } else if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+    function handleEnterToSave(e: KeyboardEvent) {
+      if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
         e.preventDefault()
         handleSave()
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('keydown', handleEnterToSave)
+    return () => window.removeEventListener('keydown', handleEnterToSave)
   })
+
+  function renderCell(key: ColumnKey, p: ProductWithCategory) {
+    switch (key) {
+      case 'name':
+        return (
+          <td key={key} className="max-w-[200px] truncate px-4 py-3 font-medium text-slate-800">
+            {p.name}
+          </td>
+        )
+      case 'category':
+        return (
+          <td key={key} className="px-4 py-3 text-slate-500">
+            <span className="text-xs">{p.category_name}</span>
+            <br />
+            <span>{p.subcategory_name}</span>
+          </td>
+        )
+      case 'price':
+        return (
+          <td key={key} className="px-4 py-3 text-slate-700">
+            USD {Number(p.price_usd).toFixed(2)}
+          </td>
+        )
+      case 'priceMl':
+        return (
+          <td key={key} className="px-4 py-3 text-slate-700">
+            {Number(p.price_ml_usd) > 0 ? (
+              `USD ${Number(p.price_ml_usd).toFixed(2)}`
+            ) : (
+              <span className="text-slate-400">—</span>
+            )}
+          </td>
+        )
+      case 'cost':
+        return (
+          <td key={key} className="px-4 py-3 text-slate-500">
+            USD {Number(p.cost_usd).toFixed(2)}
+          </td>
+        )
+      case 'stock':
+        return (
+          <td key={key} className="px-4 py-3">
+            <span
+              className={`font-semibold ${
+                p.stock_total === 0
+                  ? 'text-red-600'
+                  : p.stock_total <= p.stock_minimum
+                  ? 'text-amber-600'
+                  : 'text-slate-700'
+              }`}
+            >
+              {p.stock_total}
+            </span>
+          </td>
+        )
+      case 'status':
+        return (
+          <td key={key} className="px-4 py-3">
+            <span
+              className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                p.is_active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
+              }`}
+            >
+              {p.is_active ? 'Activo' : 'Inactivo'}
+            </span>
+          </td>
+        )
+      case 'margin':
+        return (
+          <td key={key} className="px-4 py-3">
+            <MarginBadge marginPct={p.avg_margin_pct} />
+          </td>
+        )
+    }
+  }
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="relative w-full max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar por nombre o categoría..."
+            className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+          />
+        </div>
         <button
           onClick={startCreate}
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-600"
+          className="flex-shrink-0 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-600"
         >
           + Nuevo producto
         </button>
@@ -265,54 +533,64 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
         <table className="w-full text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-left">
             <tr>
-              <th className="px-4 py-3 font-semibold text-slate-600">Nombre</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Categoría</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Precio</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Precio ML</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Costo</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Stock</th>
-              <th className="px-4 py-3 font-semibold text-slate-600">Estado</th>
+              {columnOrder.map((key) => (
+                <th
+                  key={key}
+                  draggable
+                  onDragStart={() => handleColumnDragStart(key)}
+                  onDragOver={handleColumnDragOver}
+                  onDrop={() => handleColumnDrop(key)}
+                  onDragEnd={() => setDraggedColumn(null)}
+                  className={`cursor-move select-none px-4 py-3 font-semibold text-slate-600 ${
+                    draggedColumn === key ? 'opacity-50' : ''
+                  }`}
+                  title="Arrastra para reordenar"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span>{COLUMN_LABELS[key]}</span>
+                    <button
+                      type="button"
+                      draggable={false}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleSortClick(key)
+                      }}
+                      aria-label={`Ordenar por ${COLUMN_LABELS[key]}`}
+                      className="text-slate-400 hover:text-slate-600"
+                    >
+                      {sortColumn === key ? (
+                        sortDirection === 'asc' ? (
+                          <ArrowUp className="h-3.5 w-3.5" />
+                        ) : (
+                          <ArrowDown className="h-3.5 w-3.5" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />
+                      )}
+                    </button>
+                  </div>
+                </th>
+              ))}
               <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {products.map((p) => (
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan={columnOrder.length + 1} className="px-4 py-8 text-center text-sm text-slate-400">
+                  Todavía no hay productos cargados.
+                </td>
+              </tr>
+            ) : filteredProducts.length === 0 ? (
+              <tr>
+                <td colSpan={columnOrder.length + 1} className="px-4 py-8 text-center text-sm text-slate-400">
+                  Ningún producto coincide con tu búsqueda.
+                </td>
+              </tr>
+            ) : (
+              filteredProducts.map((p) => (
               <tr key={p.id} className="hover:bg-slate-50">
-                <td className="max-w-[200px] truncate px-4 py-3 font-medium text-slate-800">
-                  {p.name}
-                </td>
-                <td className="px-4 py-3 text-slate-500">
-                  <span className="text-xs">{p.category_name}</span>
-                  <br />
-                  <span>{p.subcategory_name}</span>
-                </td>
-                <td className="px-4 py-3 text-slate-700">USD {Number(p.price_usd).toFixed(2)}</td>
-                <td className="px-4 py-3 text-slate-700">{Number(p.price_ml_usd) > 0 ? `USD ${Number(p.price_ml_usd).toFixed(2)}` : <span className="text-slate-400">—</span>}</td>
-                <td className="px-4 py-3 text-slate-500">USD {Number(p.cost_usd).toFixed(2)}</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`font-semibold ${
-                      p.stock_total === 0
-                        ? 'text-red-600'
-                        : p.stock_total <= p.stock_minimum
-                        ? 'text-amber-600'
-                        : 'text-slate-700'
-                    }`}
-                  >
-                    {p.stock_total}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                      p.is_active
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-slate-100 text-slate-500'
-                    }`}
-                  >
-                    {p.is_active ? 'Activo' : 'Inactivo'}
-                  </span>
-                </td>
+                {columnOrder.map((key) => renderCell(key, p))}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <button
@@ -330,7 +608,8 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                   </div>
                 </td>
               </tr>
-            ))}
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -338,8 +617,15 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl bg-white shadow-xl">
-            <h2 className="border-b border-slate-100 px-6 py-4 text-lg font-bold text-slate-900">
+          <div
+            ref={modalDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-modal-title"
+            onKeyDown={handleModalKeyDown}
+            className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl bg-white shadow-xl"
+          >
+            <h2 id="product-modal-title" className="border-b border-slate-100 px-6 py-4 text-lg font-bold text-slate-900">
               {editing ? 'Editar producto' : 'Nuevo producto'}
             </h2>
 
@@ -504,8 +790,8 @@ export default function ProductsTable({ products, subcategories, imagesByProduct
                       <div className="flex flex-wrap gap-3">
                         {newFilePreviews.map((url, index) => (
                           <div key={url} className="relative h-20 w-20 overflow-hidden rounded-lg border border-dashed border-amber-400">
-                            {/* eslint-disable-next-line @next/next/no-img-element -- local blob: URL, next/image can't optimize it */}
-                            <img src={url} alt="" className="h-full w-full object-cover" />
+                            {/* unoptimized: local blob: URL for an unsaved file preview, next/image's optimizer can't fetch it */}
+                            <Image src={url} alt="" fill unoptimized className="object-cover" />
                             <button
                               type="button"
                               onClick={() => removeNewFile(index)}

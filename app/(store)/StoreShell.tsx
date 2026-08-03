@@ -16,9 +16,11 @@ import { formatBcvRate } from '@/lib/bcv/format'
 export default function StoreShell({
   children,
   footerAddressSlot,
+  initialUser,
 }: {
   children: React.ReactNode
   footerAddressSlot: React.ReactNode
+  initialUser: { fullName: string | null } | null
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -36,6 +38,12 @@ export default function StoreShell({
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-[#1e4d6b] focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Saltar al contenido principal
+      </a>
       <CartHydration />
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm">
         <div className="mx-auto max-w-7xl px-6">
@@ -90,7 +98,7 @@ export default function StoreShell({
                 <span className="hidden lg:inline">WhatsApp</span>
               </a>
 
-              <AccountMenu />
+              <AccountMenu initialUser={initialUser} />
 
               <MiniCart />
 
@@ -159,7 +167,7 @@ export default function StoreShell({
         </div>
       </header>
 
-      <main className="flex-1 pt-[68px]">{children}</main>
+      <main id="main-content" className="flex-1 pt-[68px]">{children}</main>
 
       {/* Footer */}
       <footer className="bg-[#150e08] text-white">

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Trash2, Upload, X, Music } from 'lucide-react'
@@ -218,8 +219,7 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
                   <div key={product.id} className="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2">
                     <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-white">
                       {product.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- small thumbnail chip, next/image overhead isn't worth it here
-                        <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+                        <Image src={product.imageUrl} alt="" width={32} height={32} className="h-full w-full object-cover" />
                       ) : (
                         <Music className="h-3.5 w-3.5 text-slate-300" />
                       )}
@@ -263,12 +263,14 @@ export default function BlogPostForm({ post, products }: BlogPostFormProps) {
             <h3 className="mb-3 text-sm font-semibold text-slate-700">Imagen de portada</h3>
 
             {coverImageUrl ? (
-              <div className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded/pasted URL, not a known remotePattern */}
-                <img
+              <div className="relative aspect-video w-full">
+                {/* unoptimized: arbitrary uploaded/pasted URL, not a known remotePattern */}
+                <Image
                   src={coverImageUrl}
                   alt="Vista previa"
-                  className="aspect-video w-full rounded-lg object-cover"
+                  fill
+                  unoptimized
+                  className="rounded-lg object-cover"
                   onError={(e) => { e.currentTarget.style.display = 'none' }}
                 />
                 <button

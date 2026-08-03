@@ -1,7 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { getPublicImageUrl } from '@/lib/catalog/image-url'
 import InventoryTable from './InventoryTable'
-import ReorderTab from './ReorderTab'
 
 interface ProductRow {
   id: string

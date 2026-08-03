@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import Image from 'next/image'
 import { X, Search, Music } from 'lucide-react'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 export interface PickerProduct {
   id: string
@@ -20,6 +22,8 @@ interface ProductPickerModalProps {
 export default function ProductPickerModal({ products, initialSelected, onClose, onConfirm }: ProductPickerModalProps) {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set(initialSelected))
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const { onKeyDown: handleKeyDown } = useFocusTrap(dialogRef, onClose)
 
   const filtered = search.trim()
     ? products.filter(
@@ -41,12 +45,17 @@ export default function ProductPickerModal({ products, initialSelected, onClose,
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-picker-title"
+        onKeyDown={handleKeyDown}
         className="flex max-h-[80vh] w-full max-w-xl flex-col rounded-2xl bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-          <h3 className="text-base font-bold text-slate-800">Elegir productos relacionados</h3>
-          <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600">
+          <h3 id="product-picker-title" className="text-base font-bold text-slate-800">Elegir productos relacionados</h3>
+          <button type="button" onClick={onClose} aria-label="Cerrar" className="text-slate-400 hover:text-slate-600">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -82,8 +91,7 @@ export default function ProductPickerModal({ products, initialSelected, onClose,
                 />
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100">
                   {product.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- small thumbnail in an admin picker list, next/image overhead isn't worth it here
-                    <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+                    <Image src={product.imageUrl} alt="" width={40} height={40} className="h-full w-full object-cover" />
                   ) : (
                     <Music className="h-4 w-4 text-slate-300" />
                   )}

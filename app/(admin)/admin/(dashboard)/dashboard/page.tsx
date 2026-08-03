@@ -1,10 +1,17 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { parseDateOnly } from '@/lib/format-date'
 import KpiCard from '@/components/admin/KpiCard'
-import RevenueChart from './RevenueChart'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Truck, PiggyBank, Wallet, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Truck, PiggyBank, Wallet, ChevronLeft, ChevronRight, TrendingDown } from 'lucide-react'
 import type { MonthlyKpi, MonthlyKpiByChannel } from '@/types/index'
+
+/** MercadoLibre commission alone is 11% — anything below this is barely profitable once shipping is absorbed. */
+const LOW_MARGIN_THRESHOLD = 0.15
+
+const RevenueChart = dynamic(() => import('./RevenueChart'), {
+  loading: () => <div className="h-[250px] w-full animate-pulse rounded-lg bg-slate-100" />,
+})
 
 const CHANNEL_LABELS: Record<string, string> = {
   mercadolibre: 'MercadoLibre',
@@ -19,6 +26,7 @@ interface UrgentStockRow {
   product_name: string
   stock_total: number
   stock_minimum: number
+  draft_pending_units: number
 }
 
 interface IncomingOrder {
@@ -26,6 +34,12 @@ interface IncomingOrder {
   notes: string | null
   estimated_arrival_date: string | null
   items: number
+}
+
+interface LowMarginProduct {
+  id: string
+  product_name: string
+  avg_margin_pct: number
 }
 
 async function getMonthlyKpis() {
@@ -56,11 +70,24 @@ async function getUrgentStock() {
   const supabase = await createSupabaseServerClient()
   const { data } = await supabase
     .from('v_reorder_intelligence')
-    .select('id, product_name, stock_total, stock_minimum, suggested_order_qty, urgency')
+    .select('id, product_name, stock_total, stock_minimum, draft_pending_units, suggested_order_qty, urgency')
     .in('urgency', ['sin_stock_vende', 'critico', 'pedir_pronto'])
     .gt('suggested_order_qty', 0)
     .order('stock_total')
   return (data as (UrgentStockRow & { suggested_order_qty: number; urgency: string })[]) ?? []
+}
+
+async function getLowMarginProducts() {
+  const supabase = await createSupabaseServerClient()
+  const { data, count } = await supabase
+    .from('v_product_ranking')
+    .select('id, product_name, avg_margin_pct', { count: 'exact' })
+    .lt('avg_margin_pct', LOW_MARGIN_THRESHOLD)
+    .not('avg_margin_pct', 'is', null)
+    .gt('total_units_sold', 0)
+    .order('avg_margin_pct', { ascending: true })
+    .limit(5)
+  return { products: (data as LowMarginProduct[]) ?? [], count: count ?? 0 }
 }
 
 async function getProfitSplitConfig() {
@@ -121,11 +148,12 @@ export default async function DashboardPage({
 }) {
   const { month: monthParam } = await searchParams
 
-  const [kpis, urgentStock, profitConfig, incomingOrders] = await Promise.all([
+  const [kpis, urgentStock, profitConfig, incomingOrders, lowMarginProducts] = await Promise.all([
     getMonthlyKpis(),
     getUrgentStock(),
     getProfitSplitConfig(),
     getIncomingOrders(),
+    getLowMarginProducts(),
   ])
 
   const selectedIndex = monthParam
@@ -422,10 +450,20 @@ export default async function DashboardPage({
                   key={product.id}
                   className="flex items-center justify-between rounded-lg bg-red-50 px-3 py-2"
                 >
-                  <span className="max-w-[200px] truncate text-sm font-medium text-slate-700">
-                    {product.product_name}
-                  </span>
-                  <div className="flex items-center gap-2 text-xs">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="max-w-[200px] truncate text-sm font-medium text-slate-700">
+                      {product.product_name}
+                    </span>
+                    {product.draft_pending_units > 0 && (
+                      <span
+                        title={`${product.draft_pending_units} unidad(es) en un pedido agendado, todavía sin gestionar con el proveedor`}
+                        className="flex-shrink-0 rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold text-slate-600"
+                      >
+                        Agendado ({product.draft_pending_units})
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-shrink-0 items-center gap-2 text-xs">
                     <span className="font-semibold text-red-600">Stock: {product.stock_total}</span>
                     <span className="text-slate-400">/ mín {product.stock_minimum}</span>
                   </div>
@@ -435,6 +473,35 @@ export default async function DashboardPage({
           )}
         </div>
       </div>
+
+      {lowMarginProducts.count > 0 && (
+        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 font-semibold text-slate-800">
+              <TrendingDown className="h-4 w-4 text-red-500" />
+              {lowMarginProducts.count} producto{lowMarginProducts.count === 1 ? '' : 's'} vendiéndose con margen bajo
+            </h2>
+            <Link href="/admin/productos" className="text-xs text-[#1e4d6b] hover:text-[#153a52]">
+              Ver productos →
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {lowMarginProducts.products.map((product) => (
+              <div
+                key={product.id}
+                className="flex items-center justify-between rounded-lg bg-red-50 px-3 py-2"
+              >
+                <span className="max-w-[220px] truncate text-sm font-medium text-slate-700">
+                  {product.product_name}
+                </span>
+                <span className="text-xs font-semibold text-red-600">
+                  {(Number(product.avg_margin_pct) * 100).toFixed(1)}% margen
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

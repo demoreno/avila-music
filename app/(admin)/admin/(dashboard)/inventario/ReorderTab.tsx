@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { AlertTriangle, TrendingUp, Package, Clock, ClipboardList, X, CheckCircle2 } from 'lucide-react'
 import PedidoBuilder, { type PedidoProductOption } from '@/components/admin/PedidoBuilder'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 export interface ReorderRow {
   id: string
@@ -20,6 +21,7 @@ export interface ReorderRow {
   months_of_stock: number | null
   reorder_point: number
   pending_in_orders: number
+  draft_pending_units: number
   suggested_order_qty: number
   suggested_order_cost: number
   urgency: string
@@ -45,6 +47,8 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
   const [urgencyFilter, setUrgencyFilter] = useState<UrgencyFilter>('urgentes')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const { onKeyDown: handleDrawerKeyDown } = useFocusTrap(drawerRef, () => setDrawerOpen(false), drawerOpen)
 
   // "Urgente" combina stock físico bajo con que todavía haga falta pedir algo —
   // si ya está cubierto por un pedido en camino (suggested_order_qty = 0), no
@@ -208,10 +212,18 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
                         </span>
                         {r.pending_in_orders > 0 && (
                           <span
-                            title={`${r.pending_in_orders} unidad(es) ya pedidas`}
+                            title={`${r.pending_in_orders} unidad(es) ya pedidas al proveedor`}
                             className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700"
                           >
                             Ya pedido ({r.pending_in_orders})
+                          </span>
+                        )}
+                        {r.draft_pending_units > 0 && (
+                          <span
+                            title={`${r.draft_pending_units} unidad(es) en un pedido agendado, todavía sin gestionar con el proveedor`}
+                            className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500"
+                          >
+                            Agendado ({r.draft_pending_units})
                           </span>
                         )}
                       </div>
@@ -288,9 +300,16 @@ export default function ReorderTab({ data, pedidoProducts }: ReorderTabProps) {
 
       {drawerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-slate-50 p-6 shadow-xl">
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="reorder-pedido-title"
+            onKeyDown={handleDrawerKeyDown}
+            className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-slate-50 p-6 shadow-xl"
+          >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="heading-serif text-xl font-bold text-slate-900">Nuevo pedido (sugerido)</h2>
+              <h2 id="reorder-pedido-title" className="heading-serif text-xl font-bold text-slate-900">Nuevo pedido (sugerido)</h2>
               <button
                 onClick={() => setDrawerOpen(false)}
                 className="text-slate-400 hover:text-slate-700"

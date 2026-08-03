@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import AdminNav from './AdminNav'
 import AdminLogout from './AdminLogout'
+import ToastProvider from '@/components/admin/ToastProvider'
 
 export default function AdminShell({
   children,
@@ -16,7 +17,14 @@ export default function AdminShell({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-bg-alt">
+    <ToastProvider>
+    <div className="flex h-screen overflow-hidden bg-bg-alt">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-[#1e4d6b] focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Saltar al contenido principal
+      </a>
       {/* Mobile/tablet top bar */}
       <div className="fixed inset-x-0 top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
         <button
@@ -50,7 +58,7 @@ export default function AdminShell({
 
       {/* Sidebar — fixed drawer on mobile/tablet (slides in), static column on desktop */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-shrink-0 flex-col border-r border-slate-200 bg-white transition-transform duration-300 ease-out lg:static lg:z-auto lg:w-60 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-shrink-0 flex-col overflow-y-auto border-r border-slate-200 bg-white transition-transform duration-300 ease-out lg:static lg:z-auto lg:w-60 lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -91,8 +99,9 @@ export default function AdminShell({
 
       {/* Main content */}
       <div className="flex-1 overflow-auto pt-14 lg:pt-0">
-        <main className="p-6">{children}</main>
+        <main id="main-content" className="p-6">{children}</main>
       </div>
     </div>
+    </ToastProvider>
   )
 }

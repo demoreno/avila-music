@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Truck, Upload } from 'lucide-react'
 import { updateOrderStatus, adminCancelOrder, uploadShippingProof } from '@/app/(admin)/admin/(dashboard)/ordenes/actions'
 import type { Order, OrderStatus } from '@/types/index'
@@ -242,8 +243,16 @@ export default function OrderStatusPanel({ order, shippingProofUrl }: { order: O
 
       {shippingProofUrl && (
         <a href={shippingProofUrl} target="_blank" rel="noopener noreferrer" className="mt-2 block overflow-hidden rounded-lg border border-slate-200">
-          {/* eslint-disable-next-line @next/next/no-img-element -- private-bucket signed URL, not a known remotePattern and expires shortly anyway */}
-          <img src={shippingProofUrl} alt="Comprobante de envío" className="w-full object-cover" />
+          {/* unoptimized: private-bucket signed URL, not a known remotePattern and expires shortly anyway — optimizing/caching it would break once the URL expires */}
+          <Image
+            src={shippingProofUrl}
+            alt="Comprobante de envío"
+            width={0}
+            height={0}
+            sizes="100vw"
+            unoptimized
+            style={{ width: '100%', height: 'auto' }}
+          />
         </a>
       )}
 

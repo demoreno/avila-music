@@ -277,42 +277,51 @@ export default function CheckoutPage() {
 
       <div className="rounded-2xl border border-border bg-white shadow-card p-5 mb-8 space-y-4">
         <div>
-          <label className="mb-1.5 block text-base font-medium text-text">Dirección de envío</label>
+          <label htmlFor="shipping-address" className="mb-1.5 block text-base font-medium text-text">Dirección de envío</label>
           <textarea
+            id="shipping-address"
             value={shippingAddress}
             onChange={(e) => setShippingAddress(e.target.value)}
             rows={3}
             placeholder="Ej: Av. Principal, Edificio X, Piso 2, Apto 3, Caracas"
             className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
           />
-          {addressError && <p className="mt-1 text-xs text-error">{addressError}</p>}
+          {addressError && <p aria-live="polite" className="mt-1 text-xs text-error">{addressError}</p>}
         </div>
         <div>
-          <label className="mb-1.5 block text-base font-medium text-text">Datos de quien recibe</label>
+          <span className="mb-1.5 block text-base font-medium text-text">Datos de quien recibe</span>
           <p className="mb-2.5 text-sm text-text-muted">Necesarios para que la empresa de mensajería pueda entregar el paquete.</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <label htmlFor="recipient-first-name" className="sr-only">Nombre</label>
             <input
+              id="recipient-first-name"
               type="text"
               value={recipientFirstName}
               onChange={(e) => setRecipientFirstName(e.target.value)}
               placeholder="Nombre"
               className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
             />
+            <label htmlFor="recipient-last-name" className="sr-only">Apellido</label>
             <input
+              id="recipient-last-name"
               type="text"
               value={recipientLastName}
               onChange={(e) => setRecipientLastName(e.target.value)}
               placeholder="Apellido"
               className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
             />
+            <label htmlFor="recipient-phone" className="sr-only">Teléfono</label>
             <input
+              id="recipient-phone"
               type="tel"
               value={recipientPhone}
               onChange={(e) => setRecipientPhone(e.target.value)}
               placeholder="Teléfono"
               className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
             />
+            <label htmlFor="recipient-cedula" className="sr-only">Cédula</label>
             <input
+              id="recipient-cedula"
               type="text"
               value={recipientCedula}
               onChange={(e) => setRecipientCedula(e.target.value)}
@@ -320,10 +329,10 @@ export default function CheckoutPage() {
               className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
             />
           </div>
-          {recipientError && <p className="mt-1 text-xs text-error">{recipientError}</p>}
+          {recipientError && <p aria-live="polite" className="mt-1 text-xs text-error">{recipientError}</p>}
         </div>
         <div>
-          <label className="mb-1.5 block text-base font-medium text-text">Transportista de envío</label>
+          <span className="mb-1.5 block text-base font-medium text-text">Transportista de envío</span>
           <p className="mb-2.5 text-sm text-text-muted">
             El envío es a cobro a destino: lo pagas directo a la empresa de mensajería al recibir tu paquete.{' '}
             <Link
@@ -358,11 +367,12 @@ export default function CheckoutPage() {
               </label>
             ))}
           </div>
-          {carrierError && <p className="mt-1 text-xs text-error">{carrierError}</p>}
+          {carrierError && <p aria-live="polite" className="mt-1 text-xs text-error">{carrierError}</p>}
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-text">Notas (opcional)</label>
+          <label htmlFor="checkout-notes" className="mb-1.5 block text-sm font-medium text-text">Notas (opcional)</label>
           <textarea
+            id="checkout-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
@@ -372,7 +382,11 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {submitError && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{submitError}</p>}
+      {submitError && (
+        <p role="alert" aria-live="assertive" className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+          {submitError}
+        </p>
+      )}
 
       <button
         type="button"

@@ -1,10 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, Trash2, Copy, Check } from 'lucide-react'
 import { matchesSearch } from '@/lib/search'
 import Thumbnail from '@/components/admin/Thumbnail'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   savePurchaseOrder,
   deletePurchaseOrder,
@@ -60,6 +61,12 @@ export default function PedidoBuilder({
   const [changingStatus, setChangingStatus] = useState(false)
   const [estimatedArrivalDate, setEstimatedArrivalDate] = useState(initialEstimatedArrivalDate ?? '')
   const [arrivalPrompt, setArrivalPrompt] = useState<{ nextStatus: PurchaseOrderStatus; date: string } | null>(null)
+  const arrivalDialogRef = useRef<HTMLDivElement>(null)
+  const { onKeyDown: handleArrivalDialogKeyDown } = useFocusTrap(
+    arrivalDialogRef,
+    () => setArrivalPrompt(null),
+    arrivalPrompt !== null
+  )
   const isLocked = status === 'recibido'
 
   const [query, setQuery] = useState('')
@@ -441,8 +448,15 @@ export default function PedidoBuilder({
 
       {arrivalPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="mb-2 text-base font-bold text-slate-900">Fecha estimada de llegada</h3>
+          <div
+            ref={arrivalDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="arrival-prompt-title"
+            onKeyDown={handleArrivalDialogKeyDown}
+            className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+          >
+            <h3 id="arrival-prompt-title" className="mb-2 text-base font-bold text-slate-900">Fecha estimada de llegada</h3>
             <p className="mb-4 text-sm text-slate-500">
               Antes de marcarlo &ldquo;En camino&rdquo;, indica cuándo esperas que llegue el pedido.
             </p>

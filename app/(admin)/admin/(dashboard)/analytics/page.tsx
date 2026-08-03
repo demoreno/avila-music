@@ -1,7 +1,21 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { parseDateOnly } from '@/lib/format-date'
-import AnalyticsCharts from './AnalyticsCharts'
+import dynamic from 'next/dynamic'
 import type { MonthlyKpi, ProductRanking } from '@/types/index'
+
+const AnalyticsCharts = dynamic(() => import('./AnalyticsCharts'), {
+  loading: () => (
+    <div className="space-y-6">
+      <div className="h-[260px] w-full animate-pulse rounded-lg bg-slate-100" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="h-[300px] animate-pulse rounded-lg bg-slate-100" />
+        <div className="h-[300px] animate-pulse rounded-lg bg-slate-100" />
+        <div className="h-[220px] animate-pulse rounded-lg bg-slate-100" />
+        <div className="h-[220px] animate-pulse rounded-lg bg-slate-100" />
+      </div>
+    </div>
+  ),
+})
 
 const DAYS_ES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 

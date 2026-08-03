@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Trash2 } from 'lucide-react'
 import { deletePurchaseOrder } from '@/app/(admin)/admin/(dashboard)/pedidos/actions'
+import { useToast } from '@/components/admin/ToastProvider'
 
 export default function DeletePedidoButton({ orderId }: { orderId: string }) {
   const router = useRouter()
+  const toast = useToast()
   const [deleting, setDeleting] = useState(false)
 
   async function handleDelete(e: React.MouseEvent) {
@@ -18,7 +20,7 @@ export default function DeletePedidoButton({ orderId }: { orderId: string }) {
       await deletePurchaseOrder(orderId)
       router.refresh()
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error al eliminar el pedido')
+      toast.error(err instanceof Error ? err.message : 'Error al eliminar el pedido')
       setDeleting(false)
     }
   }

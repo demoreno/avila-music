@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { CreditCard, Check, X } from 'lucide-react'
 import { reviewPayment } from '@/app/(admin)/admin/(dashboard)/ordenes/actions'
 import type { Order, OrderPaymentMethod } from '@/types/index'
@@ -60,8 +61,16 @@ export default function PaymentReviewPanel({ order, proofUrl }: { order: Order; 
               rel="noopener noreferrer"
               className="mt-2 block overflow-hidden rounded-lg border border-slate-200"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- private-bucket signed URL, not a known remotePattern and expires shortly anyway */}
-              <img src={proofUrl} alt="Comprobante de pago" className="w-full object-cover" />
+              {/* unoptimized: private-bucket signed URL, not a known remotePattern and expires shortly anyway — optimizing/caching it would break once the URL expires */}
+              <Image
+                src={proofUrl}
+                alt="Comprobante de pago"
+                width={0}
+                height={0}
+                sizes="100vw"
+                unoptimized
+                style={{ width: '100%', height: 'auto' }}
+              />
             </a>
           )}
         </div>

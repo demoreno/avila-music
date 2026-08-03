@@ -1,46 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { User, ChevronDown, UserCircle2, LogOut } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
 
-export default function AccountMenu() {
+type InitialUser = { fullName: string | null } | null
+
+export default function AccountMenu({ initialUser }: { initialUser: InitialUser }) {
   const router = useRouter()
-  const [fullName, setFullName] = useState<string | null>(null)
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-
-  const loadProfile = useCallback(async (userId: string) => {
-    const { data } = await supabase.from('profiles').select('full_name').eq('id', userId).single()
-    setFullName(data?.full_name ?? null)
-  }, [supabase])
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setIsLoggedIn(!!user)
-      if (user) loadProfile(user.id)
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user)
-      if (session?.user) {
-        loadProfile(session.user.id)
-      } else {
-        setFullName(null)
-      }
-    })
-
-    return () => subscription.unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- supabase client is re-created per render but stable in behavior
-  }, [loadProfile])
 
   useEffect(() => {
     if (!open) return
@@ -61,13 +32,17 @@ export default function AccountMenu() {
   }, [open])
 
   async function handleLogout() {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
     await supabase.auth.signOut()
     setOpen(false)
     router.push('/')
     router.refresh()
   }
 
-  if (!isLoggedIn) {
+  if (!initialUser) {
     return (
       <Link
         href="/cuenta/login"
@@ -79,7 +54,7 @@ export default function AccountMenu() {
     )
   }
 
-  const firstName = fullName?.trim().split(' ')[0]
+  const firstName = initialUser.fullName?.trim().split(' ')[0]
 
   return (
     <div ref={containerRef} className="relative hidden sm:block">

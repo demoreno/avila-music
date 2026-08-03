@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     locale: 'es_VE',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 const organizationJsonLd = {

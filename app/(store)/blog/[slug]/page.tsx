@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Calendar, ArrowLeft } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
@@ -41,12 +42,21 @@ function MarkdownParagraph({ node, children }: { node?: HastElementNode; childre
 
 // Images embedded in the article body (e.g. the logo on a solidarity post) are centered
 // instead of stretching left-aligned to the full prose width.
-function MarkdownImage({ src, alt }: { src?: string | Blob; alt?: string }) {
+function MarkdownImage({ src, alt, fallbackAlt }: { src?: string | Blob; alt?: string; fallbackAlt?: string }) {
   if (!src || typeof src !== 'string') return null
   return (
     <span className="not-prose my-6 flex justify-center">
-      {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary markdown-authored image, not a known remotePattern */}
-      <img src={src} alt={alt ?? ''} className="max-h-40 w-auto rounded-lg" />
+      {/* unoptimized: arbitrary markdown-authored image, not a known remotePattern; width/height 0 + sizes lets it size naturally within the max-height cap */}
+      <Image
+        src={src}
+        alt={alt || fallbackAlt || ''}
+        width={0}
+        height={0}
+        sizes="100vw"
+        unoptimized
+        className="rounded-lg"
+        style={{ width: 'auto', height: 'auto', maxHeight: '10rem' }}
+      />
     </span>
   )
 }
@@ -145,16 +155,30 @@ export default async function BlogPostPage({
         )}
 
         {post.cover_image_url && (
-          // eslint-disable-next-line @next/next/no-img-element -- cover_image_url is an arbitrary admin-pasted URL, not whitelisted in next.config remotePatterns
-          <img
-            src={post.cover_image_url}
-            alt={post.title}
-            className="mt-8 aspect-video w-full rounded-2xl object-cover shadow-card"
-          />
+          <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl shadow-card">
+            {/* unoptimized: cover_image_url is an arbitrary admin-pasted URL, not whitelisted in next.config remotePatterns */}
+            <Image
+              src={post.cover_image_url}
+              alt={post.title}
+              fill
+              unoptimized
+              priority
+              className="object-cover"
+            />
+          </div>
         )}
 
         <div className="prose prose-slate mt-8 max-w-none prose-headings:heading-serif prose-headings:text-[#1e4d6b] prose-a:text-[#1e4d6b] prose-img:rounded-xl">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: MarkdownLink, img: MarkdownImage, p: MarkdownParagraph }}>{post.content}</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: MarkdownLink,
+              img: (props) => <MarkdownImage {...props} fallbackAlt={post.title} />,
+              p: MarkdownParagraph,
+            }}
+          >
+            {post.content}
+          </ReactMarkdown>
         </div>
 
         {relatedProducts.length > 0 && (

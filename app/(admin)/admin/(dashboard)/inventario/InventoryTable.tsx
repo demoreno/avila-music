@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { X, ClipboardList, PackageCheck } from 'lucide-react'
 import type { Product } from '@/types/index'
 import PedidoBuilder, { suggestedQuantity, type PedidoProductOption } from '@/components/admin/PedidoBuilder'
 import ReorderTab, { type ReorderRow } from './ReorderTab'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { useToast } from '@/components/admin/ToastProvider'
 
 interface InventoryProduct
   extends Pick<Product, 'id' | 'name' | 'stock_total' | 'stock_minimum' | 'cost_usd' | 'supplier_code'> {
@@ -31,6 +33,7 @@ async function saveStock(id: string, stock: number) {
 }
 
 export default function InventoryTable({ products, reorderData }: InventoryTableProps) {
+  const toast = useToast()
   const [filter, setFilter] = useState<Filter>('todos')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
@@ -38,6 +41,8 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
   const [localProducts, setLocalProducts] = useState(products)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const { onKeyDown: handleDrawerKeyDown } = useFocusTrap(drawerRef, () => setDrawerOpen(false), drawerOpen)
 
   const filtered = localProducts.filter((p) => {
     if (filter === 'agotado') return p.stock_total === 0
@@ -64,7 +69,7 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
         prev.map((p) => (p.id === id ? { ...p, stock_total: newStock } : p))
       )
     } catch {
-      alert('Error al guardar el stock')
+      toast.error('Error al guardar el stock')
     } finally {
       setSaving(false)
       setEditingId(null)
@@ -201,7 +206,16 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {filtered.map((p) => {
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-400">
+                  {localProducts.length === 0
+                    ? 'Todavía no hay productos en el inventario.'
+                    : 'Ningún producto coincide con este filtro.'}
+                </td>
+              </tr>
+            ) : (
+              filtered.map((p) => {
               const isCritical = p.stock_total <= p.stock_minimum && p.stock_total > 0
               const isEmpty = p.stock_total === 0
               // "OK" pero a menos de 50% por encima del mínimo — un aviso temprano
@@ -307,7 +321,8 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
                   </td>
                 </tr>
               )
-            })}
+              })
+            )}
           </tbody>
         </table>
       </div>
@@ -338,9 +353,16 @@ export default function InventoryTable({ products, reorderData }: InventoryTable
 
       {drawerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-slate-50 p-6 shadow-xl">
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="inventory-pedido-title"
+            onKeyDown={handleDrawerKeyDown}
+            className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-slate-50 p-6 shadow-xl"
+          >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="heading-serif text-xl font-bold text-slate-900">Nuevo pedido</h2>
+              <h2 id="inventory-pedido-title" className="heading-serif text-xl font-bold text-slate-900">Nuevo pedido</h2>
               <button
                 onClick={() => setDrawerOpen(false)}
                 className="text-slate-400 hover:text-slate-700"

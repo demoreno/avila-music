@@ -1,24 +1,27 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import ProductsTable from './ProductsTable'
-import type { Product, CategoryTree, ProductImage } from '@/types/index'
+import type { Product, CategoryTree, ProductImage, ProductRanking } from '@/types/index'
 
 interface ProductWithCategory extends Product {
   subcategory_name: string
   category_name: string
+  avg_margin_pct: number | null
 }
 
 export default async function AdminProductsPage() {
   const supabase = await createSupabaseServerClient()
 
-  const [productsRes, categoryTreeRes, imagesRes] = await Promise.all([
+  const [productsRes, categoryTreeRes, imagesRes, rankingRes] = await Promise.all([
     supabase.from('products').select('*').order('name'),
     supabase.from('v_category_tree').select('*').order('category_sort_order').order('subcategory_sort_order'),
     supabase.from('product_images').select('*').order('sort_order'),
+    supabase.from('v_product_ranking').select('id, avg_margin_pct'),
   ])
 
   const products = (productsRes.data as Product[]) ?? []
   const categoryTree = (categoryTreeRes.data as CategoryTree[]) ?? []
   const images = (imagesRes.data as ProductImage[]) ?? []
+  const ranking = (rankingRes.data as Pick<ProductRanking, 'id' | 'avg_margin_pct'>[]) ?? []
 
   const imagesByProduct = images.reduce<Record<string, ProductImage[]>>((acc, img) => {
     ;(acc[img.product_id] ??= []).push(img)
@@ -30,10 +33,16 @@ export default async function AdminProductsPage() {
     return acc
   }, {})
 
+  const marginByProduct = ranking.reduce<Record<string, number | null>>((acc, row) => {
+    acc[row.id] = row.avg_margin_pct
+    return acc
+  }, {})
+
   const productsWithCategory: ProductWithCategory[] = products.map((p) => ({
     ...p,
     subcategory_name: catMap[p.subcategory_id]?.subcategory_name ?? '',
     category_name: catMap[p.subcategory_id]?.category_name ?? '',
+    avg_margin_pct: marginByProduct[p.id] ?? null,
   }))
 
   const uniqueSubcategories = categoryTree.filter(
